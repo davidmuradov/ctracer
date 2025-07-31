@@ -1,6 +1,7 @@
 #ifndef INCLUDES_CAMERA_H
 #define INCLUDES_CAMERA_H
 
+#include "sphere_list.h"
 #include "vec3.h"
 
 struct camera {
@@ -12,6 +13,6 @@ struct camera {
     struct vec3 px_del_v;
 };
 
-void camera_render(struct camera* camera, void* nil);
+void camera_render(struct camera* camera, struct sphere_list* sl);
 
 #endif

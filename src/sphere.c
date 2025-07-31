@@ -26,8 +26,8 @@ int hit(struct sphere* sphere, struct ray* ray, float r_tmin, float r_tmax) {
     sphere->p = ray_at(*ray, sphere->t);
     struct vec3 out_norm = vec3_mult(vec3_sub(sphere->p, sphere->center), sphere->radius);
     set_face_normal(sphere, ray, out_norm);
-    struct vec3 inter1 = vec3_sub(sphere->p, sphere->center);
-    sphere->normal = vec3_div(inter1, sphere->radius);
+    //struct vec3 inter1 = vec3_sub(sphere->p, sphere->center);
+    //sphere->normal = vec3_div(inter1, sphere->radius);
 
     return 1;
 }

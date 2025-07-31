@@ -1,16 +1,18 @@
 #include "../includes/camera.h"
 #include "../includes/print_image.h"
-#include "vec3.h"
 #include "../includes/ray.h"
+#include "../includes/sphere_list.h"
+#include "../includes/vec3.h"
+
 #include <stdio.h>
 #include <math.h>
 
 static void camera_init(struct camera* camera);
 
-static inline struct pixel ray_color(struct ray* r);
+static inline struct pixel ray_color(struct ray* r, struct sphere_list* sl);
 static inline float hit_sphere(struct vec3 center, float radius, struct ray* r);
 
-void camera_render(struct camera* camera, void* nil) {
+void camera_render(struct camera* camera, struct sphere_list* sl) {
 
     camera_init(camera);
 
@@ -32,7 +34,7 @@ void camera_render(struct camera* camera, void* nil) {
 	    ray_dir = vec3_sub(px_center, camera->center);
 	    r.o = camera->center;
 	    r.dir = ray_dir;
-	    color = ray_color(&r);
+	    color = ray_color(&r, sl);
 	    write_color(&color);
 	}
     }
@@ -97,22 +99,28 @@ static inline float hit_sphere(struct vec3 center, float radius, struct ray* r) 
 	return (h - sqrt(delta)) / (a);
 }
 
-static struct pixel ray_color(struct ray* r) {
+static struct pixel ray_color(struct ray* r, struct sphere_list* sl) {
 
     struct vec3 center = {0, 0, -1};
-    float t = hit_sphere(center, 0.5, r);
-    if (t > 0) {
-	struct vec3 inter1 = vec3_sub(ray_at(*r, t), center);
-	struct vec3 normal = vec3_unitv(inter1);
-	struct pixel c = {0.5*(normal.x + 1), 0.5*(normal.y + 1), 0.5*(normal.z + 1)};
+    float t;
+
+    for (int i = 0; i < sl->nb_spheres; i++) {
+	t = hit_sphere(sl->list[i].center, sl->list[i].radius, r);
+	if (t > 0) {
+	    struct vec3 inter1 = vec3_sub(ray_at(*r, t), sl->list[i].center);
+	    struct vec3 normal = vec3_unitv(inter1);
+	    struct pixel c = {0.5*(normal.x + 1), 0.5*(normal.y + 1), 0.5*(normal.z + 1)};
+	    return c;
+	}
+
+	struct vec3 unit_dir = vec3_unitv(r->dir);
+	float a = 0.5 * (unit_dir.y + 1);
+	struct pixel c = {(1 - a) * 1, (1 - a) * 1, (1 - a) * 1};
+	c.r += a * 0.5;
+	c.g += a * 0.7;
+	c.b += a * 1.0;
 	return c;
     }
 
-    struct vec3 unit_dir = vec3_unitv(r->dir);
-    float a = 0.5 * (unit_dir.y + 1);
-    struct pixel c = {(1 - a) * 1, (1 - a) * 1, (1 - a) * 1};
-    c.r += a * 0.5;
-    c.g += a * 0.7;
-    c.b += a * 1.0;
-    return c;
+    return (struct pixel) {0,0,0};
 }
