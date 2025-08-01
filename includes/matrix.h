@@ -47,4 +47,16 @@ double matrix_det_matrix4(matrix4 m);
 
 int matrix_inverse_matrix4(matrix4 m, matrix4 d);
 
+void matrix_new_translation4(double x, double y, double z, matrix4 d);
+
+void matrix_new_scaling4(double x, double y, double z, matrix4 d);
+
+void matrix_new_rotate_x(double a, matrix4 d);
+
+void matrix_new_rotate_y(double a, matrix4 d);
+
+void matrix_new_rotate_z(double a, matrix4 d);
+
+void matrix_new_shearing(double xy, double xz, double yx, double yz, double zx, double zy, matrix4 d);
+
 #endif

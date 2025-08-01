@@ -21,6 +21,9 @@ test2: tests/chap2/*.c $(INCLUDES_PATH)/*.h
 test3: tests/chap3/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -o Debug/test_chap3 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap3/test_chap3.c
 
+test4: tests/chap4/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -o Debug/test_chap4 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap4/test_chap4.c
+
 .PHONY: clean
 clean:
 	rm -rf $(EXECDIR)

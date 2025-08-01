@@ -1,5 +1,6 @@
 #include "../includes/matrix.h"
 #include "ct_math.h"
+#include <math.h>
 
 void matrix_init_matrix4(matrix4 m, double* r1, double* r2, double* r3, double* r4) {
 
@@ -311,4 +312,52 @@ int matrix_inverse_matrix4(matrix4 m, matrix4 d) {
     }
 
     return 1;
+}
+
+void matrix_new_translation4(double x, double y, double z, matrix4 d) {
+    double r1[4] = {1,0,0,x};
+    double r2[4] = {0,1,0,y};
+    double r3[4] = {0,0,1,z};
+    double r4[4] = {0,0,0,1};
+    matrix_init_matrix4(d, r1, r2, r3, r4);
+}
+
+void matrix_new_scaling4(double x, double y, double z, matrix4 d) {
+    double r1[4] = {x,0,0,0};
+    double r2[4] = {0,y,0,0};
+    double r3[4] = {0,0,z,0};
+    double r4[4] = {0,0,0,1};
+    matrix_init_matrix4(d, r1, r2, r3, r4);
+}
+
+void matrix_new_rotate_x(double a, matrix4 d) {
+    double r1[4] = {1,0,0,0};
+    double r2[4] = {0,cos(a),-sin(a),0};
+    double r3[4] = {0,sin(a),cos(a),0};
+    double r4[4] = {0,0,0,1};
+    matrix_init_matrix4(d, r1, r2, r3, r4);
+}
+
+void matrix_new_rotate_y(double a, matrix4 d) {
+    double r1[4] = {cos(a),0,sin(a),0};
+    double r2[4] = {0,1,0,0};
+    double r3[4] = {-sin(a),0,cos(a),0};
+    double r4[4] = {0,0,0,1};
+    matrix_init_matrix4(d, r1, r2, r3, r4);
+}
+
+void matrix_new_rotate_z(double a, matrix4 d) {
+    double r1[4] = {cos(a),-sin(a),0,0};
+    double r2[4] = {sin(a),cos(a),0,0};
+    double r3[4] = {0,0,1,0};
+    double r4[4] = {0,0,0,1};
+    matrix_init_matrix4(d, r1, r2, r3, r4);
+}
+
+void matrix_new_shearing(double xy, double xz, double yx, double yz, double zx, double zy, matrix4 d) {
+    double r1[4] = {1,xy,xz,0};
+    double r2[4] = {yx,1,yz,0};
+    double r3[4] = {zx,zy,1,0};
+    double r4[4] = {0,0,0,1};
+    matrix_init_matrix4(d, r1, r2, r3, r4);
 }
