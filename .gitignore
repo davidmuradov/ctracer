@@ -1,8 +1,4 @@
 .cache
 compile_commands.json
 output.ppm
-test_chap1
-test_chap2
-test_chap3
-test_chap4
 Debug/
