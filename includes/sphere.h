@@ -1,23 +1,29 @@
 #ifndef INCLUDES_SPHERE_H
 #define INCLUDES_SPHERE_H
 
-#include "vec3.h"
+#include "intersection.h"
+#include "matrix.h"
 #include "ray.h"
-#include <math.h>
+
+#define UNDEF_TIME	(-9999)
 
 struct sphere {
-    struct vec3 center;
-    float radius;
-    // hit record
-    struct vec3 p;
-    struct vec3 normal;
-    float t;
-    // Front face
-    int front_face;
+    matrix4 default_transformation;
+    t_object type;
+    int id;
+    struct tuple o;
+    double radius;
+    int xs_count;
+    double xs[2];
 };
 
-int hit(struct sphere* sphere, struct ray* ray, float r_tmin, float r_tmax);
+void
+sphere_init(struct sphere* s, struct tuple o, double r);
 
-void set_face_normal(struct sphere* sph, struct ray* ray, struct vec3 outward_normal);
+void
+sphere_intersect_ray(struct sphere* s, struct ray* r, struct intersection_list* inter_list);
+
+void
+sphere_set_transform(struct sphere* s, matrix4 m);
 
 #endif

@@ -13,6 +13,8 @@ void matrix_init_matrix3(matrix3 m, double* r1, double* r2, double* r3);
 
 void matrix_init_matrix2(matrix2 m, double* r1, double* r2);
 
+void matrix_set_from_matrix4(matrix4 m, matrix4 d);
+
 int matrix_compare_matrix4(matrix4 a, matrix4 b);
 
 int matrix_compare_matrix3(matrix3 a, matrix3 b);

@@ -1,0 +1,81 @@
+#include "../includes/intersection.h"
+#include "sphere.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+void
+intersection_new_intersection(struct intersection* inter, double t, void* object) {
+    inter->t = t;
+    inter->object = object;
+}
+
+t_object
+intersection_get_object_type(struct intersection* inter) {
+    struct sphere* type1 = (struct sphere*) inter->object;
+    if (type1->type == SPHERE)
+	return SPHERE;
+
+    /* every other type will be checked later when we get there */
+
+    return UNKNOWN_OBJECT;
+}
+
+void
+intersection_new_intersection_list(struct intersection_list* inter_list) {
+    inter_list->max_nb_intersections = INIT_MAX_INTERSECTIONS;
+    inter_list->nb_intersections = 0;
+    inter_list->list = calloc(inter_list->max_nb_intersections, sizeof(struct intersection));
+    if (!inter_list->list) {
+	fprintf(stderr, "Failed to allocate memory for intersection list\n");
+	exit(1);
+    }
+}
+
+void
+intersection_add_intersection_to_list(struct intersection_list* inter_list, struct intersection inter) {
+    if (inter_list->nb_intersections < inter_list->max_nb_intersections) {
+	inter_list->list[inter_list->nb_intersections] = inter;
+	inter_list->nb_intersections++;
+    }
+    else {
+	inter_list->list = realloc(inter_list->list, inter_list->max_nb_intersections * 2);
+	if (!inter_list->list) {
+	    fprintf(stderr, "Failed to allocate new memory for intersection list\n");
+	    exit(1);
+	}
+	inter_list->max_nb_intersections *= 2;
+	inter_list->list[inter_list->nb_intersections] = inter;
+	inter_list->nb_intersections++;
+    }
+}
+
+void
+intersection_clear_intersection_list(struct intersection_list* inter_list) {
+    inter_list->nb_intersections = 0;
+}
+
+struct intersection
+intersection_hit(struct intersection_list* inter_list) {
+    double s_time = UNDEF_TIME;
+    struct intersection to_return = (struct intersection) {UNDEF_TIME, NULL};
+
+    if (!inter_list->nb_intersections)
+	return to_return;
+
+    for (int i = 0; i < inter_list->nb_intersections; i++) {
+	if (inter_list->list[i].t > 0) {
+	    s_time = inter_list->list[i].t;
+	    to_return = inter_list->list[i];
+	    break;
+	}
+    }
+
+    for (int i = 0; i < inter_list->nb_intersections; i++) {
+	if (inter_list->list[i].t < s_time && inter_list->list[i].t > 0) {
+	    s_time = inter_list->list[i].t;
+	    to_return = inter_list->list[i];
+	}
+    }
+
+    return to_return;
+}
