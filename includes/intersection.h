@@ -16,14 +16,14 @@ struct intersection_list {
     struct intersection* list;
 };
 
-void
-intersection_new_intersection(struct intersection* inter, double t, void* object);
+struct intersection
+intersection_new_intersection(double t, void* object);
 
 t_object
 intersection_get_object_type(struct intersection* inter);
 
-void
-intersection_new_intersection_list(struct intersection_list* inter_list);
+struct intersection_list
+intersection_new_intersection_list(void);
 
 void
 intersection_add_intersection_to_list(struct intersection_list* inter_list, struct intersection inter);

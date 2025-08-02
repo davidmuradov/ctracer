@@ -9,8 +9,8 @@ struct ray {
     struct tuple dir; // Direction
 };
 
-void
-ray_init(struct ray* r, struct tuple o, struct tuple d);
+struct ray
+ray_new_ray(struct tuple o, struct tuple d);
 
 struct tuple
 ray_position_at(struct ray* r, double t);

@@ -1,29 +1,36 @@
 #include "../includes/sphere.h"
 #include "intersection.h"
 #include "matrix.h"
+#include "ray.h"
 #include "tuple.h"
 #include <math.h>
 
 static int UNIQUE_ID = 0;
 
-void
-sphere_init(struct sphere* s, struct tuple o, double r) {
-    s->default_transformation = matrix_make_identity4();
-    s->type = SPHERE;
-    s->id = UNIQUE_ID;
-    s->o = o;
-    s->radius = r;
-    s->xs_count = 0;
-    s->xs[0] = UNDEF_TIME;
-    s->xs[1] = UNDEF_TIME;
+struct sphere
+sphere_new_sphere(struct tuple o, double r) {
+    struct sphere s;
+    s.default_transformation = matrix_make_identity4();
+    s.type = SPHERE;
+    s.id = UNIQUE_ID;
+    s.o = o;
+    s.radius = r;
+    s.xs_count = 0;
+    s.xs[0] = UNDEF_TIME;
+    s.xs[1] = UNDEF_TIME;
     UNIQUE_ID++;
+    return s;
 }
 
-void
-sphere_intersect_ray(struct sphere* s, struct ray* r, struct intersection_list* inter_list) {
-    struct tuple sphere_to_ray = tuple_sub(r->o, s->o);
-    double a = tuple_dot(r->dir, r->dir);
-    double b = 2 * tuple_dot(r->dir, sphere_to_ray);
+struct intersection_list
+sphere_intersect_ray(struct sphere* s, struct ray* r) {
+    struct matrix4 inv_transform;
+    int inverted = matrix_inverse_matrix4(s->default_transformation, &inv_transform);
+    struct ray r2 = ray_transform_ray(*r, inv_transform);
+    struct intersection_list inter_list = intersection_new_intersection_list();
+    struct tuple sphere_to_ray = tuple_sub(r2.o, s->o);
+    double a = tuple_dot(r2.dir, r2.dir);
+    double b = 2 * tuple_dot(r2.dir, sphere_to_ray);
     double c = tuple_dot(sphere_to_ray, sphere_to_ray) - 1;
     s->xs_count = 0;
     s->xs[0] = UNDEF_TIME;
@@ -32,7 +39,7 @@ sphere_intersect_ray(struct sphere* s, struct ray* r, struct intersection_list* 
     double delta = b*b -4*a*c;
 
     if (delta < 0)
-	return;
+	return inter_list;
 
     s->xs_count = 2;
     double t1 = (-b -sqrt(delta)) / (2*a);
@@ -41,21 +48,23 @@ sphere_intersect_ray(struct sphere* s, struct ray* r, struct intersection_list* 
     if (t1 < t2) {
 	struct intersection inter;
 	s->xs[0] = t1;
-	intersection_new_intersection(&inter, s->xs[0], s);
-	intersection_add_intersection_to_list(inter_list, inter);
+	inter = intersection_new_intersection(s->xs[0], s);
+	intersection_add_intersection_to_list(&inter_list, inter);
 	s->xs[1] = t2;
-	intersection_new_intersection(&inter, s->xs[1], s);
-	intersection_add_intersection_to_list(inter_list, inter);
+	inter = intersection_new_intersection(s->xs[1], s);
+	intersection_add_intersection_to_list(&inter_list, inter);
     }
     else {
 	struct intersection inter;
 	s->xs[0] = t2;
-	intersection_new_intersection(&inter, s->xs[0], s);
-	intersection_add_intersection_to_list(inter_list, inter);
+	inter = intersection_new_intersection(s->xs[0], s);
+	intersection_add_intersection_to_list(&inter_list, inter);
 	s->xs[1] = t1;
-	intersection_new_intersection(&inter, s->xs[1], s);
-	intersection_add_intersection_to_list(inter_list, inter);
+	inter = intersection_new_intersection(s->xs[1], s);
+	intersection_add_intersection_to_list(&inter_list, inter);
     }
+
+    return inter_list;
 }
 
 void

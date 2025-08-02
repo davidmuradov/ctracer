@@ -17,11 +17,11 @@ struct sphere {
     double xs[2];
 };
 
-void
-sphere_init(struct sphere* s, struct tuple o, double r);
+struct sphere
+sphere_new_sphere(struct tuple o, double r);
 
-void
-sphere_intersect_ray(struct sphere* s, struct ray* r, struct intersection_list* inter_list);
+struct intersection_list
+sphere_intersect_ray(struct sphere* s, struct ray* r);
 
 void
 sphere_set_transform(struct sphere* s, struct matrix4 m);

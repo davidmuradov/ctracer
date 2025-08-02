@@ -59,3 +59,7 @@ void canvas_to_ppm(struct canvas* c) {
 
     fclose(f);
 }
+
+void canvas_free_canvas(struct canvas* c) {
+    free(c->grid);
+}

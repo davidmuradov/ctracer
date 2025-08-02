@@ -2,10 +2,12 @@
 #include "matrix.h"
 #include "tuple.h"
 
-void
-ray_init(struct ray* r, struct tuple o, struct tuple d) {
-    r->o = o;
-    r->dir = d;
+struct ray
+ray_new_ray(struct tuple o, struct tuple d) {
+    struct ray r;
+    r.o = o;
+    r.dir = d;
+    return r;
 }
 
 struct tuple

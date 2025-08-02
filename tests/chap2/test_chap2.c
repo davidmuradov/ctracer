@@ -50,5 +50,7 @@ int main(int argc, char *argv[]) {
 
     canvas_to_ppm(&canvas);
 
+    canvas_free_canvas(&canvas);
+
     return EXIT_SUCCESS;
 }
