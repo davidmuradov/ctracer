@@ -140,26 +140,22 @@ int main(int argc, char *argv[]) {
     assert(ctm_floats_equal(inter_res.t, 2));
 
     ray_init(&r, tuple_new_point(1, 2, 3), tuple_new_vector(0, 1, 0));
-    matrix4 m_translate;
-    matrix_new_translation4(3, 4, 5, m_translate);
+    struct matrix4 m_translate = matrix_new_translation4(3, 4, 5);
     struct ray r2 = ray_transform_ray(r, m_translate);
     assert(tuple_equals(r2.o, tuple_new_point(4, 6, 8)));
     assert(tuple_equals(r2.dir, tuple_new_point(0, 1, 0)));
 
-    matrix4 m_scale;
-    matrix_new_scaling4(2, 3, 4, m_scale);
+    struct matrix4 m_scale = matrix_new_scaling4(2, 3, 4);
     r2 = ray_transform_ray(r, m_scale);
     assert(tuple_equals(r2.o, tuple_new_point(2, 6, 12)));
     assert(tuple_equals(r2.dir, tuple_new_point(0, 3, 0)));
 
     struct sphere s2;
-    matrix4 m_identity;
-    matrix_make_identity4(m_identity);
+    struct matrix4 m_identity = matrix_make_identity4();
     sphere_init(&s2, tuple_new_point(0, 0, 0), 1);
     assert(matrix_compare_matrix4(m_identity, s2.default_transformation));
     
-    matrix4 mt2;
-    matrix_new_translation4(2, 3, 4, mt2);
+    struct matrix4 mt2 = matrix_new_translation4(2, 3, 4);
     sphere_set_transform(&s2, mt2);
     assert(matrix_compare_matrix4(mt2, s2.default_transformation));
 

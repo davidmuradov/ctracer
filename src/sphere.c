@@ -8,7 +8,7 @@ static int UNIQUE_ID = 0;
 
 void
 sphere_init(struct sphere* s, struct tuple o, double r) {
-    matrix_make_identity4(s->default_transformation);
+    s->default_transformation = matrix_make_identity4();
     s->type = SPHERE;
     s->id = UNIQUE_ID;
     s->o = o;
@@ -59,6 +59,6 @@ sphere_intersect_ray(struct sphere* s, struct ray* r, struct intersection_list* 
 }
 
 void
-sphere_set_transform(struct sphere* s, matrix4 m) {
-    matrix_set_from_matrix4(s->default_transformation, m);
+sphere_set_transform(struct sphere* s, struct matrix4 m) {
+    s->default_transformation = m;
 }

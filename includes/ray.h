@@ -16,7 +16,7 @@ struct tuple
 ray_position_at(struct ray* r, double t);
 
 struct ray
-ray_transform_ray(struct ray r, matrix4 m);
+ray_transform_ray(struct ray r, struct matrix4 m);
 
 
 #endif

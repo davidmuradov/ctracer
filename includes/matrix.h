@@ -3,62 +3,94 @@
 
 #include "tuple.h"
 
-typedef double matrix2[2][2];
-typedef double matrix3[3][3];
-typedef double matrix4[4][4];
+struct matrix4 {
+    double grid[4][4];
+};
 
-void matrix_init_matrix4(matrix4 m, double* r1, double* r2, double* r3, double* r4);
+struct matrix3 {
+    double grid[3][3];
+};
 
-void matrix_init_matrix3(matrix3 m, double* r1, double* r2, double* r3);
+struct matrix2 {
+    double grid[2][2];
+};
 
-void matrix_init_matrix2(matrix2 m, double* r1, double* r2);
+struct row4 {
+    double a;
+    double b;
+    double c;
+    double d;
+};
 
-void matrix_set_from_matrix4(matrix4 m, matrix4 d);
+struct row3 {
+    double a;
+    double b;
+    double c;
+};
 
-int matrix_compare_matrix4(matrix4 a, matrix4 b);
+struct row2 {
+    double a;
+    double b;
+};
 
-int matrix_compare_matrix3(matrix3 a, matrix3 b);
+struct row4 matrix_new_row4(double a, double b, double c, double d);
 
-int matrix_compare_matrix2(matrix2 a, matrix2 b);
+struct row3 matrix_new_row3(double a, double b, double c);
 
-void matrix_mult_matrix4(matrix4 a, matrix4 b, matrix4 c);
+struct row2 matrix_new_row2(double a, double b);
 
-struct tuple matrix_mult_matrix4_tuple(matrix4 a, struct tuple b);
+struct matrix4 matrix_new_matrix4(struct row4 r1, struct row4 r2, struct row4 r3, struct row4 r4);
 
-void matrix_make_identity4(matrix4 m);
+struct matrix3 matrix_new_matrix3(struct row3 r1, struct row3 r2, struct row3 r3);
 
-void matrix_transpose4(matrix4 m, matrix4 d);
+struct matrix2 matrix_new_matrix2(struct row2 r1, struct row2 r2);
 
-double matrix_det_matrix2(matrix2 m);
+//void matrix_set_from_matrix4(struct matrix4 src, struct matrix4* dst);
 
-void matrix_sub_matrix3(matrix3 m, int i, int j, matrix2 d);
+int matrix_compare_matrix4(struct matrix4 a, struct matrix4 b);
 
-void matrix_sub_matrix4(matrix4 m, int i, int j, matrix3 d);
+int matrix_compare_matrix3(struct matrix3 a, struct matrix3 b);
 
-double matrix_minor_matrix3(matrix3 m, int i, int j);
+int matrix_compare_matrix2(struct matrix2 a, struct matrix2 b);
 
-double matrix_cofactor_matrix3(matrix3 m, int i, int j);
+struct matrix4 matrix_mult_matrix4(struct matrix4 a, struct matrix4 b);
 
-double matrix_det_matrix3(matrix3 m);
+struct tuple matrix_mult_matrix4_tuple(struct matrix4 a, struct tuple b);
 
-double matrix_minor_matrix4(matrix4 m, int i, int j);
+struct matrix4 matrix_make_identity4(void);
 
-double matrix_cofactor_matrix4(matrix4 m, int i, int j);
+struct matrix4 matrix_transpose4(struct matrix4 a);
 
-double matrix_det_matrix4(matrix4 m);
+double matrix_det_matrix2(struct matrix2 a);
 
-int matrix_inverse_matrix4(matrix4 m, matrix4 d);
+struct matrix2 matrix_sub_matrix3(struct matrix3 a, int i, int j);
 
-void matrix_new_translation4(double x, double y, double z, matrix4 d);
+struct matrix3 matrix_sub_matrix4(struct matrix4 a, int i, int j);
 
-void matrix_new_scaling4(double x, double y, double z, matrix4 d);
+double matrix_minor_matrix3(struct matrix3 a, int i, int j);
 
-void matrix_new_rotate_x(double a, matrix4 d);
+double matrix_cofactor_matrix3(struct matrix3 a, int i, int j);
 
-void matrix_new_rotate_y(double a, matrix4 d);
+double matrix_det_matrix3(struct matrix3 a);
 
-void matrix_new_rotate_z(double a, matrix4 d);
+double matrix_minor_matrix4(struct matrix4 a, int i, int j);
 
-void matrix_new_shearing(double xy, double xz, double yx, double yz, double zx, double zy, matrix4 d);
+double matrix_cofactor_matrix4(struct matrix4 a, int i, int j);
+
+double matrix_det_matrix4(struct matrix4 a);
+
+int matrix_inverse_matrix4(struct matrix4 src, struct matrix4* dst);
+
+struct matrix4 matrix_new_translation4(double x, double y, double z);
+
+struct matrix4 matrix_new_scaling4(double x, double y, double z);
+
+struct matrix4 matrix_new_rotate_x(double a);
+
+struct matrix4 matrix_new_rotate_y(double a);
+
+struct matrix4 matrix_new_rotate_z(double a);
+
+struct matrix4 matrix_new_shearing(double xy, double xz, double yx, double yz, double zx, double zy);
 
 #endif

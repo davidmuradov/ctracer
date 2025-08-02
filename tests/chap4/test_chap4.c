@@ -9,22 +9,15 @@
 
 int main(int argc, char *argv[]) {
 
-    matrix4 m_translate;
-    double r1[4] = {1,0,0,5};
-    double r2[4] = {0,1,0,-3};
-    double r3[4] = {0,0,1,2};
-    double r4[4] = {0,0,0,1};
-    matrix_new_translation4(5, -3, 2, m_translate);
-    matrix4 m_test;
-    matrix_init_matrix4(m_test, r1, r2, r3, r4);
-    assert(matrix_compare_matrix4(m_translate, m_test));
+    struct matrix4 m_translate = matrix_new_translation4(5, -3, 2);
+
     struct tuple p = tuple_new_point(-3, 4, 5);
     struct tuple p_res = matrix_mult_matrix4_tuple(m_translate, p);
     struct tuple p_exp = tuple_new_point(2, 1, 7);
     assert(tuple_equals(p_res, p_exp));
 
-    matrix4 inv_m_translate;
-    matrix_inverse_matrix4(m_translate, inv_m_translate);
+    struct matrix4 inv_m_translate;
+    matrix_inverse_matrix4(m_translate, &inv_m_translate);
     p_res = matrix_mult_matrix4_tuple(inv_m_translate, p);
     p_exp = tuple_new_point(-8, 7, 3);
     assert(tuple_equals(p_res, p_exp));
@@ -32,15 +25,7 @@ int main(int argc, char *argv[]) {
     struct tuple p_vec_res = matrix_mult_matrix4_tuple(m_translate, p_vec);
     assert(tuple_equals(p_vec_res, p_vec));
 
-    matrix4 m_scaling;
-    double a1[4] = {2,0,0,0};
-    double a2[4] = {0,3,0,0};
-    double a3[4] = {0,0,4,0};
-    double a4[4] = {0,0,0,1};
-    matrix_new_scaling4(2, 3, 4, m_scaling);
-    matrix4 m_test_scale;
-    matrix_init_matrix4(m_test_scale, a1, a2, a3, a4);
-    assert(matrix_compare_matrix4(m_scaling, m_test_scale));
+    struct matrix4 m_scaling = matrix_new_scaling4(2, 3, 4);
     p = tuple_new_point(-4, 6, 8);
     p_res = matrix_mult_matrix4_tuple(m_scaling, p);
     p_exp = tuple_new_point(-8, 18, 32);
@@ -50,23 +35,20 @@ int main(int argc, char *argv[]) {
     struct tuple p_vec_exp = tuple_new_vector(-8, 18, 32);
     assert(tuple_equals(p_vec_exp, p_vec_res));
 
-    matrix4 inv_m_scaling;
-    matrix_inverse_matrix4(m_scaling, inv_m_scaling);
+    struct matrix4 inv_m_scaling;
+    matrix_inverse_matrix4(m_scaling, &inv_m_scaling);
     p_res = matrix_mult_matrix4_tuple(inv_m_scaling, p_vec);
     p_exp = tuple_new_point(-2, 2, 2);
     assert(tuple_equals(p_res, p_exp));
 
-    matrix4 m_reflect_x;
-    matrix_new_scaling4(-1, 1, 1, m_reflect_x);
+    m_scaling = matrix_new_scaling4(-1, 1, 1);
     p = tuple_new_point(2, 3, 4);
-    p_res = matrix_mult_matrix4_tuple(m_reflect_x, p);
+    p_res = matrix_mult_matrix4_tuple(m_scaling, p);
     p_exp = tuple_new_point(-2, 3, 4);
     assert(tuple_equals(p_res, p_exp));
 
-    matrix4 m_rotate_x_pi4;
-    matrix4 m_rotate_x_pi2;
-    matrix_new_rotate_x(PI / 4, m_rotate_x_pi4);
-    matrix_new_rotate_x(PI / 2, m_rotate_x_pi2);
+    struct matrix4 m_rotate_x_pi4 = matrix_new_rotate_x(PI / 4);
+    struct matrix4 m_rotate_x_pi2 = matrix_new_rotate_x(PI / 2);
     p = tuple_new_point(0, 1, 0);
     p_res = matrix_mult_matrix4_tuple(m_rotate_x_pi4, p);
     p_exp = tuple_new_point(0, sqrt(2)/2, sqrt(2)/2);
@@ -77,16 +59,14 @@ int main(int argc, char *argv[]) {
     p_exp = tuple_new_point(0, 0, 1);
     assert(tuple_equals(p_res, p_exp));
 
-    matrix4 m_inv_rotate_x_pi4;
-    matrix_inverse_matrix4(m_rotate_x_pi4, m_inv_rotate_x_pi4);
+    struct matrix4 m_inv_rotate_x_pi4;
+    matrix_inverse_matrix4(m_rotate_x_pi4, &m_inv_rotate_x_pi4);
     p_res = matrix_mult_matrix4_tuple(m_inv_rotate_x_pi4, p);
     p_exp = tuple_new_point(0, sqrt(2)/2, -sqrt(2)/2);
     assert(tuple_equals(p_res, p_exp));
 
-    matrix4 m_rotate_y_pi4;
-    matrix4 m_rotate_y_pi2;
-    matrix_new_rotate_y(PI / 4, m_rotate_y_pi4);
-    matrix_new_rotate_y(PI / 2, m_rotate_y_pi2);
+    struct matrix4 m_rotate_y_pi4 = matrix_new_rotate_y(PI / 4);
+    struct matrix4 m_rotate_y_pi2 = matrix_new_rotate_y(PI / 2);
     p = tuple_new_point(0, 0, 1);
     p_res = matrix_mult_matrix4_tuple(m_rotate_y_pi4, p);
     p_exp = tuple_new_point(sqrt(2)/2, 0, sqrt(2)/2);
@@ -95,10 +75,8 @@ int main(int argc, char *argv[]) {
     p_exp = tuple_new_point(1, 0, 0);
     assert(tuple_equals(p_res, p_exp));
 
-    matrix4 m_rotate_z_pi4;
-    matrix4 m_rotate_z_pi2;
-    matrix_new_rotate_z(PI / 4, m_rotate_z_pi4);
-    matrix_new_rotate_z(PI / 2, m_rotate_z_pi2);
+    struct matrix4 m_rotate_z_pi4 = matrix_new_rotate_z(PI / 4);
+    struct matrix4 m_rotate_z_pi2 = matrix_new_rotate_z(PI / 2);
     p = tuple_new_point(0, 1, 0);
     p_res = matrix_mult_matrix4_tuple(m_rotate_z_pi4, p);
     p_exp = tuple_new_point(-sqrt(2)/2, sqrt(2)/2, 0);
@@ -107,42 +85,41 @@ int main(int argc, char *argv[]) {
     p_exp = tuple_new_point(-1, 0, 0);
     assert(tuple_equals(p_res, p_exp));
 
-    matrix4 m_shearing;
-    matrix_new_shearing(1, 0, 0, 0, 0, 0, m_shearing);
+    struct matrix4 m_shearing = matrix_new_shearing(1, 0, 0, 0, 0, 0);
     p = tuple_new_point(2, 3, 4);
     p_res = matrix_mult_matrix4_tuple(m_shearing, p);
     p_exp = tuple_new_point(5, 3, 4);
     assert(tuple_equals(p_res, p_exp));
-    matrix_new_shearing(0, 1, 0, 0, 0, 0, m_shearing);
+    m_shearing = matrix_new_shearing(0, 1, 0, 0, 0, 0);
     p = tuple_new_point(2, 3, 4);
     p_res = matrix_mult_matrix4_tuple(m_shearing, p);
     p_exp = tuple_new_point(6, 3, 4);
     assert(tuple_equals(p_res, p_exp));
-    matrix_new_shearing(0, 0, 1, 0, 0, 0, m_shearing);
+    m_shearing = matrix_new_shearing(0, 0, 1, 0, 0, 0);
     p = tuple_new_point(2, 3, 4);
     p_res = matrix_mult_matrix4_tuple(m_shearing, p);
     p_exp = tuple_new_point(2, 5, 4);
     assert(tuple_equals(p_res, p_exp));
-    matrix_new_shearing(0, 0, 0, 1, 0, 0, m_shearing);
+    m_shearing = matrix_new_shearing(0, 0, 0, 1, 0, 0);
     p = tuple_new_point(2, 3, 4);
     p_res = matrix_mult_matrix4_tuple(m_shearing, p);
     p_exp = tuple_new_point(2, 7, 4);
     assert(tuple_equals(p_res, p_exp));
-    matrix_new_shearing(0, 0, 0, 0, 1, 0, m_shearing);
+    m_shearing = matrix_new_shearing(0, 0, 0, 0, 1, 0);
     p = tuple_new_point(2, 3, 4);
     p_res = matrix_mult_matrix4_tuple(m_shearing, p);
     p_exp = tuple_new_point(2, 3, 6);
     assert(tuple_equals(p_res, p_exp));
-    matrix_new_shearing(0, 0, 0, 0, 0, 1, m_shearing);
+    m_shearing = matrix_new_shearing(0, 0, 0, 0, 0, 1);
     p = tuple_new_point(2, 3, 4);
     p_res = matrix_mult_matrix4_tuple(m_shearing, p);
     p_exp = tuple_new_point(2, 3, 7);
     assert(tuple_equals(p_res, p_exp));
 
     p = tuple_new_point(1, 0, 1);
-    matrix_new_rotate_x(PI / 2, m_rotate_x_pi2);
-    matrix_new_scaling4(5, 5, 5, m_scaling);
-    matrix_new_translation4(10, 5, 7, m_translate);
+    m_rotate_x_pi2 = matrix_new_rotate_x(PI / 2);
+    m_scaling = matrix_new_scaling4(5, 5, 5);
+    m_translate = matrix_new_translation4(10, 5, 7);
     struct tuple p2 = matrix_mult_matrix4_tuple(m_rotate_x_pi2, p);
     assert(tuple_equals(p2, (struct tuple) {1,-1,0,1}));
     struct tuple p3 = matrix_mult_matrix4_tuple(m_scaling, p2);

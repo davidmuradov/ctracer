@@ -14,7 +14,7 @@ ray_position_at(struct ray* r, double t) {
 }
 
 struct ray
-ray_transform_ray(struct ray r, matrix4 m) {
+ray_transform_ray(struct ray r, struct matrix4 m) {
     struct ray new_ray;
     new_ray.o = matrix_mult_matrix4_tuple(m, r.o);
     new_ray.dir = matrix_mult_matrix4_tuple(m, r.dir);
