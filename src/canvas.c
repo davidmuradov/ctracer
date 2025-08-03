@@ -48,8 +48,14 @@ void canvas_to_ppm(struct canvas* c) {
     for (int i = 0; i < CANVAS_HEIGHT; i++) {
 	for (int j = 0; j < CANVAS_WIDTH; j++) {
 	    ri = (int) (scale * c->grid[INDEX(i, j)].x);
+	    if (ri > 255)
+		ri = 255;
 	    gi = (int) (scale * c->grid[INDEX(i, j)].y);
+	    if (gi > 255)
+		gi = 255;
 	    bi = (int) (scale * c->grid[INDEX(i, j)].z);
+	    if (bi > 255)
+		bi = 255;
 	    if (j < CANVAS_WIDTH - 1)
 		fprintf(f, "%d %d %d ", ri, gi, bi);
 	    else

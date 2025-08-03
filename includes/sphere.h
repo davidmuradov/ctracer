@@ -2,6 +2,7 @@
 #define INCLUDES_SPHERE_H
 
 #include "intersection.h"
+#include "materials.h"
 #include "matrix.h"
 #include "ray.h"
 
@@ -9,6 +10,7 @@
 
 struct sphere {
     struct matrix4 default_transformation;
+    struct material material;
     t_object type;
     int id;
     struct tuple o;
@@ -25,5 +27,14 @@ sphere_intersect_ray(struct sphere* s, struct ray* r);
 
 void
 sphere_set_transform(struct sphere* s, struct matrix4 m);
+
+struct tuple
+sphere_normal_at(struct sphere* s, struct tuple p);
+
+struct tuple
+sphere_reflect(struct tuple v, struct tuple n);
+
+void
+sphere_set_material(struct sphere* s, struct material m);
 
 #endif

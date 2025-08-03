@@ -1,5 +1,6 @@
 #include "../includes/sphere.h"
 #include "intersection.h"
+#include "materials.h"
 #include "matrix.h"
 #include "ray.h"
 #include "tuple.h"
@@ -15,6 +16,7 @@ sphere_new_sphere(struct tuple o, double r) {
     s.id = UNIQUE_ID;
     s.o = o;
     s.radius = r;
+    s.material = materials_new_material();
     s.xs_count = 0;
     s.xs[0] = UNDEF_TIME;
     s.xs[1] = UNDEF_TIME;
@@ -70,4 +72,27 @@ sphere_intersect_ray(struct sphere* s, struct ray* r) {
 void
 sphere_set_transform(struct sphere* s, struct matrix4 m) {
     s->default_transformation = m;
+}
+
+struct tuple
+sphere_normal_at(struct sphere* s, struct tuple p) {
+    struct matrix4 s_inv_transf;
+    matrix_inverse_matrix4(s->default_transformation, &s_inv_transf);
+    struct tuple o_point = matrix_mult_matrix4_tuple(s_inv_transf, p);
+    struct tuple o_normal = tuple_sub(o_point, s->o); // or (0,0,0), to be determined
+    struct tuple w_normal = matrix_mult_matrix4_tuple(matrix_transpose4(s_inv_transf), o_normal);
+    w_normal.w = 0;
+    return tuple_normalize(w_normal);
+}
+
+struct tuple
+sphere_reflect(struct tuple v, struct tuple n) {
+    double t = tuple_dot(v, n);
+    t *= 2;
+    return tuple_sub(v, tuple_scalar_mult(n, t));
+}
+
+void
+sphere_set_material(struct sphere* s, struct material m) {
+    s->material = m;
 }
