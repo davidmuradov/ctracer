@@ -49,4 +49,7 @@ world_shade_hit(struct world* world, struct precompute* comps);
 struct tuple
 world_color_at(struct world* world, struct ray* ray);
 
+int
+world_is_shadowed(struct world* world, int i, struct tuple point);
+
 #endif

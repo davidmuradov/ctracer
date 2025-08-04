@@ -33,6 +33,12 @@ test6: tests/chap6/*.c $(INCLUDES_PATH)/*.h
 test7: tests/chap7/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -o Debug/test_chap7 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap7/test_chap7.c
 
+test8: tests/chap8/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -o Debug/test_chap8 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap8/test_chap8.c
+
+test8_perf: tests/chap8/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -O3 -o Debug/test_chap8 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap8/test_chap8.c
+
 .PHONY: clean
 clean:
 	rm -rf $(EXECDIR)
