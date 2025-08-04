@@ -9,10 +9,10 @@
 #define UNDEF_TIME	(-9999)
 
 struct sphere {
-    struct matrix4 default_transformation;
-    struct material material;
     t_object type;
     int id;
+    struct matrix4 default_transformation;
+    struct material material;
     struct tuple o;
     double radius;
     int xs_count;

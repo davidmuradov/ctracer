@@ -43,11 +43,11 @@ struct tuple tuple_negate(struct tuple a) {
 }
 
 struct tuple tuple_scalar_mult(struct tuple a, double b) {
-    return (struct tuple) {b * a.x, b * a.y, b * a.z, b * a.w};
+    return (struct tuple) {b * a.x, b * a.y, b * a.z, a.w};
 }
 
 struct tuple tuple_scalar_div(struct tuple a, double b) {
-    return (struct tuple) {a.x / b, a.y / b, a.z / b, a.w / b};
+    return (struct tuple) {a.x / b, a.y / b, a.z / b, a.w};
 }
 
 double tuple_mag(struct tuple a) {
@@ -89,6 +89,7 @@ struct tuple tuple_cross(struct tuple a, struct tuple b) {
     c.x = a.y * b.z - b.y * a.z;
     c.y = b.x * a.z - a.x * b.z;
     c.z = a.x * b.y - b.x * a.y;
+    c.w = 0;
 
     return c;
 }

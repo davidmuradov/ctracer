@@ -1,6 +1,9 @@
 #ifndef INCLUDES_INTERSECTION_H
 #define INCLUDES_INTERSECTION_H
 
+#include "tuple.h"
+#include "ray.h"
+
 typedef enum {UNKNOWN_OBJECT, SPHERE, PLANE, CUBE, CYLINDER, GROUP, TRIANGLE, CSG} t_object;
 
 #define INIT_MAX_INTERSECTIONS	2
@@ -14,6 +17,15 @@ struct intersection_list {
     int max_nb_intersections;
     int nb_intersections;
     struct intersection* list;
+};
+
+struct precompute {
+    double t;
+    void* object;
+    struct tuple point;
+    struct tuple eyev;
+    struct tuple normalv;
+    int inside;
 };
 
 struct intersection
@@ -33,5 +45,8 @@ intersection_clear_intersection_list(struct intersection_list* inter_list);
 
 struct intersection
 intersection_hit(struct intersection_list* inter_list);
+
+struct precompute
+intersection_prepare_computations(struct intersection* inter, struct ray* ray);
 
 #endif

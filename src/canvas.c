@@ -3,19 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct canvas canvas_new(void) {
+struct canvas canvas_new(int width, int height) {
     struct canvas c;
-    c.height = CANVAS_HEIGHT;
-    c.width = CANVAS_WIDTH;
+    c.height = height;
+    c.width = width;
     c.grid = calloc(c.height * c.width, sizeof(struct tuple));
     if (!c.grid) {
 	fprintf(stderr, "Failed to allocate memory for canvas\n");
 	exit(1);
     }
 
-    for (int i = 0; i < CANVAS_HEIGHT; i++)
-	for (int j = 0; j < CANVAS_WIDTH; j++)
-	    c.grid[INDEX(i, j)].w = 2;
+    for (int i = 0; i < c.height; i++)
+	for (int j = 0; j < c.width; j++)
+	    c.grid[INDEX(i, j, c.width)].w = 2;
 
     return c;
 }
@@ -30,7 +30,7 @@ void canvas_write_pixel(struct canvas* c, int i, int j, struct tuple color) {
 	exit(1);
     }
 
-    c->grid[INDEX(i, j)] = color;
+    c->grid[INDEX(i, j, c->width)] = color;
 }
 
 void canvas_to_ppm(struct canvas* c) {
@@ -44,19 +44,19 @@ void canvas_to_ppm(struct canvas* c) {
 	exit(1);
     }
 
-    fprintf(f, "P3\n%d %d\n255\n", CANVAS_WIDTH, CANVAS_HEIGHT);
-    for (int i = 0; i < CANVAS_HEIGHT; i++) {
-	for (int j = 0; j < CANVAS_WIDTH; j++) {
-	    ri = (int) (scale * c->grid[INDEX(i, j)].x);
+    fprintf(f, "P3\n%d %d\n255\n", c->width, c->height);
+    for (int i = 0; i < c->height; i++) {
+	for (int j = 0; j < c->width; j++) {
+	    ri = (int) (scale * c->grid[INDEX(i, j, c->width)].x);
 	    if (ri > 255)
 		ri = 255;
-	    gi = (int) (scale * c->grid[INDEX(i, j)].y);
+	    gi = (int) (scale * c->grid[INDEX(i, j, c->width)].y);
 	    if (gi > 255)
 		gi = 255;
-	    bi = (int) (scale * c->grid[INDEX(i, j)].z);
+	    bi = (int) (scale * c->grid[INDEX(i, j, c->width)].z);
 	    if (bi > 255)
 		bi = 255;
-	    if (j < CANVAS_WIDTH - 1)
+	    if (j < c->width - 1)
 		fprintf(f, "%d %d %d ", ri, gi, bi);
 	    else
 		fprintf(f, "%d %d %d\n", ri, gi, bi);

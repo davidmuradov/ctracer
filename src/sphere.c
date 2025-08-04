@@ -5,6 +5,8 @@
 #include "ray.h"
 #include "tuple.h"
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 static int UNIQUE_ID = 0;
 
@@ -28,7 +30,14 @@ struct intersection_list
 sphere_intersect_ray(struct sphere* s, struct ray* r) {
     struct matrix4 inv_transform;
     int inverted = matrix_inverse_matrix4(s->default_transformation, &inv_transform);
-    struct ray r2 = ray_transform_ray(*r, inv_transform);
+    struct ray r2;
+    if (inverted)
+	r2 = ray_transform_ray(*r, inv_transform);
+    else {
+	fprintf(stderr, "Matrix is non invertible\n");
+	exit(1);
+	r2 = ray_transform_ray(*r, s->default_transformation);
+    }
     struct intersection_list inter_list = intersection_new_intersection_list();
     struct tuple sphere_to_ray = tuple_sub(r2.o, s->o);
     double a = tuple_dot(r2.dir, r2.dir);
@@ -77,8 +86,15 @@ sphere_set_transform(struct sphere* s, struct matrix4 m) {
 struct tuple
 sphere_normal_at(struct sphere* s, struct tuple p) {
     struct matrix4 s_inv_transf;
-    matrix_inverse_matrix4(s->default_transformation, &s_inv_transf);
-    struct tuple o_point = matrix_mult_matrix4_tuple(s_inv_transf, p);
+    struct tuple o_point;
+    int inverted = matrix_inverse_matrix4(s->default_transformation, &s_inv_transf);
+    if (inverted)
+	o_point = matrix_mult_matrix4_tuple(s_inv_transf, p);
+    else {
+	fprintf(stderr, "Matrix is non invertible\n");
+	exit(1);
+	o_point = matrix_mult_matrix4_tuple(s->default_transformation, p);
+    }
     struct tuple o_normal = tuple_sub(o_point, s->o); // or (0,0,0), to be determined
     struct tuple w_normal = matrix_mult_matrix4_tuple(matrix_transpose4(s_inv_transf), o_normal);
     w_normal.w = 0;
