@@ -2,6 +2,7 @@
 #include "ct_math.h"
 #include "intersection.h"
 #include "lights.h"
+#include "ray.h"
 #include "sphere.h"
 #include "tuple.h"
 #include <stdio.h>
@@ -191,11 +192,14 @@ world_shade_hit(struct world* world, struct precompute* comps) {
     struct sphere* obj = (struct sphere*) comps->object;
     struct material mat = obj->material;
     struct tuple color = tuple_new_color(0, 0, 0);
+    int shadowed = 0;
 
-    for (int i = 0; i < world->nb_lights; i++)
+    for (int i = 0; i < world->nb_lights; i++) {
+	shadowed = world_is_shadowed(world, i, comps->over_point);
 	color = tuple_add(color, lights_lighting(mat, comps->point,
 		    *(struct point_light*) world->light_list[i], comps->eyev,
-		    comps->normalv));
+		    comps->normalv, shadowed));
+    }
 
     return color;
 }
@@ -216,4 +220,22 @@ world_color_at(struct world* world, struct ray* ray) {
     intersection_clear_intersection_list(&list);
 
     return color;
+}
+
+int
+world_is_shadowed(struct world* world, int i, struct tuple point) {
+    struct point_light* l = (struct point_light*) world->light_list[i];
+    struct tuple v = tuple_sub(l->position, point);
+    double distance = tuple_mag(v);
+    struct tuple direction = tuple_normalize(v);
+    int is_shadowed = 0;
+
+    struct ray r = ray_new_ray(point, direction);
+    struct intersection_list intersections = world_intersect_world(world, &r);
+    struct intersection hit = intersection_hit(&intersections);
+    intersection_clear_intersection_list(&intersections);
+    if (hit.t < distance && hit.object != NULL)
+	return is_shadowed = 1;
+
+    return is_shadowed;
 }

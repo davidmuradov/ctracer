@@ -26,6 +26,8 @@ struct precompute {
     struct tuple eyev;
     struct tuple normalv;
     int inside;
+    int in_shadow;
+    struct tuple over_point;
 };
 
 struct intersection

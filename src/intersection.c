@@ -1,4 +1,5 @@
 #include "../includes/intersection.h"
+#include "ct_math.h"
 #include "ray.h"
 #include "sphere.h"
 #include "tuple.h"
@@ -104,6 +105,7 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray) {
     comps.point = ray_position_at(ray, comps.t);
     comps.eyev = tuple_scalar_mult(ray->dir, -1);
     comps.normalv = sphere_normal_at((struct sphere*) comps.object, comps.point);
+    comps.in_shadow = 0;
 
     if (tuple_dot(comps.normalv, comps.eyev) < 0) {
 	comps.inside = 1;
@@ -111,6 +113,8 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray) {
     }
     else
 	comps.inside = 0;
+
+    comps.over_point = tuple_add(comps.point, tuple_scalar_mult(comps.normalv, EPSILON));
 
     return comps;
 }
