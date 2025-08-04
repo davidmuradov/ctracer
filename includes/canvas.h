@@ -11,7 +11,7 @@
 #define CANVAS_HEIGHT		180
 #endif
 
-#define INDEX(i, j)		((i * CANVAS_WIDTH) + j)
+#define INDEX(i, j, w)		((i * w) + j)
 
 struct canvas {
     int width;
@@ -19,7 +19,7 @@ struct canvas {
     struct tuple* grid;
 };
 
-struct canvas canvas_new(void);
+struct canvas canvas_new(int width, int height);
 
 void canvas_write_pixel(struct canvas* c, int i, int j, struct tuple color);
 

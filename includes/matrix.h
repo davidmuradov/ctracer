@@ -93,4 +93,6 @@ struct matrix4 matrix_new_rotate_z(double a);
 
 struct matrix4 matrix_new_shearing(double xy, double xz, double yx, double yz, double zx, double zy);
 
+struct matrix4 matrix_view_transform(struct tuple from, struct tuple to, struct tuple up);
+
 #endif

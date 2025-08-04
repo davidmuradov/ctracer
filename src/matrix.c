@@ -1,5 +1,6 @@
 #include "../includes/matrix.h"
 #include "ct_math.h"
+#include "tuple.h"
 #include <math.h>
 
 struct row4 matrix_new_row4(double a, double b, double c, double d) {
@@ -415,4 +416,19 @@ struct matrix4 matrix_new_shearing(double xy, double xz, double yx, double yz, d
     struct row4 r3 = matrix_new_row4(zx,zy,1,0);
     struct row4 r4 = matrix_new_row4(0,0,0,1);
     return matrix_new_matrix4(r1, r2, r3, r4);
+}
+
+struct matrix4 matrix_view_transform(struct tuple from, struct tuple to, struct tuple up) {
+    struct tuple forward = tuple_normalize(tuple_sub(to, from));
+    struct tuple upn = tuple_normalize(up);
+    struct tuple left = tuple_cross(forward, upn);
+    struct tuple true_up = tuple_cross(left, forward);
+
+    struct row4 r1 = matrix_new_row4(left.x, left.y, left.z, 0);
+    struct row4 r2 = matrix_new_row4(true_up.x, true_up.y, true_up.z, 0);
+    struct row4 r3 = matrix_new_row4(-forward.x, -forward.y, -forward.z, 0);
+    struct row4 r4 = matrix_new_row4(0, 0, 0, 1);
+    struct matrix4 orientation = matrix_new_matrix4(r1, r2, r3, r4);
+
+    return matrix_mult_matrix4(orientation, matrix_new_translation4(-from.x, -from.y, -from.z));
 }
