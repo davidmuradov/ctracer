@@ -6,3 +6,7 @@
 
 ## Chapter 6
 ![Final render Chapter 6](./out/chap6.png "Final render Chapter 6")
+
+
+## Chapter 7
+![Final render Chapter 7](./out/chap7.png "Final render Chapter 7")

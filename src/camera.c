@@ -34,11 +34,11 @@ camera_new_camera(int hsize, int vsize, double fov) {
 }
 
 struct ray
-camera_ray_for_pixel(struct camera* camera, int x, int y) {
-    double xoffset = ((double) x + 0.5) * camera->pixel_size;
-    double yoffset = ((double) y + 0.5) * camera->pixel_size;
-    double world_x = camera->half_width - xoffset;
-    double world_y = camera->half_height - yoffset;
+camera_ray_for_pixel(struct camera* camera, int i, int j) {
+    double ioffset = ((double) i + 0.5) * camera->pixel_size;
+    double joffset = ((double) j + 0.5) * camera->pixel_size;
+    double world_x = camera->half_width - joffset;
+    double world_y = camera->half_height - ioffset;
 
     struct matrix4 inv_transform;
     int su = matrix_inverse_matrix4(camera->transform, &inv_transform);

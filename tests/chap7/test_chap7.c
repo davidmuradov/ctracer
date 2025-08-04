@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
     assert(ctm_floats_equal(cam.pixel_size, 0.01));
 
     cam = camera_new_camera(201, 101, PI/2);
-    r = camera_ray_for_pixel(&cam, 100, 50);
+    r = camera_ray_for_pixel(&cam, 50, 100); // 100, 50 for author is 50, 100 for me
     assert(tuple_equals(r.o, tuple_new_point(0, 0, 0)));
     assert(tuple_equals(r.dir, tuple_new_vector(0, 0, -1)));
 
@@ -169,9 +169,9 @@ int main(int argc, char *argv[]) {
     assert(tuple_equals(r.dir, tuple_new_vector(0.66519, 0.33259, -0.66851)));
 
     cam.transform = matrix_mult_matrix4(matrix_new_rotate_y(PI/4), matrix_new_translation4(0, -2, 5));
-    r = camera_ray_for_pixel(&cam, 100, 50);
+    r = camera_ray_for_pixel(&cam, 50, 100);
     assert(tuple_equals(r.o, tuple_new_point(0, 2, -5)));
-    assert(tuple_equals(r.dir, tuple_new_vector(sqrt(2)/2, 0, -sqrt(2)/2)));
+    assert(tuple_equals(r.dir, tuple_new_vector(sqrt(2)/2, 0, -sqrt(2)/2))); // 100, 50 for author is 50, 100 for me
 
     w = world_new_world();
     light = lights_new_point_light(tuple_new_point(-10, 10, -10),
@@ -238,10 +238,31 @@ static void chap7_render(void) {
     // Middle sphere
     struct sphere s4 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
     transform = matrix_new_translation4(-0.5, 1, 0.5);
+    sphere_set_transform(&s4, transform);
     sphere_set_material(&s4, materials_new_material());
-    s4.material.color = tuple_new_color(0.1, 1, 0.5);
-    s4.material.specular = 0.3;
+    s4.material.color = tuple_new_color(163./255, 190./255, 140./255);
     s4.material.diffuse = 0.7;
+    s4.material.specular = 0.3;
+
+    // Right sphere
+    struct sphere s5 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
+    transform = matrix_new_scaling4(0.5, 0.5, 0.5);
+    transform = matrix_mult_matrix4(matrix_new_translation4(1.5, 0.5, -0.5), transform);
+    sphere_set_transform(&s5, transform);
+    sphere_set_material(&s5, materials_new_material());
+    s5.material.color = tuple_new_color(208./255, 135./255, 112./255);
+    s5.material.diffuse = 0.7;
+    s5.material.specular = 0.8;
+
+    // Left sphere
+    struct sphere s6 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
+    transform = matrix_new_scaling4(0.33, 0.33, 0.33);
+    transform = matrix_mult_matrix4(matrix_new_translation4(-1.5, 0.33, -0.75), transform);
+    sphere_set_transform(&s6, transform);
+    sphere_set_material(&s6, materials_new_material());
+    s6.material.color = tuple_new_color(180./255, 142./255, 173./255);
+    s6.material.diffuse = 0.7;
+    s6.material.specular = 0.5;
 
     // World
     struct world* world = world_new_world();
@@ -249,12 +270,16 @@ static void chap7_render(void) {
     world_add_sphere(world, &s2);
     world_add_sphere(world, &s3);
     world_add_sphere(world, &s4);
+    world_add_sphere(world, &s5);
+    world_add_sphere(world, &s6);
     struct point_light light1 = lights_new_point_light(tuple_new_point(-10, 10, -10), tuple_new_color(1, 1, 1));
+    struct point_light light2 = lights_new_point_light(tuple_new_point(3, 10, 0), tuple_new_color(1, 1, 1));
     world_add_point_light(world, &light1);
+    world_add_point_light(world, &light2);
 
 
     // Camera and render
-    struct camera camera = camera_new_camera(320, 180, PI/3);
+    struct camera camera = camera_new_camera(1920, 1080, PI/3);
     struct tuple from = tuple_new_point(0, 1.5, -5);
     struct tuple to = tuple_new_point(0, 1, 0);
     struct tuple up = tuple_new_vector(0, 1, 0);
