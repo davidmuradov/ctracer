@@ -1,7 +1,9 @@
 #include "../includes/world.h"
 #include "ct_math.h"
+#include "cylinder.h"
 #include "intersection.h"
 #include "lights.h"
+#include "materials.h"
 #include "ray.h"
 #include "sphere.h"
 #include "tuple.h"
@@ -97,6 +99,60 @@ world_add_sphere(struct world* world, struct sphere* sphere) {
 }
 
 void
+world_add_plane(struct world* world, struct plane* plane) {
+    if (world->nb_objects < world->max_nb_objects) {
+	world->object_list[world->nb_objects] = (void*) plane;
+	world->nb_objects++;
+    }
+    else {
+	world->object_list = realloc(world->object_list, world->max_nb_objects * 2 * sizeof(void*));
+	if (!world->object_list) {
+	    fprintf(stderr, "Failed to allocate new memory for list of objects in world\n");
+	    exit(1);
+	}
+	world->max_nb_objects *= 2;
+	world->object_list[world->nb_objects] = (void*) plane;
+	world->nb_objects++;
+    }
+}
+
+void
+world_add_cube(struct world* world, struct cube* cube) {
+    if (world->nb_objects < world->max_nb_objects) {
+	world->object_list[world->nb_objects] = (void*) cube;
+	world->nb_objects++;
+    }
+    else {
+	world->object_list = realloc(world->object_list, world->max_nb_objects * 2 * sizeof(void*));
+	if (!world->object_list) {
+	    fprintf(stderr, "Failed to allocate new memory for list of objects in world\n");
+	    exit(1);
+	}
+	world->max_nb_objects *= 2;
+	world->object_list[world->nb_objects] = (void*) cube;
+	world->nb_objects++;
+    }
+}
+
+void
+world_add_cylinder(struct world* world, struct cylinder* cylinder) {
+    if (world->nb_objects < world->max_nb_objects) {
+	world->object_list[world->nb_objects] = (void*) cylinder;
+	world->nb_objects++;
+    }
+    else {
+	world->object_list = realloc(world->object_list, world->max_nb_objects * 2 * sizeof(void*));
+	if (!world->object_list) {
+	    fprintf(stderr, "Failed to allocate new memory for list of objects in world\n");
+	    exit(1);
+	}
+	world->max_nb_objects *= 2;
+	world->object_list[world->nb_objects] = (void*) cylinder;
+	world->nb_objects++;
+    }
+}
+
+void
 world_add_point_light(struct world* world, struct point_light* light) {
     if (world->nb_lights < world->max_nb_lights) {
 	world->light_list[world->nb_lights] = (void*) light;
@@ -143,11 +199,28 @@ world_intersect_world(struct world* world, struct ray* ray) {
     for (int i = 0; i < world->nb_objects; i++) {
 	current_object = world_get_object_at(world, i);
 	object_type = world_get_object_type(current_object);
-	if (object_type == SPHERE) {
-	    current_list = sphere_intersect_ray((struct sphere*) current_object, ray);
-	    for (int j = 0; j < current_list.nb_intersections; j++) {
-		intersection_add_intersection_to_list(&full_list, current_list.list[j]);
-	    }
+	switch (object_type) {
+	    case SPHERE:
+		current_list = sphere_intersect_ray((struct sphere*) current_object, ray);
+		for (int j = 0; j < current_list.nb_intersections; j++) {
+		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
+		}
+		break;
+	    case PLANE:
+		current_list = plane_intersect_ray((struct plane*) current_object, ray);
+		for (int j = 0; j < current_list.nb_intersections; j++) {
+		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
+		}
+		break;
+	    case CUBE:
+		// Cube intersection logic
+		break;
+	    case CYLINDER:
+		// Cylinder intersection logic
+		break;
+	    default:
+		// The rest will come later
+		break;
 	}
 	intersection_clear_intersection_list(&current_list);
     }
@@ -177,29 +250,52 @@ world_compare_intersections(const void* a, const void* b) {
 
 t_object
 world_get_object_type(void* object) {
-    t_object obj_type = UNKNOWN_OBJECT;
-    struct sphere* maybe_sphere = (struct sphere*) object;
-
-    if (maybe_sphere->type == SPHERE) {
-	return SPHERE;
-    }
-
-    return obj_type;
+    struct sphere* obj = (struct sphere*) object;
+    return obj->type;
 }
 
 struct tuple
 world_shade_hit(struct world* world, struct precompute* comps) {
-    struct sphere* obj = (struct sphere*) comps->object;
-    struct material mat = obj->material;
+    t_object obj_type = world_get_object_type(comps->object);
+    struct material mat;
+    struct sphere* maybe_sphere = (struct sphere*) comps->object;
+    struct plane* maybe_plane = (struct plane*) comps->object;
+    struct cube* maybe_cube = (struct cube*) comps->object;
+    struct cylinder* maybe_cylinder = (struct cylinder*) comps->object;
+
     struct tuple color = tuple_new_color(0, 0, 0);
     int shadowed = 0;
 
-    for (int i = 0; i < world->nb_lights; i++) {
-	shadowed = world_is_shadowed(world, i, comps->over_point);
-	color = tuple_add(color, lights_lighting(mat, comps->point,
-		    *(struct point_light*) world->light_list[i], comps->eyev,
-		    comps->normalv, shadowed));
+    switch (obj_type) {
+	case SPHERE:
+	    mat = maybe_sphere->material;
+	    for (int i = 0; i < world->nb_lights; i++) {
+		shadowed = world_is_shadowed(world, i, comps->over_point);
+		color = tuple_add(color, lights_lighting_sphere(mat, comps->point,
+			    *(struct point_light*) world->light_list[i], comps->eyev,
+			    comps->normalv, shadowed));
+	    }
+	    break;
+	case PLANE:
+	    mat = maybe_plane->material;
+	    for (int i = 0; i < world->nb_lights; i++) {
+		shadowed = world_is_shadowed(world, i, comps->over_point);
+		color = tuple_add(color, lights_lighting_sphere(mat, comps->point,
+			    *(struct point_light*) world->light_list[i], comps->eyev,
+			    comps->normalv, shadowed));
+	    }
+	    break;
+	case CUBE:
+	    mat = maybe_cube->material;
+	    break;
+	case CYLINDER:
+	    mat = maybe_cylinder->material;
+	    break;
+	default:
+	    mat = materials_new_material();
+	    break;
     }
+
 
     return color;
 }

@@ -5,8 +5,7 @@
 #include "materials.h"
 #include "matrix.h"
 #include "ray.h"
-
-#define UNDEF_TIME	(-9999)
+#include "ct_math.h"
 
 struct sphere {
     t_object type;
