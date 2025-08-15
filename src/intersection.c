@@ -3,6 +3,7 @@
 #include "ray.h"
 #include "sphere.h"
 #include "tuple.h"
+#include "world.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -104,7 +105,27 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray) {
     comps.object = inter->object;
     comps.point = ray_position_at(ray, comps.t);
     comps.eyev = tuple_scalar_mult(ray->dir, -1);
-    comps.normalv = sphere_normal_at((struct sphere*) comps.object, comps.point);
+
+    // Get object type
+    t_object obj_type = world_get_object_type(inter->object);
+
+    switch (obj_type) {
+	case SPHERE:
+	    comps.normalv = sphere_normal_at((struct sphere*) comps.object, comps.point);
+	    break;
+	case PLANE:
+	    // Plane normalv calculation
+	    break;
+	case CUBE:
+	    // Cube normalv calculation
+	    break;
+	case CYLINDER:
+	    // Cylinder normalv calculation
+	    break;
+	default:
+	    break;
+    }
+
     comps.in_shadow = 0;
 
     if (tuple_dot(comps.normalv, comps.eyev) < 0) {
