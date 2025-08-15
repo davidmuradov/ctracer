@@ -1,12 +1,15 @@
 #ifndef INCLUDES_CANVAS_H
 #define INCLUDES_CANVAS_H
 
-#define HIGH_RES	1
+#define HIGH_RES	2
 
-#if HIGH_RES
+#if HIGH_RES == 2
+#define CANVAS_WIDTH		3840
+#define CANVAS_HEIGHT		2160
+#elif HIGH_RES == 1
 #define CANVAS_WIDTH		1920
 #define CANVAS_HEIGHT		1080
-#else
+#elif HIGH_RES == 0
 #define CANVAS_WIDTH		320
 #define CANVAS_HEIGHT		180
 #endif

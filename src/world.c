@@ -207,7 +207,10 @@ world_intersect_world(struct world* world, struct ray* ray) {
 		}
 		break;
 	    case PLANE:
-		// Plane intersection logic
+		current_list = plane_intersect_ray((struct plane*) current_object, ray);
+		for (int j = 0; j < current_list.nb_intersections; j++) {
+		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
+		}
 		break;
 	    case CUBE:
 		// Cube intersection logic
@@ -275,6 +278,12 @@ world_shade_hit(struct world* world, struct precompute* comps) {
 	    break;
 	case PLANE:
 	    mat = maybe_plane->material;
+	    for (int i = 0; i < world->nb_lights; i++) {
+		shadowed = world_is_shadowed(world, i, comps->over_point);
+		color = tuple_add(color, lights_lighting_sphere(mat, comps->point,
+			    *(struct point_light*) world->light_list[i], comps->eyev,
+			    comps->normalv, shadowed));
+	    }
 	    break;
 	case CUBE:
 	    mat = maybe_cube->material;

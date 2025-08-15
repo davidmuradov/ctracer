@@ -9,6 +9,8 @@ struct plane {
     int id;
     struct matrix4 default_transformation;
     struct material material;
+    int xs_count;
+    double xs[1];
 };
 
 struct plane

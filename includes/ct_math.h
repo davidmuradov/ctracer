@@ -4,6 +4,8 @@
 #define EPSILON		(0.00001)
 #define PI		(3.141592654)
 
+#define UNDEF_TIME	(-9999)
+
 double ctm_abs(double a);
 
 int ctm_floats_equal(const double a, const double b);

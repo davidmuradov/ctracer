@@ -114,7 +114,7 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray) {
 	    comps.normalv = sphere_normal_at((struct sphere*) comps.object, comps.point);
 	    break;
 	case PLANE:
-	    // Plane normalv calculation
+	    comps.normalv = plane_normal_at((struct plane*) comps.object, comps.point);
 	    break;
 	case CUBE:
 	    // Cube normalv calculation
