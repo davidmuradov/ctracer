@@ -8,26 +8,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int UNIQUE_ID = 0;
+static int UNIQUE_ID_SPHERE = 0;
 
 struct sphere
 sphere_new_sphere(struct tuple o, double r) {
     struct sphere s;
     s.default_transformation = matrix_make_identity4();
     s.type = SPHERE;
-    s.id = UNIQUE_ID;
+    s.id = UNIQUE_ID_SPHERE;
     s.o = o;
     s.radius = r;
     s.material = materials_new_material();
     s.xs_count = 0;
     s.xs[0] = UNDEF_TIME;
     s.xs[1] = UNDEF_TIME;
-    UNIQUE_ID++;
+    UNIQUE_ID_SPHERE++;
     return s;
 }
 
 struct intersection_list
 sphere_intersect_ray(struct sphere* s, struct ray* r) {
+
+    /* -- COMMON TO ALL SHAPES -- */
     struct matrix4 inv_transform;
     int inverted = matrix_inverse_matrix4(s->default_transformation, &inv_transform);
     struct ray r2;
@@ -38,6 +40,7 @@ sphere_intersect_ray(struct sphere* s, struct ray* r) {
 	exit(1);
 	r2 = ray_transform_ray(*r, s->default_transformation);
     }
+    /* -- END COMMON TO ALL SHAPES -- */
     struct intersection_list inter_list = intersection_new_intersection_list();
     struct tuple sphere_to_ray = tuple_sub(r2.o, s->o);
     double a = tuple_dot(r2.dir, r2.dir);
@@ -85,6 +88,8 @@ sphere_set_transform(struct sphere* s, struct matrix4 m) {
 
 struct tuple
 sphere_normal_at(struct sphere* s, struct tuple p) {
+
+    /* -- COMMON TO ALL SHAPES -- */
     struct matrix4 s_inv_transf;
     struct tuple o_point;
     int inverted = matrix_inverse_matrix4(s->default_transformation, &s_inv_transf);
@@ -95,9 +100,14 @@ sphere_normal_at(struct sphere* s, struct tuple p) {
 	exit(1);
 	o_point = matrix_mult_matrix4_tuple(s->default_transformation, p);
     }
+    /* -- END COMMON TO ALL SHAPES -- */
     struct tuple o_normal = tuple_sub(o_point, s->o); // or (0,0,0), to be determined
+
+    /* -- COMMON TO ALL SHAPES -- */
     struct tuple w_normal = matrix_mult_matrix4_tuple(matrix_transpose4(s_inv_transf), o_normal);
     w_normal.w = 0;
+    /* -- END COMMON TO ALL SHAPES -- */
+
     return tuple_normalize(w_normal);
 }
 

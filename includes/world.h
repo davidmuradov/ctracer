@@ -4,6 +4,9 @@
 #include "intersection.h"
 #include "lights.h"
 #include "sphere.h"
+#include "plane.h"
+#include "cube.h"
+#include "cylinder.h"
 
 struct world;
 
@@ -36,6 +39,15 @@ world_get_light_at(struct world* world, int i);
 
 void
 world_add_sphere(struct world* world, struct sphere* sphere);
+
+void
+world_add_plane(struct world* world, struct plane* plane);
+
+void
+world_add_cube(struct world* world, struct cube* cube);
+
+void
+world_add_cylinder(struct world* world, struct cylinder* cylinder);
 
 void
 world_add_point_light(struct world* world, struct point_light* light);
