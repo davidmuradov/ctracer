@@ -97,169 +97,126 @@ int main(int argc, char *argv[]) {
 
 static void chap10_render(void) {
 
+    // Nord colorscheme colors
+    const struct tuple NORD0 = tuple_new_color(46./255, 52./255, 64./255); // Dark gray
+    const struct tuple NORD1 = tuple_new_color(59./255, 66./255, 82./255);
+    const struct tuple NORD2 = tuple_new_color(67./255, 76./255, 94./255);
+    const struct tuple NORD3 = tuple_new_color(76./255, 86./255, 106./255); // Light gray
+
+    const struct tuple NORD7 = tuple_new_color(143./255, 188./255, 187./255); // Greenish
+    const struct tuple NORD8 = tuple_new_color(136./255, 192./255, 208./255);
+    const struct tuple NORD9 = tuple_new_color(129./255, 161./255, 193./255);
+    const struct tuple NORD10 = tuple_new_color(94./255, 129./255, 172./255); // Dark blue
+
+    const struct tuple NORD11 = tuple_new_color(191./255, 97./255, 106./255); // Red
+    const struct tuple NORD12 = tuple_new_color(208./255, 135./255, 112./255); // Orange
+    const struct tuple NORD13 = tuple_new_color(235./255, 203./255, 139./255); // Yellow
+    const struct tuple NORD14 = tuple_new_color(163./255, 190./255, 140./255); // Green
+    const struct tuple NORD15 = tuple_new_color(180./255, 142./255, 173./255); // Purple
+
     // Floor
     struct plane floor = plane_new_plane();
-    floor.material.color = tuple_new_color(76./255, 86./255, 106./255);
-    floor.material.ambient = 0.1;
-    floor.material.specular = 0;
-    floor.material.diffuse = 0.55;
-    floor.default_transformation = matrix_new_rotate_x(-PI/2);
-    floor.default_transformation = matrix_mult_matrix4(matrix_new_translation4(0, 0, 5), floor.default_transformation);
-    //floor.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), tuple_new_color(76./255, 86./255, 106./255));
-    //floor.material.pattern = pattern_ring(tuple_new_color(1, 1, 1), tuple_new_color(76./255, 86./255, 106./255));
-    floor.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), tuple_new_color(76./255, 86./255, 106./255));
-    //floor.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    floor.material.ambient = 0.75;
+    floor.material.specular = 0.2;
+    floor.material.diffuse = 0.1;
+    floor.material.shininess = 50;
+    floor.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD3);
+    floor.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
 
     struct sphere s1 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s1.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 1, 3), s1.default_transformation);
-    s1.default_transformation = matrix_mult_matrix4(matrix_new_scaling4(3, 3, 3), s1.default_transformation);
-    s1.material.color = tuple_new_color(235./255, 203./255, 139./255);
-    s1.material.diffuse = 1;
-    s1.material.ambient = 0.1;
-    s1.material.specular = 0.1;
-    s1.material.shininess = 5;
-    //s1.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), tuple_new_color(76./255, 86./255, 106./255));
-    //s1.material.pattern = pattern_gradient(tuple_new_color(1, 1, 1), tuple_new_color(76./255, 86./255, 106./255));
-    s1.material.pattern = pattern_ring(tuple_new_color(1, 1, 1), tuple_new_color(76./255, 86./255, 106./255));
-    //s1.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
-    //s1.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s1.material.pattern.default_transformation);
-    s1.material.pattern.default_transformation = matrix_new_scaling4(0.1, 0.1, 0.1);
-    s1.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_x(PI/2), s1.material.pattern.default_transformation);
-
-    /*
-    // Backwall
-    struct plane back_wall = plane_new_plane();
-    back_wall.default_transformation = matrix_new_rotate_x(-PI/2);
-    back_wall.default_transformation = matrix_mult_matrix4(matrix_new_translation4(0, 0, 5), back_wall.default_transformation);
-    back_wall.material.color = tuple_new_color(76./255, 86./255, 106./255);
-    back_wall.material.ambient = 0.1;
-    back_wall.material.specular = 0;
-    back_wall.material.diffuse = 0.55;
-
-    // Ceiling
-    struct plane ceiling = plane_new_plane();
-    ceiling.default_transformation = matrix_new_translation4(0, 4, 0);
-    ceiling.material.color = tuple_new_color(76./255, 86./255, 106./255);
-    ceiling.material.ambient = 0.6;
-    ceiling.material.specular = 0;
-    ceiling.material.diffuse = 0.9;
-
-    // Leftwall
-    struct plane left_wall = plane_new_plane();
-    left_wall.default_transformation = matrix_new_rotate_z(-PI/2);
-    left_wall.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-5, 0, 0), left_wall.default_transformation);
-    left_wall.material.color = tuple_new_color(76./255, 86./255, 106./255);
-    left_wall.material.ambient = 0.1;
-    left_wall.material.specular = 0;
-    left_wall.material.diffuse = 0.55;
-
-    // Rightwall
-    struct plane right_wall = plane_new_plane();
-    right_wall.default_transformation = matrix_new_rotate_z(PI/2);
-    right_wall.default_transformation = matrix_mult_matrix4(matrix_new_translation4(5, 0, 0), right_wall.default_transformation);
-    right_wall.material.color = tuple_new_color(76./255, 86./255, 106./255);
-    right_wall.material.ambient = 0.1;
-    right_wall.material.specular = 0;
-    right_wall.material.diffuse = 0.55;
-
-
-    // Spheres
-    struct sphere s1 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s1.default_transformation = matrix_mult_matrix4(matrix_new_translation4(0, 1, 3), s1.default_transformation);
-    s1.material.color = tuple_new_color(235./255, 203./255, 139./255);
-    s1.material.diffuse = 1;
-    s1.material.ambient = 0.1;
-    s1.material.specular = 0.1;
-    s1.material.shininess = 5;
+    s1.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 1, 1), s1.default_transformation);
+    s1.material.diffuse = 0.7;
+    s1.material.ambient = 0.75;
+    s1.material.specular = 0.6;
+    s1.material.shininess = 100;
+    s1.material.pattern = pattern_gradient(NORD15, NORD11);
+    s1.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    s1.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s1.material.pattern.default_transformation);
+    s1.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s1.material.pattern.default_transformation);
 
     struct sphere s2 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s2.default_transformation = matrix_new_scaling4(0.5, 0.5, 0.5);
-    s2.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-1.5, 0.5, 1), s2.default_transformation);
-    s2.material.color = tuple_new_color(191./255, 97./255, 106./255);
-    s2.material.diffuse = 1;
-    s2.material.ambient = 0.1;
-    s2.material.specular = 0.1;
-    s2.material.shininess = 5;
+    s2.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-1, 1, -3), s2.default_transformation);
+    s2.material.diffuse = 0.7;
+    s2.material.ambient = 0.75;
+    s2.material.specular = 0.6;
+    s2.material.shininess = 100;
+    s2.material.pattern = pattern_gradient(NORD10, NORD7);
+    s2.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    s2.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s2.material.pattern.default_transformation);
+    s2.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s2.material.pattern.default_transformation);
 
     struct sphere s3 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s3.default_transformation = matrix_new_scaling4(0.75, 0.75, 0.75);
-    s3.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1.75, 0.75, 1), s3.default_transformation);
-    s3.material.color = tuple_new_color(208./255, 135./255, 112./255);
-    s3.material.diffuse = 1;
-    s3.material.ambient = 0.1;
-    s3.material.specular = 0.1;
-    s3.material.shininess = 5;
+    s3.default_transformation = matrix_mult_matrix4(matrix_new_translation4(3, 1, -1), s3.default_transformation);
+    s3.material.diffuse = 0.7;
+    s3.material.ambient = 0.75;
+    s3.material.specular = 0.6;
+    s3.material.shininess = 100;
+    s3.material.pattern = pattern_gradient(NORD13, NORD12);
+    s3.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    s3.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s3.material.pattern.default_transformation);
+    s3.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s3.material.pattern.default_transformation);
 
     struct sphere s4 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s4.default_transformation = matrix_new_scaling4(0.35, 0.35, 0.35);
-    s4.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1.25, 0.35, -3), s4.default_transformation);
-    s4.material.color = tuple_new_color(163./255, 190./255, 140./255);
-    s4.material.diffuse = 1;
-    s4.material.ambient = 0.1;
-    s4.material.specular = 0.1;
-    s4.material.shininess = 10;
+    s4.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-5, 1, 3), s4.default_transformation);
+    s4.material.diffuse = 0.7;
+    s4.material.ambient = 0.75;
+    s4.material.specular = 0.6;
+    s4.material.shininess = 100;
+    s4.material.pattern = pattern_gradient(NORD9, NORD12);
+    s4.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    s4.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s4.material.pattern.default_transformation);
 
     struct sphere s5 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s5.default_transformation = matrix_new_scaling4(0.25, 0.25, 0.25);
-    s5.default_transformation = matrix_mult_matrix4(matrix_new_translation4(0, 0.25, -1), s5.default_transformation);
-    s5.material.color = tuple_new_color(180./255, 142./255, 173./255);
-    s5.material.diffuse = 1;
-    s5.material.ambient = 0.1;
-    s5.material.specular = 0.5;
-    s5.material.shininess = 10;
-
-    // Right sphere
-    struct sphere s5 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    transform = matrix_new_scaling4(0.5, 0.5, 0.5);
-    transform = matrix_mult_matrix4(matrix_new_translation4(1.5, 0.5, -0.5), transform);
-    sphere_set_transform(&s5, transform);
-    sphere_set_material(&s5, materials_new_material());
-    s5.material.color = tuple_new_color(208./255, 135./255, 112./255);
+    s5.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-1, 1, 5), s5.default_transformation);
     s5.material.diffuse = 0.7;
-    s5.material.specular = 0.8;
+    s5.material.ambient = 0.75;
+    s5.material.specular = 0.6;
+    s5.material.shininess = 100;
+    s5.material.pattern = pattern_gradient(NORD15, NORD14);
+    s5.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    s5.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s5.material.pattern.default_transformation);
 
-    // Left sphere
     struct sphere s6 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    transform = matrix_new_scaling4(0.33, 0.33, 0.33);
-    transform = matrix_mult_matrix4(matrix_new_translation4(-1.5, 0.33, -0.75), transform);
-    sphere_set_transform(&s6, transform);
-    sphere_set_material(&s6, materials_new_material());
-    s6.material.color = tuple_new_color(180./255, 142./255, 173./255);
+    s6.default_transformation = matrix_mult_matrix4(matrix_new_translation4(3, 1, 5), s6.default_transformation);
     s6.material.diffuse = 0.7;
-    s6.material.specular = 0.5;
-    s6.material.shininess = 300;
-    */
+    s6.material.ambient = 0.75;
+    s6.material.specular = 0.6;
+    s6.material.shininess = 100;
+    s6.material.pattern = pattern_gradient(NORD8, NORD11);
+    s6.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    s6.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s6.material.pattern.default_transformation);
+    s6.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/5), s6.material.pattern.default_transformation);
+
+    struct sphere s7 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
+    s7.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-3, 1, 1), s7.default_transformation);
+    s7.material.diffuse = 0.7;
+    s7.material.ambient = 0.75;
+    s7.material.specular = 0.6;
+    s7.material.shininess = 100;
+    s7.material.pattern = pattern_gradient(NORD0, NORD2);
+    s7.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    s7.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s7.material.pattern.default_transformation);
+    s7.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(-PI/3), s7.material.pattern.default_transformation);
 
     // World
     struct world* world = world_new_world();
     world_add_plane(world, &floor);
-    //world_add_plane(world, &back_wall);
-    //world_add_plane(world, &ceiling);
-    //world_add_plane(world, &left_wall);
-    //world_add_plane(world, &right_wall);
     world_add_sphere(world, &s1);
-    //world_add_sphere(world, &s2);
-    //world_add_sphere(world, &s3);
-    //world_add_sphere(world, &s4);
-    //world_add_sphere(world, &s5);
+    world_add_sphere(world, &s2);
+    world_add_sphere(world, &s3);
+    world_add_sphere(world, &s4);
+    world_add_sphere(world, &s5);
+    world_add_sphere(world, &s6);
+    world_add_sphere(world, &s7);
 
-    struct point_light light1 = lights_new_point_light(tuple_new_point(0, 0, -3), tuple_new_color(1, 1, 1));
-    //struct point_light light2 = lights_new_point_light(tuple_new_point(0, 2.05, 0), tuple_new_color(0.1, 0.1, 0.1));
-    //struct point_light light3 = lights_new_point_light(tuple_new_point(0, 3.79, -5), tuple_new_color(1, 1, 1));
-    //struct point_light light4 = lights_new_point_light(tuple_new_point(0.01, 3.8, -5), tuple_new_color(1, 1, 1));
-    //struct point_light light5 = lights_new_point_light(tuple_new_point(-0.01, 3.8, -5), tuple_new_color(1, 1, 1));
+    struct point_light light1 = lights_new_point_light(tuple_new_point(0, 100, 0), tuple_new_color(1, 1, 1));
     world_add_point_light(world, &light1);
-    //world_add_point_light(world, &light2);
-    //world_add_point_light(world, &light3);
-    //world_add_point_light(world, &light4);
-    //world_add_point_light(world, &light5);
-
 
     // Camera and render
     struct camera camera = camera_new_camera(CANVAS_WIDTH, CANVAS_HEIGHT, PI/3);
-    struct tuple from = tuple_new_point(0, 0, -3);
+    struct tuple from = tuple_new_point(-2, 6, -2);
     struct tuple to = tuple_new_point(0, 0, 0);
-    struct tuple up = tuple_new_vector(0, 1, 0);
+    struct tuple up = tuple_new_vector(0, 1.7, -0.3);
     camera.transform = matrix_view_transform(from, to, up);
 
     struct canvas canvas = camera_render(&camera, world);

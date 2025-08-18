@@ -197,7 +197,17 @@ struct tuple
 pattern_checker_at(struct pattern pattern, struct tuple point) {
     int x = floor(point.x) + floor(point.y) + floor(point.z);
     
-    if (ctm_floats_equal(fmod(x, 2), 0))
+    if (x % 2 == 0)
+	return pattern.color_a;
+
+    return pattern.color_b;
+}
+
+struct tuple
+pattern_checker_at_for_plane(struct pattern pattern, struct tuple point) {
+    int x = floor(point.x) + floor(point.z);
+    
+    if (x % 2 == 0)
 	return pattern.color_a;
 
     return pattern.color_b;
@@ -236,6 +246,9 @@ pattern_checker_at_object(struct pattern pattern, void* object, struct tuple wor
     struct matrix4 inv_pat;
     matrix_inverse_matrix4(pattern.default_transformation, &inv_pat); // Should check for inversion
     struct tuple pattern_point = matrix_mult_matrix4_tuple(inv_pat, obj_point);
+
+    if (obj_type == PLANE)
+	return pattern_checker_at_for_plane(pattern, pattern_point);
 
     return pattern_checker_at(pattern, pattern_point);
 }

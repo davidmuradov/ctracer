@@ -47,6 +47,9 @@ struct tuple
 pattern_checker_at(struct pattern pattern, struct tuple point);
 
 struct tuple
+pattern_checker_at_for_plane(struct pattern pattern, struct tuple point);
+
+struct tuple
 pattern_checker_at_object(struct pattern pattern, void* object, struct tuple world_point);
 
 #endif
