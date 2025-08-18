@@ -271,8 +271,8 @@ world_shade_hit(struct world* world, struct precompute* comps) {
 	    mat = maybe_sphere->material;
 	    for (int i = 0; i < world->nb_lights; i++) {
 		shadowed = world_is_shadowed(world, i, comps->over_point);
-		color = tuple_add(color, lights_lighting_sphere(mat, comps->point,
-			    *(struct point_light*) world->light_list[i], comps->eyev,
+		color = tuple_add(color, lights_lighting_sphere(mat, comps->object,
+			    *(struct point_light*) world->light_list[i], comps->point, comps->eyev,
 			    comps->normalv, shadowed));
 	    }
 	    break;
@@ -280,8 +280,8 @@ world_shade_hit(struct world* world, struct precompute* comps) {
 	    mat = maybe_plane->material;
 	    for (int i = 0; i < world->nb_lights; i++) {
 		shadowed = world_is_shadowed(world, i, comps->over_point);
-		color = tuple_add(color, lights_lighting_sphere(mat, comps->point,
-			    *(struct point_light*) world->light_list[i], comps->eyev,
+		color = tuple_add(color, lights_lighting_sphere(mat, comps->object,
+			    *(struct point_light*) world->light_list[i], comps->point, comps->eyev,
 			    comps->normalv, shadowed));
 	    }
 	    break;

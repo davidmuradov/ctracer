@@ -10,8 +10,8 @@
 #define CANVAS_WIDTH		1920
 #define CANVAS_HEIGHT		1080
 #elif HIGH_RES == 0
-#define CANVAS_WIDTH		320
-#define CANVAS_HEIGHT		180
+#define CANVAS_WIDTH		960
+#define CANVAS_HEIGHT		540
 #endif
 
 #define INDEX(i, j, w)		((i * w) + j)

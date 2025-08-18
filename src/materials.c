@@ -1,5 +1,6 @@
 #include "../includes/materials.h"
 #include "../includes/tuple.h"
+#include "pattern.h"
 
 struct material
 materials_new_material(void) {
@@ -9,5 +10,7 @@ materials_new_material(void) {
     m.diffuse = 0.9;
     m.specular = 0.9;
     m.shininess = 200.0;
+    m.pattern = (struct pattern) {0};
+    m.pattern.type = NO_PATTERN;
     return m;
 }

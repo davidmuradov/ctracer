@@ -20,3 +20,9 @@ The same scene from Chapter 7 was rendered with shadows using 2 point light sour
 ## Chapter 9
 A scene renderer with planes for the floor and the walls.
 ![Final render Chapter 9](./out/chap9.png "Final render Chapter 9")
+
+
+## Chapter 10
+Patterns. Only used gradient and checker patterns for this scene, but
+stripes and ring patterns are available too.
+![Final render Chapter 10](./out/chap10.png "Final render Chapter 10")
