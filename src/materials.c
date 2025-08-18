@@ -12,5 +12,6 @@ materials_new_material(void) {
     m.shininess = 200.0;
     m.pattern = (struct pattern) {0};
     m.pattern.type = NO_PATTERN;
+    m.reflective = 0;
     return m;
 }

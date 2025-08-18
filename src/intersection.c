@@ -136,6 +136,7 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray) {
 	comps.inside = 0;
 
     comps.over_point = tuple_add(comps.point, tuple_scalar_mult(comps.normalv, EPSILON));
+    comps.reflectv = sphere_reflect(ray->dir, comps.normalv); // Very bad function name
 
     return comps;
 }

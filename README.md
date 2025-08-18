@@ -26,3 +26,8 @@ A scene renderer with planes for the floor and the walls.
 Patterns. Only used gradient and checker patterns for this scene, but
 stripes and ring patterns are available too.
 ![Final render Chapter 10](./out/chap10.png "Final render Chapter 10")
+
+
+## Chapter 11
+Reflection and refraction. Scenes with reflection only :
+![Final renders Chapter 11](./out/chap11_1.png "Final renders Chapter 11")

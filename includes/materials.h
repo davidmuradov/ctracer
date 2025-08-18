@@ -11,6 +11,7 @@ struct material {
     double specular;
     double shininess;
     struct pattern pattern;
+    double reflective;
 };
 
 struct material

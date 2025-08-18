@@ -28,6 +28,7 @@ struct precompute {
     int inside;
     int in_shadow;
     struct tuple over_point;
+    struct tuple reflectv;
 };
 
 struct intersection

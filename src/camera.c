@@ -71,7 +71,7 @@ camera_render(struct camera* camera, struct world* world) {
     for (int i = 0; i < camera->vsize; i++) {
 	for (int j = 0; j < camera->hsize; j++) {
 	    ray = camera_ray_for_pixel(camera, i, j);
-	    color = world_color_at(world, &ray);
+	    color = world_color_at(world, &ray, MAX_RECUR_CALLS);
 	    canvas_write_pixel(&canvas, i, j, color);
 	}
     }
