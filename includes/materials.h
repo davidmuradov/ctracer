@@ -1,6 +1,7 @@
 #ifndef INCLUDES_MATERIALS_H
 #define INCLUDES_MATERIALS_H
 
+#include "pattern.h"
 #include "tuple.h"
 
 struct material {
@@ -9,6 +10,7 @@ struct material {
     double diffuse;
     double specular;
     double shininess;
+    struct pattern pattern;
 };
 
 struct material

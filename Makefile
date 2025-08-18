@@ -1,4 +1,4 @@
-CFLAGS = -g -Wall -Wextra -Wconversion -Wsign-conversion -Wpedantic -pedantic-errors -std=c99
+CFLAGS = -g -Wall -Wextra -Wpedantic -pedantic-errors -std=c99
 EXECDIR = Debug
 INCLUDES_PATH = includes
 SRC_PATH = src
@@ -44,6 +44,12 @@ test9: tests/chap9/*.c $(INCLUDES_PATH)/*.h
 
 test9_perf: tests/chap9/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -O3 -o Debug/test_chap9 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap9/test_chap9.c
+
+test10: tests/chap10/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -o Debug/test_chap10 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap10/test_chap10.c
+
+test10_perf: tests/chap10/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -O3 -o Debug/test_chap10 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap10/test_chap10.c
 
 .PHONY: clean
 clean:
