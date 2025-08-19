@@ -2,6 +2,7 @@
 #include "ct_math.h"
 #include "intersection.h"
 #include "matrix.h"
+#include "object_utils.h"
 #include "tuple.h"
 #include "world.h"
 #include <math.h>
@@ -30,7 +31,7 @@ pattern_test_at_object(struct pattern pattern, void* object, struct tuple world_
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
     t_object obj_type = world_get_object_type(object);
-    struct matrix4 transform;
+    struct matrix4 transform = object_utils_get_transform(object);
 
     switch (obj_type) {
 	case SPHERE:

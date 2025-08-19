@@ -14,4 +14,10 @@ struct cube {
 struct cube
 cube_new_cube(void);
 
+struct intersection_list
+cube_intersect_ray(struct cube* c, struct ray* r);
+
+struct tuple
+cube_normal_at(struct cube* c, struct tuple p);
+
 #endif

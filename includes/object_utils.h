@@ -2,6 +2,7 @@
 #define INCLUDES_OBJECT_UTILS_H
 
 #include "materials.h"
+#include "matrix.h"
 #include "world.h"
 #include "intersection.h"
 #include <stdlib.h>
@@ -11,6 +12,12 @@
  */
 struct material
 object_utils_get_material(const void* object);
+
+/**
+ * Returns the transform property of an object.
+ */
+struct matrix4
+object_utils_get_transform(const void* object);
 
 /**
  * Returns 1 if an object is included in a containers of size sz. Returns 0 otherwise.

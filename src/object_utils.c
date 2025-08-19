@@ -1,4 +1,5 @@
 #include "../includes/object_utils.h"
+#include "matrix.h"
 
 struct material
 object_utils_get_material(const void* object) {
@@ -28,6 +29,36 @@ object_utils_get_material(const void* object) {
     }
 
     return mat;
+}
+
+struct matrix4
+object_utils_get_transform(const void* object) {
+    t_object obj_type = world_get_object_type(object);
+    struct matrix4 transform;
+    struct sphere* maybe_sphere = (struct sphere*) object;
+    struct plane* maybe_plane = (struct plane*) object;
+    struct cube* maybe_cube = (struct cube*) object;
+    struct cylinder* maybe_cylinder = (struct cylinder*) object;
+
+    switch (obj_type) {
+	case SPHERE:
+	    transform = maybe_sphere->default_transformation;
+	    break;
+	case PLANE:
+	    transform = maybe_plane->default_transformation;
+	    break;
+	case CUBE:
+	    transform = maybe_cube->default_transformation;
+	    break;
+	case CYLINDER:
+	    transform = maybe_cylinder->default_transformation;
+	    break;
+	default:
+	    transform = matrix_make_identity4();
+	    break;
+    }
+
+    return transform;
 }
 
 int
