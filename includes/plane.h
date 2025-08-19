@@ -22,4 +22,10 @@ plane_normal_at(struct plane* plane, struct tuple point);
 struct intersection_list
 plane_intersect_ray(struct plane* plane, struct ray* r);
 
+void
+plane_add_transform(struct plane* p, struct matrix4 m);
+
+void
+plane_add_transform_to_pattern(struct plane* p, struct matrix4 m);
+
 #endif

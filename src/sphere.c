@@ -140,3 +140,13 @@ void
 sphere_set_material(struct sphere* s, struct material m) {
     s->material = m;
 }
+
+void
+sphere_add_transform(struct sphere* s, struct matrix4 m) {
+    s->default_transformation = matrix_mult_matrix4(m, s->default_transformation);
+}
+
+void
+sphere_add_transform_to_pattern(struct sphere* s, struct matrix4 m) {
+    s->material.pattern.default_transformation = matrix_mult_matrix4(m, s->material.pattern.default_transformation);
+}

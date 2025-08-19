@@ -29,5 +29,8 @@ stripes and ring patterns are available too.
 
 
 ## Chapter 11
-Reflection and refraction. Scenes with reflection only :
+Reflection and refraction. Scene with reflection only :
 ![Final renders Chapter 11](./out/chap11_1.png "Final renders Chapter 11")
+
+Scene with reflection and refraction :
+![Final renders Chapter 11](./out/chap11_2.png "Final renders Chapter 11")
