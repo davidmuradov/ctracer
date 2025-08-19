@@ -85,3 +85,13 @@ plane_intersect_ray(struct plane* plane, struct ray* r) {
 
     return inter_list;
 }
+
+void
+plane_add_transform(struct plane* p, struct matrix4 m) {
+    p->default_transformation = matrix_mult_matrix4(m, p->default_transformation);
+}
+
+void
+plane_add_transform_to_pattern(struct plane* p, struct matrix4 m) {
+    p->material.pattern.default_transformation = matrix_mult_matrix4(m, p->material.pattern.default_transformation);
+}

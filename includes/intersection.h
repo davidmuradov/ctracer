@@ -28,6 +28,10 @@ struct precompute {
     int inside;
     int in_shadow;
     struct tuple over_point;
+    struct tuple under_point;
+    struct tuple reflectv;
+    double n1;
+    double n2;
 };
 
 struct intersection
@@ -49,6 +53,9 @@ struct intersection
 intersection_hit(struct intersection_list* inter_list);
 
 struct precompute
-intersection_prepare_computations(struct intersection* inter, struct ray* ray);
+intersection_prepare_computations(struct intersection* inter, struct ray* ray, struct intersection_list* inter_list);
+
+double
+intersection_schlick(struct precompute* comps);
 
 #endif

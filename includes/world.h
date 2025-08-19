@@ -1,6 +1,8 @@
 #ifndef INCLUDES_WORLD_H
 #define INCLUDES_WORLD_H
 
+#define MAX_RECUR_CALLS	5
+
 #include "intersection.h"
 #include "lights.h"
 #include "sphere.h"
@@ -32,7 +34,7 @@ void*
 world_get_object_at(struct world* world, int i);
 
 t_object
-world_get_object_type(void* object);
+world_get_object_type(const void* object);
 
 void*
 world_get_light_at(struct world* world, int i);
@@ -56,12 +58,18 @@ struct intersection_list
 world_intersect_world(struct world* world, struct ray* ray);
 
 struct tuple
-world_shade_hit(struct world* world, struct precompute* comps);
+world_shade_hit(struct world* world, struct precompute* comps, int remaining_calls);
 
 struct tuple
-world_color_at(struct world* world, struct ray* ray);
+world_color_at(struct world* world, struct ray* ray, int remaining_calls);
 
 int
 world_is_shadowed(struct world* world, int i, struct tuple point);
+
+struct tuple
+world_reflected_color(struct world* world, struct precompute* comps, int remaining_calls);
+
+struct tuple
+world_refracted_color(struct world* world, struct precompute* comps, int remaining_calls);
 
 #endif

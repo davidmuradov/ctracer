@@ -51,6 +51,12 @@ test10: tests/chap10/*.c $(INCLUDES_PATH)/*.h
 test10_perf: tests/chap10/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -O3 -o Debug/test_chap10 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap10/test_chap10.c
 
+test11: tests/chap11/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -o Debug/test_chap11 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap11/test_chap11.c
+
+test11_perf: tests/chap11/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -O3 -o Debug/test_chap11 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap11/test_chap11.c
+
 .PHONY: clean
 clean:
 	rm -rf $(EXECDIR)

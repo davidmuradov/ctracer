@@ -31,6 +31,10 @@ lights_lighting_sphere(struct material material, void* object, struct point_ligh
 	    // Checker pattern color
 	    material_color = pattern_checker_at_object(material.pattern, object, point);
 	    break;
+	case TEST:
+	    // Checker pattern color
+	    material_color = pattern_test_at_object(material.pattern, object, point);
+	    break;
 	default:
 	    material_color = material.color;
     }

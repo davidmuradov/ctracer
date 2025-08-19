@@ -4,9 +4,11 @@
 #include "intersection.h"
 #include "lights.h"
 #include "materials.h"
+#include "../includes/object_utils.h"
 #include "ray.h"
 #include "sphere.h"
 #include "tuple.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -249,13 +251,13 @@ world_compare_intersections(const void* a, const void* b) {
 }
 
 t_object
-world_get_object_type(void* object) {
+world_get_object_type(const void* object) {
     struct sphere* obj = (struct sphere*) object;
     return obj->type;
 }
 
 struct tuple
-world_shade_hit(struct world* world, struct precompute* comps) {
+world_shade_hit(struct world* world, struct precompute* comps, int remaining_calls) {
     t_object obj_type = world_get_object_type(comps->object);
     struct material mat;
     struct sphere* maybe_sphere = (struct sphere*) comps->object;
@@ -296,12 +298,21 @@ world_shade_hit(struct world* world, struct precompute* comps) {
 	    break;
     }
 
+    struct tuple reflected = world_reflected_color(world, comps, remaining_calls);
+    struct tuple refracted = world_refracted_color(world, comps, remaining_calls);
 
-    return color;
+    if (mat.reflective > 0 && mat.transparency > 0) {
+	double reflectance = intersection_schlick(comps);
+	struct tuple t1 = tuple_scalar_mult(reflected, reflectance);
+	struct tuple t2 = tuple_scalar_mult(refracted, (1 - reflectance));
+	return tuple_add(tuple_add(color, t1), t2);
+    }
+
+    return tuple_add(tuple_add(color, reflected), refracted);
 }
 
 struct tuple
-world_color_at(struct world* world, struct ray* ray) {
+world_color_at(struct world* world, struct ray* ray, int remaining_calls) {
     struct tuple color = tuple_new_color(0, 0, 0);
     struct intersection_list list = world_intersect_world(world, ray);
     struct intersection hit = intersection_hit(&list);
@@ -311,8 +322,8 @@ world_color_at(struct world* world, struct ray* ray) {
 	return color;
     }
 
-    struct precompute comps = intersection_prepare_computations(&hit, ray);
-    color = world_shade_hit(world, &comps);
+    struct precompute comps = intersection_prepare_computations(&hit, ray, &list);
+    color = world_shade_hit(world, &comps, remaining_calls);
     intersection_clear_intersection_list(&list);
 
     return color;
@@ -334,4 +345,67 @@ world_is_shadowed(struct world* world, int i, struct tuple point) {
 	return is_shadowed = 1;
 
     return is_shadowed;
+}
+
+struct tuple
+world_reflected_color(struct world* world, struct precompute* comps, int remaining_calls) {
+    t_object obj_type = world_get_object_type(comps->object);
+    struct material mat;
+    struct sphere* maybe_sphere = (struct sphere*) comps->object;
+    struct plane* maybe_plane = (struct plane*) comps->object;
+    struct cube* maybe_cube = (struct cube*) comps->object;
+    struct cylinder* maybe_cylinder = (struct cylinder*) comps->object;
+
+    switch (obj_type) {
+	case SPHERE:
+	    mat = maybe_sphere->material;
+	    break;
+	case PLANE:
+	    mat = maybe_plane->material;
+	    break;
+	case CUBE:
+	    mat = maybe_cube->material;
+	    break;
+	case CYLINDER:
+	    mat = maybe_cylinder->material;
+	    break;
+	default:
+	    mat = materials_new_material();
+	    break;
+    }
+
+    if (ctm_floats_equal(mat.reflective, 0))
+	return tuple_new_color(0, 0, 0);
+    if (remaining_calls < 1)
+	return tuple_new_color(0, 0, 0);
+
+    struct ray reflect_ray = ray_new_ray(comps->over_point, comps->reflectv);
+    struct tuple color = world_color_at(world, &reflect_ray, remaining_calls - 1);
+
+    return tuple_scalar_mult(color, mat.reflective);
+}
+
+struct tuple
+world_refracted_color(struct world* world, struct precompute* comps, int remaining_calls) {
+    struct material mat = object_utils_get_material(comps->object);
+
+    if (ctm_floats_equal(mat.transparency, 0))
+	return tuple_new_color(0, 0, 0);
+    if (remaining_calls < 1)
+	return tuple_new_color(0, 0, 0);
+
+    double n_ratio = comps->n1 / comps->n2;
+    double cos_i = tuple_dot(comps->eyev, comps->normalv);
+    double sin2_t = n_ratio * n_ratio * (1 - (cos_i * cos_i));
+
+    if (sin2_t > 1)
+	return tuple_new_color(0, 0, 0);
+
+    double cos_t = sqrt(1 - sin2_t);
+    struct tuple direction = tuple_sub(tuple_scalar_mult(comps->normalv, (n_ratio * cos_i - cos_t)),
+	    tuple_scalar_mult(comps->eyev, n_ratio));
+    struct ray refract_ray = ray_new_ray(comps->under_point, direction);
+    struct tuple color = tuple_scalar_mult(world_color_at(world, &refract_ray, remaining_calls - 1), mat.transparency);
+
+    return color;
 }
