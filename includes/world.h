@@ -34,7 +34,7 @@ void*
 world_get_object_at(struct world* world, int i);
 
 t_object
-world_get_object_type(void* object);
+world_get_object_type(const void* object);
 
 void*
 world_get_light_at(struct world* world, int i);
@@ -68,5 +68,8 @@ world_is_shadowed(struct world* world, int i, struct tuple point);
 
 struct tuple
 world_reflected_color(struct world* world, struct precompute* comps, int remaining_calls);
+
+struct tuple
+world_refracted_color(struct world* world, struct precompute* comps, int remaining_calls);
 
 #endif

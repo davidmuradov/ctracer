@@ -21,6 +21,9 @@ struct sphere {
 struct sphere
 sphere_new_sphere(struct tuple o, double r);
 
+struct sphere
+sphere_new_glass_sphere(void);
+
 struct intersection_list
 sphere_intersect_ray(struct sphere* s, struct ray* r);
 
@@ -35,5 +38,11 @@ sphere_reflect(struct tuple v, struct tuple n);
 
 void
 sphere_set_material(struct sphere* s, struct material m);
+
+void
+sphere_add_transform(struct sphere* s, struct matrix4 m);
+
+void
+sphere_add_transform_to_pattern(struct sphere* s, struct matrix4 m);
 
 #endif

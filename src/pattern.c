@@ -7,6 +7,60 @@
 #include <math.h>
 
 struct pattern
+pattern_test(void) {
+    struct pattern patt;
+
+    patt.type = TEST;
+    patt.color_a = tuple_new_color(0, 0, 0);
+    patt.color_b = tuple_new_color(0, 0, 0);
+    patt.default_transformation = matrix_make_identity4();
+
+    return patt;
+}
+
+struct tuple
+pattern_test_at(struct pattern pattern, struct tuple point) {
+    return tuple_new_color(point.x, point.y, point.z);
+}
+
+struct tuple
+pattern_test_at_object(struct pattern pattern, void* object, struct tuple world_point) {
+    struct sphere* maybe_sphere = (struct sphere*) object;
+    struct plane* maybe_plane = (struct plane*) object;
+    struct cube* maybe_cube = (struct cube*) object;
+    struct cylinder* maybe_cylinder = (struct cylinder*) object;
+    t_object obj_type = world_get_object_type(object);
+    struct matrix4 transform;
+
+    switch (obj_type) {
+	case SPHERE:
+	    transform = maybe_sphere->default_transformation;
+	    break;
+	case PLANE:
+	    transform = maybe_plane->default_transformation;
+	    break;
+	case CUBE:
+	    transform = maybe_cube->default_transformation;
+	    break;
+	case CYLINDER:
+	    transform = maybe_cylinder->default_transformation;
+	    break;
+	default:
+	    transform = matrix_make_identity4();
+	    break;
+    }
+
+    struct matrix4 inv_obj;
+    matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
+    struct tuple obj_point = matrix_mult_matrix4_tuple(inv_obj, world_point);
+    struct matrix4 inv_pat;
+    matrix_inverse_matrix4(pattern.default_transformation, &inv_pat); // Should check for inversion
+    struct tuple pattern_point = matrix_mult_matrix4_tuple(inv_pat, obj_point);
+
+    return pattern_test_at(pattern, pattern_point);
+}
+
+struct pattern
 pattern_stripe(struct tuple color_a, struct tuple color_b) {
     struct pattern patt;
 

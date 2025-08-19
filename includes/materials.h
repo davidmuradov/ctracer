@@ -12,6 +12,8 @@ struct material {
     double shininess;
     struct pattern pattern;
     double reflective;
+    double transparency;
+    double refractive_index;
 };
 
 struct material
