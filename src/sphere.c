@@ -26,6 +26,24 @@ sphere_new_sphere(struct tuple o, double r) {
     return s;
 }
 
+struct sphere
+sphere_new_glass_sphere(void) {
+    struct sphere s;
+    s.default_transformation = matrix_make_identity4();
+    s.type = SPHERE;
+    s.id = UNIQUE_ID_SPHERE;
+    s.o = tuple_new_point(0, 0, 0);
+    s.radius = 1;
+    s.material = materials_new_material();
+    s.material.transparency = 1;
+    s.material.refractive_index = 1.5;
+    s.xs_count = 0;
+    s.xs[0] = UNDEF_TIME;
+    s.xs[1] = UNDEF_TIME;
+    UNIQUE_ID_SPHERE++;
+    return s;
+}
+
 struct intersection_list
 sphere_intersect_ray(struct sphere* s, struct ray* r) {
 

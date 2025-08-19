@@ -4,7 +4,7 @@
 #include "tuple.h"
 #include "matrix.h"
 
-typedef enum {NO_PATTERN, STRIPE, GRADIENT, RING, CHECKER} t_pattern;
+typedef enum {NO_PATTERN, STRIPE, GRADIENT, RING, CHECKER, TEST} t_pattern;
 
 struct pattern {
     t_pattern type;
@@ -12,6 +12,15 @@ struct pattern {
     struct tuple color_b;
     struct matrix4 default_transformation;
 };
+
+struct pattern
+pattern_test(void);
+
+struct tuple
+pattern_test_at(struct pattern pattern, struct tuple point);
+
+struct tuple
+pattern_test_at_object(struct pattern pattern, void* object, struct tuple world_point);
 
 struct pattern
 pattern_stripe(struct tuple color_a, struct tuple color_b);

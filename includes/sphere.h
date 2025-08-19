@@ -21,6 +21,9 @@ struct sphere {
 struct sphere
 sphere_new_sphere(struct tuple o, double r);
 
+struct sphere
+sphere_new_glass_sphere(void);
+
 struct intersection_list
 sphere_intersect_ray(struct sphere* s, struct ray* r);
 

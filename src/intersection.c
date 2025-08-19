@@ -1,9 +1,12 @@
 #include "../includes/intersection.h"
+#include "../includes/object_utils.h"
 #include "ct_math.h"
+#include "object_utils.h"
 #include "ray.h"
 #include "sphere.h"
 #include "tuple.h"
 #include "world.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -98,7 +101,7 @@ intersection_hit(struct intersection_list* inter_list) {
 }
 
 struct precompute
-intersection_prepare_computations(struct intersection* inter, struct ray* ray) {
+intersection_prepare_computations(struct intersection* inter, struct ray* ray, struct intersection_list* inter_list) {
     struct precompute comps;
 
     comps.t = inter->t;
@@ -136,7 +139,72 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray) {
 	comps.inside = 0;
 
     comps.over_point = tuple_add(comps.point, tuple_scalar_mult(comps.normalv, EPSILON));
+    comps.under_point = tuple_sub(comps.point, tuple_scalar_mult(comps.normalv, EPSILON));
     comps.reflectv = sphere_reflect(ray->dir, comps.normalv); // Very bad function name
 
+    if (inter_list) {
+	void* containers[inter_list->nb_intersections];
+
+	for (int i = 0; i < inter_list->nb_intersections; i++)
+	    containers[i] = NULL;
+
+	int nb_elements_containers = 0;
+	int last_index = -1;
+
+	for (int i = 0; i < inter_list->nb_intersections; i++) {
+	    if (inter_list->list[i].object == inter->object && ctm_floats_equal(inter_list->list[i].t, inter->t)) {
+		if (nb_elements_containers == 0)
+		    comps.n1 = 1;
+		else {
+		    struct material mat = object_utils_get_material(containers[last_index]);
+		    comps.n1 = mat.refractive_index;
+		}
+	    }
+
+	   if (object_utils_is_object_in_containers(inter_list->list[i].object, containers, inter_list->nb_intersections)) {
+	       object_utils_remove_object_from_containers(inter_list->list[i].object, containers, inter_list->nb_intersections);
+	       nb_elements_containers--;
+	       last_index--;
+	   }
+	   else {
+	       object_utils_add_object_to_containers(inter_list->list[i].object, containers, inter_list->nb_intersections);
+	       nb_elements_containers++;
+	       last_index++;
+	   }
+
+	    if (inter_list->list[i].object == inter->object && ctm_floats_equal(inter_list->list[i].t, inter->t)) {
+		if (nb_elements_containers == 0)
+		    comps.n2 = 1;
+		else {
+		    struct material mat = object_utils_get_material(containers[last_index]);
+		    comps.n2 = mat.refractive_index;
+		}
+		break;
+	    }
+	}
+    }
+
     return comps;
+}
+
+double
+intersection_schlick(struct precompute* comps) {
+    double cos = tuple_dot(comps->eyev, comps->normalv);
+
+    if (comps->n1 > comps->n2) {
+	double n = comps->n1 / comps->n2;
+	double sin2_t = n * n * (1 - cos * cos);
+	if (sin2_t > 1)
+	    return 1;
+
+	double cos_t = sqrt(1 - sin2_t);
+	cos = cos_t;
+    }
+
+    double r0 = ((comps->n1 - comps->n2) / (comps->n1 + comps->n2)) *
+	((comps->n1 - comps->n2) / (comps->n1 + comps->n2));
+
+    double fac5 = (1 - cos) * (1 - cos) * (1 - cos) * (1 - cos) * (1 - cos);
+
+    return r0 + (1 - r0) * fac5;
 }
