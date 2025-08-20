@@ -34,3 +34,8 @@ Reflection and refraction. Scene with reflection only :
 
 Scene with reflection and refraction :
 ![Final renders Chapter 11](./out/chap11_2.png "Final renders Chapter 11")
+
+
+## Chapter 12
+A scene with cubes.
+![Final render Chapter 12](./out/chap12.png "Final render Chapter 12")

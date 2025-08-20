@@ -316,7 +316,18 @@ world_is_shadowed(struct world* world, int i, struct tuple point) {
     struct intersection_list intersections = world_intersect_world(world, &r);
     struct intersection hit = intersection_hit(&intersections);
     intersection_clear_intersection_list(&intersections);
-    if (hit.t < distance && hit.object != NULL)
+
+    // Here we want to get the object casts_shadows property in it's material field
+    // to see if an object should cast shadows.
+    struct material mat;
+    int can_cast_shadows = 1;
+
+    if (hit.object != NULL) {
+	mat = object_utils_get_material(hit.object);
+	can_cast_shadows = mat.casts_shadows;
+    }
+
+    if (hit.t < distance && hit.object != NULL && can_cast_shadows)
 	return is_shadowed = 1;
 
     return is_shadowed;
