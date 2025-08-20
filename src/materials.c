@@ -15,5 +15,6 @@ materials_new_material(void) {
     m.reflective = 0;
     m.transparency = 0;
     m.refractive_index = 1;
+    m.casts_shadows = 1;
     return m;
 }

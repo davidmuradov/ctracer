@@ -52,7 +52,7 @@ lights_lighting_sphere(struct material material, void* object, struct point_ligh
     }
     else {
 	diffuse = tuple_scalar_mult(effec_color, material.diffuse * light_dot_normal);
-	struct tuple reflect_v = sphere_reflect(tuple_scalar_mult(light_v, -1), normalv);
+	struct tuple reflect_v = sphere_reflect(tuple_scalar_mult(light_v, -1), normalv); // Bad function name
 	double reflect_dot_eye = tuple_dot(reflect_v, eyev);
 	if (reflect_dot_eye <= 0) {
 	    specular = tuple_new_color(0, 0, 0);

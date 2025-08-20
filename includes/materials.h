@@ -14,6 +14,7 @@ struct material {
     double reflective;
     double transparency;
     double refractive_index;
+    int casts_shadows;
 };
 
 struct material
