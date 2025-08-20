@@ -14,7 +14,8 @@ pattern_test(void) {
     patt.type = TEST;
     patt.color_a = tuple_new_color(0, 0, 0);
     patt.color_b = tuple_new_color(0, 0, 0);
-    patt.default_transformation = matrix_make_identity4();
+    patt.transform = matrix_make_identity4();
+    patt.inv_transform = matrix_make_identity4();
 
     return patt;
 }
@@ -26,13 +27,13 @@ pattern_test_at(struct pattern pattern, struct tuple point) {
 
 struct tuple
 pattern_test_at_object(struct pattern pattern, void* object, struct tuple world_point) {
-    struct matrix4 transform = object_utils_get_transform(object);
+    //struct matrix4 transform = object_utils_get_transform(object);
 
-    struct matrix4 inv_obj;
-    matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
+    struct matrix4 inv_obj = object_utils_get_inv_transform(object);
+    //matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
     struct tuple obj_point = matrix_mult_matrix4_tuple(inv_obj, world_point);
-    struct matrix4 inv_pat;
-    matrix_inverse_matrix4(pattern.default_transformation, &inv_pat); // Should check for inversion
+    struct matrix4 inv_pat = pattern.inv_transform;
+    //matrix_inverse_matrix4(pattern.transform, &inv_pat); // Should check for inversion
     struct tuple pattern_point = matrix_mult_matrix4_tuple(inv_pat, obj_point);
 
     return pattern_test_at(pattern, pattern_point);
@@ -45,7 +46,8 @@ pattern_stripe(struct tuple color_a, struct tuple color_b) {
     patt.type = STRIPE;
     patt.color_a = color_a;
     patt.color_b = color_b;
-    patt.default_transformation = matrix_make_identity4();
+    patt.transform = matrix_make_identity4();
+    patt.inv_transform = matrix_make_identity4();
 
     return patt;
 }
@@ -62,13 +64,13 @@ pattern_stripe_at(struct pattern pattern, struct tuple point) {
 
 struct tuple
 pattern_stripe_at_object(struct pattern pattern, void* object, struct tuple world_point) {
-    struct matrix4 transform = object_utils_get_transform(object);
+    //struct matrix4 transform = object_utils_get_transform(object);
 
-    struct matrix4 inv_obj;
-    matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
+    struct matrix4 inv_obj = object_utils_get_inv_transform(object);
+    //matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
     struct tuple obj_point = matrix_mult_matrix4_tuple(inv_obj, world_point);
-    struct matrix4 inv_pat;
-    matrix_inverse_matrix4(pattern.default_transformation, &inv_pat); // Should check for inversion
+    struct matrix4 inv_pat = pattern.inv_transform;
+    //matrix_inverse_matrix4(pattern.transform, &inv_pat); // Should check for inversion
     struct tuple pattern_point = matrix_mult_matrix4_tuple(inv_pat, obj_point);
 
     return pattern_stripe_at(pattern, pattern_point);
@@ -81,7 +83,8 @@ pattern_gradient(struct tuple color_a, struct tuple color_b) {
     patt.type = GRADIENT;
     patt.color_a = color_a;
     patt.color_b = color_b;
-    patt.default_transformation = matrix_make_identity4();
+    patt.transform = matrix_make_identity4();
+    patt.inv_transform = matrix_make_identity4();
 
     return patt;
 }
@@ -96,13 +99,13 @@ pattern_gradient_at(struct pattern pattern, struct tuple point) {
 
 struct tuple
 pattern_gradient_at_object(struct pattern pattern, void* object, struct tuple world_point) {
-    struct matrix4 transform = object_utils_get_transform(object);
+    //struct matrix4 transform = object_utils_get_transform(object);
 
-    struct matrix4 inv_obj;
-    matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
+    struct matrix4 inv_obj = object_utils_get_inv_transform(object);
+    //matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
     struct tuple obj_point = matrix_mult_matrix4_tuple(inv_obj, world_point);
-    struct matrix4 inv_pat;
-    matrix_inverse_matrix4(pattern.default_transformation, &inv_pat); // Should check for inversion
+    struct matrix4 inv_pat = pattern.inv_transform;
+    //matrix_inverse_matrix4(pattern.transform, &inv_pat); // Should check for inversion
     struct tuple pattern_point = matrix_mult_matrix4_tuple(inv_pat, obj_point);
 
     return pattern_gradient_at(pattern, pattern_point);
@@ -115,7 +118,8 @@ pattern_ring(struct tuple color_a, struct tuple color_b) {
     patt.type = RING;
     patt.color_a = color_a;
     patt.color_b = color_b;
-    patt.default_transformation = matrix_make_identity4();
+    patt.transform = matrix_make_identity4();
+    patt.inv_transform = matrix_make_identity4();
 
     return patt;
 }
@@ -132,13 +136,13 @@ pattern_ring_at(struct pattern pattern, struct tuple point) {
 
 struct tuple
 pattern_ring_at_object(struct pattern pattern, void* object, struct tuple world_point) {
-    struct matrix4 transform = object_utils_get_transform(object);
+    //struct matrix4 transform = object_utils_get_transform(object);
 
-    struct matrix4 inv_obj;
-    matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
+    struct matrix4 inv_obj = object_utils_get_inv_transform(object);
+    //matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
     struct tuple obj_point = matrix_mult_matrix4_tuple(inv_obj, world_point);
-    struct matrix4 inv_pat;
-    matrix_inverse_matrix4(pattern.default_transformation, &inv_pat); // Should check for inversion
+    struct matrix4 inv_pat = pattern.inv_transform;
+    //matrix_inverse_matrix4(pattern.transform, &inv_pat); // Should check for inversion
     struct tuple pattern_point = matrix_mult_matrix4_tuple(inv_pat, obj_point);
 
     return pattern_ring_at(pattern, pattern_point);
@@ -151,7 +155,8 @@ pattern_checker(struct tuple color_a, struct tuple color_b) {
     patt.type = CHECKER;
     patt.color_a = color_a;
     patt.color_b = color_b;
-    patt.default_transformation = matrix_make_identity4();
+    patt.transform = matrix_make_identity4();
+    patt.inv_transform = matrix_make_identity4();
 
     return patt;
 }
@@ -179,17 +184,22 @@ pattern_checker_at_for_plane(struct pattern pattern, struct tuple point) {
 struct tuple
 pattern_checker_at_object(struct pattern pattern, void* object, struct tuple world_point) {
     t_object obj_type = world_get_object_type(object);
-    struct matrix4 transform = object_utils_get_transform(object);
+    //struct matrix4 transform = object_utils_get_transform(object);
 
-    struct matrix4 inv_obj;
-    matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
+    struct matrix4 inv_obj = object_utils_get_inv_transform(object);
+    //matrix_inverse_matrix4(transform, &inv_obj); // Should check for inversion
     struct tuple obj_point = matrix_mult_matrix4_tuple(inv_obj, world_point);
-    struct matrix4 inv_pat;
-    matrix_inverse_matrix4(pattern.default_transformation, &inv_pat); // Should check for inversion
+    struct matrix4 inv_pat = pattern.inv_transform;
+    //matrix_inverse_matrix4(pattern.transform, &inv_pat); // Should check for inversion
     struct tuple pattern_point = matrix_mult_matrix4_tuple(inv_pat, obj_point);
 
     if (obj_type == PLANE)
 	return pattern_checker_at_for_plane(pattern, pattern_point);
 
     return pattern_checker_at(pattern, pattern_point);
+}
+
+void
+pattern_make_inv_transform(struct pattern* pattern) {
+    matrix_inverse_matrix4(pattern->transform, &(pattern->inv_transform));
 }

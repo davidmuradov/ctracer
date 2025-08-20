@@ -41,18 +41,18 @@ int main(int argc, char *argv[]) {
     struct plane* p_ptr = (struct plane*) world_get_object_at(w, 1);
     struct cube* c_ptr = (struct cube*) world_get_object_at(w, 2);
     struct cylinder* cyl_ptr = (struct cylinder*) world_get_object_at(w, 3);
-    assert(matrix_compare_matrix4(matrix_make_identity4(), s_ptr->default_transformation));
-    assert(matrix_compare_matrix4(matrix_make_identity4(), p_ptr->default_transformation));
-    assert(matrix_compare_matrix4(matrix_make_identity4(), c_ptr->default_transformation));
-    assert(matrix_compare_matrix4(matrix_make_identity4(), cyl_ptr->default_transformation));
+    assert(matrix_compare_matrix4(matrix_make_identity4(), s_ptr->transform));
+    assert(matrix_compare_matrix4(matrix_make_identity4(), p_ptr->transform));
+    assert(matrix_compare_matrix4(matrix_make_identity4(), c_ptr->_transform));
+    assert(matrix_compare_matrix4(matrix_make_identity4(), cyl_ptr->transform));
 
     world_free_world(w);
 
     w = world_new_world();
-    s.default_transformation = matrix_new_translation4(2, 3, 4);
-    p.default_transformation = matrix_new_translation4(2, 3, 4);
-    c.default_transformation = matrix_new_translation4(2, 3, 4);
-    cyl.default_transformation = matrix_new_translation4(2, 3, 4);
+    s.transform = matrix_new_translation4(2, 3, 4);
+    p.transform = matrix_new_translation4(2, 3, 4);
+    c._transform = matrix_new_translation4(2, 3, 4);
+    cyl.transform = matrix_new_translation4(2, 3, 4);
 
     world_add_sphere(w, &s);
     world_add_plane(w, &p);
@@ -64,10 +64,10 @@ int main(int argc, char *argv[]) {
     c_ptr = (struct cube*) world_get_object_at(w, 2);
     cyl_ptr = (struct cylinder*) world_get_object_at(w, 3);
 
-    assert(matrix_compare_matrix4(matrix_new_translation4(2, 3, 4), s_ptr->default_transformation));
-    assert(matrix_compare_matrix4(matrix_new_translation4(2, 3, 4), p_ptr->default_transformation));
-    assert(matrix_compare_matrix4(matrix_new_translation4(2, 3, 4), c_ptr->default_transformation));
-    assert(matrix_compare_matrix4(matrix_new_translation4(2, 3, 4), cyl_ptr->default_transformation));
+    assert(matrix_compare_matrix4(matrix_new_translation4(2, 3, 4), s_ptr->transform));
+    assert(matrix_compare_matrix4(matrix_new_translation4(2, 3, 4), p_ptr->transform));
+    assert(matrix_compare_matrix4(matrix_new_translation4(2, 3, 4), c_ptr->_transform));
+    assert(matrix_compare_matrix4(matrix_new_translation4(2, 3, 4), cyl_ptr->transform));
 
     assert(tuple_equals(tuple_new_color(1, 1, 1), s_ptr->material.color) &&
 	    ctm_floats_equal(0.1, s_ptr->material.ambient) &&
@@ -114,22 +114,22 @@ int main(int argc, char *argv[]) {
     assert(tuple_equals(tuple_new_vector(0, 1, 0), plane_normal_at(&plane, tuple_new_point(10, 0, -10))));
     assert(tuple_equals(tuple_new_vector(0, 1, 0), plane_normal_at(&plane, tuple_new_point(-5, 0, 150))));
     assert(tuple_equals(tuple_new_vector(0, 0, 0), plane_normal_at(&plane, tuple_new_point(-5, 1, 150))));
-    plane.default_transformation = matrix_new_rotate_x(PI/2);
+    plane.transform = matrix_new_rotate_x(PI/2);
     assert(tuple_equals(tuple_new_vector(0, 0, 1), plane_normal_at(&plane, tuple_new_point(0, 0, 0))));
     assert(tuple_equals(tuple_new_vector(0, 0, 1), plane_normal_at(&plane, tuple_new_point(10, -10, 0))));
     assert(tuple_equals(tuple_new_vector(0, 0, 1), plane_normal_at(&plane, tuple_new_point(-5, 150, 0))));
     assert(tuple_equals(tuple_new_vector(0, 0, 0), plane_normal_at(&plane, tuple_new_point(-5, 150, 0.01))));
-    plane.default_transformation = matrix_new_rotate_x(-PI/2);
+    plane.transform = matrix_new_rotate_x(-PI/2);
     assert(tuple_equals(tuple_new_vector(0, 0, -1), plane_normal_at(&plane, tuple_new_point(0, 0, 0))));
     assert(tuple_equals(tuple_new_vector(0, 0, -1), plane_normal_at(&plane, tuple_new_point(10, -10, 0))));
     assert(tuple_equals(tuple_new_vector(0, 0, -1), plane_normal_at(&plane, tuple_new_point(-5, 150, 0))));
     assert(tuple_equals(tuple_new_vector(0, 0, 0), plane_normal_at(&plane, tuple_new_point(-5, 150, 0.01))));
-    plane.default_transformation = matrix_mult_matrix4(matrix_new_translation4(0, 0, 1), plane.default_transformation);
+    plane.transform = matrix_mult_matrix4(matrix_new_translation4(0, 0, 1), plane.transform);
     assert(tuple_equals(tuple_new_vector(0, 0, -1), plane_normal_at(&plane, tuple_new_point(0, 0, 1))));
     assert(tuple_equals(tuple_new_vector(0, 0, -1), plane_normal_at(&plane, tuple_new_point(10, -10, 1))));
     assert(tuple_equals(tuple_new_vector(0, 0, -1), plane_normal_at(&plane, tuple_new_point(-5, 150, 1))));
     assert(tuple_equals(tuple_new_vector(0, 0, 0), plane_normal_at(&plane, tuple_new_point(-5, 150, 0.01))));
-    plane.default_transformation = matrix_make_identity4();
+    plane.transform = matrix_make_identity4();
 
     struct ray r = ray_new_ray(tuple_new_point(0, 10, 0), tuple_new_vector(0, 0, 1));
     struct intersection_list inter_list = plane_intersect_ray(&plane, &r);
@@ -167,8 +167,8 @@ static void chap9_render(void) {
 
     // Backwall
     struct plane back_wall = plane_new_plane();
-    back_wall.default_transformation = matrix_new_rotate_x(-PI/2);
-    back_wall.default_transformation = matrix_mult_matrix4(matrix_new_translation4(0, 0, 5), back_wall.default_transformation);
+    back_wall.transform = matrix_new_rotate_x(-PI/2);
+    back_wall.transform = matrix_mult_matrix4(matrix_new_translation4(0, 0, 5), back_wall.transform);
     back_wall.material.color = tuple_new_color(76./255, 86./255, 106./255);
     back_wall.material.ambient = 0.1;
     back_wall.material.specular = 0;
@@ -176,7 +176,7 @@ static void chap9_render(void) {
 
     // Ceiling
     struct plane ceiling = plane_new_plane();
-    ceiling.default_transformation = matrix_new_translation4(0, 4, 0);
+    ceiling.transform = matrix_new_translation4(0, 4, 0);
     ceiling.material.color = tuple_new_color(76./255, 86./255, 106./255);
     ceiling.material.ambient = 0.6;
     ceiling.material.specular = 0;
@@ -184,8 +184,8 @@ static void chap9_render(void) {
 
     // Leftwall
     struct plane left_wall = plane_new_plane();
-    left_wall.default_transformation = matrix_new_rotate_z(-PI/2);
-    left_wall.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-5, 0, 0), left_wall.default_transformation);
+    left_wall.transform = matrix_new_rotate_z(-PI/2);
+    left_wall.transform = matrix_mult_matrix4(matrix_new_translation4(-5, 0, 0), left_wall.transform);
     left_wall.material.color = tuple_new_color(76./255, 86./255, 106./255);
     left_wall.material.ambient = 0.1;
     left_wall.material.specular = 0;
@@ -193,8 +193,8 @@ static void chap9_render(void) {
 
     // Rightwall
     struct plane right_wall = plane_new_plane();
-    right_wall.default_transformation = matrix_new_rotate_z(PI/2);
-    right_wall.default_transformation = matrix_mult_matrix4(matrix_new_translation4(5, 0, 0), right_wall.default_transformation);
+    right_wall.transform = matrix_new_rotate_z(PI/2);
+    right_wall.transform = matrix_mult_matrix4(matrix_new_translation4(5, 0, 0), right_wall.transform);
     right_wall.material.color = tuple_new_color(76./255, 86./255, 106./255);
     right_wall.material.ambient = 0.1;
     right_wall.material.specular = 0;
@@ -203,7 +203,7 @@ static void chap9_render(void) {
 
     // Spheres
     struct sphere s1 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s1.default_transformation = matrix_mult_matrix4(matrix_new_translation4(0, 1, 3), s1.default_transformation);
+    s1.transform = matrix_mult_matrix4(matrix_new_translation4(0, 1, 3), s1.transform);
     s1.material.color = tuple_new_color(235./255, 203./255, 139./255);
     s1.material.diffuse = 1;
     s1.material.ambient = 0.1;
@@ -211,8 +211,8 @@ static void chap9_render(void) {
     s1.material.shininess = 5;
 
     struct sphere s2 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s2.default_transformation = matrix_new_scaling4(0.5, 0.5, 0.5);
-    s2.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-1.5, 0.5, 1), s2.default_transformation);
+    s2.transform = matrix_new_scaling4(0.5, 0.5, 0.5);
+    s2.transform = matrix_mult_matrix4(matrix_new_translation4(-1.5, 0.5, 1), s2.transform);
     s2.material.color = tuple_new_color(191./255, 97./255, 106./255);
     s2.material.diffuse = 1;
     s2.material.ambient = 0.1;
@@ -220,8 +220,8 @@ static void chap9_render(void) {
     s2.material.shininess = 5;
 
     struct sphere s3 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s3.default_transformation = matrix_new_scaling4(0.75, 0.75, 0.75);
-    s3.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1.75, 0.75, 1), s3.default_transformation);
+    s3.transform = matrix_new_scaling4(0.75, 0.75, 0.75);
+    s3.transform = matrix_mult_matrix4(matrix_new_translation4(1.75, 0.75, 1), s3.transform);
     s3.material.color = tuple_new_color(208./255, 135./255, 112./255);
     s3.material.diffuse = 1;
     s3.material.ambient = 0.1;
@@ -229,8 +229,8 @@ static void chap9_render(void) {
     s3.material.shininess = 5;
 
     struct sphere s4 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s4.default_transformation = matrix_new_scaling4(0.35, 0.35, 0.35);
-    s4.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1.25, 0.35, -3), s4.default_transformation);
+    s4.transform = matrix_new_scaling4(0.35, 0.35, 0.35);
+    s4.transform = matrix_mult_matrix4(matrix_new_translation4(1.25, 0.35, -3), s4.transform);
     s4.material.color = tuple_new_color(163./255, 190./255, 140./255);
     s4.material.diffuse = 1;
     s4.material.ambient = 0.1;
@@ -238,8 +238,8 @@ static void chap9_render(void) {
     s4.material.shininess = 10;
 
     struct sphere s5 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s5.default_transformation = matrix_new_scaling4(0.25, 0.25, 0.25);
-    s5.default_transformation = matrix_mult_matrix4(matrix_new_translation4(0, 0.25, -1), s5.default_transformation);
+    s5.transform = matrix_new_scaling4(0.25, 0.25, 0.25);
+    s5.transform = matrix_mult_matrix4(matrix_new_translation4(0, 0.25, -1), s5.transform);
     s5.material.color = tuple_new_color(180./255, 142./255, 173./255);
     s5.material.diffuse = 1;
     s5.material.ambient = 0.1;

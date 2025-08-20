@@ -26,7 +26,9 @@ cube_max(const double x, const double y, const double z);
 struct cube
 cube_new_cube(void) {
     struct cube c;
-    c.default_transformation = matrix_make_identity4();
+    c.transform = matrix_make_identity4();
+    c.inv_transform = matrix_make_identity4();
+    c.transp_inv_transform = matrix_make_identity4();
     c.type = CUBE;
     c.id = UNIQUE_ID_CUBE;
     c.material = materials_new_material();
@@ -37,16 +39,19 @@ cube_new_cube(void) {
 struct intersection_list
 cube_intersect_ray(struct cube* c, struct ray* r) {
     /* -- COMMON TO ALL SHAPES -- */
-    struct matrix4 inv_transform;
-    int inverted = matrix_inverse_matrix4(c->default_transformation, &inv_transform);
+    //struct matrix4 inv_transform;
     struct ray r2;
+    /*
+    int inverted = matrix_inverse_matrix4(c->transform, &inv_transform);
     if (inverted)
 	r2 = ray_transform_ray(*r, inv_transform);
     else {
 	fprintf(stderr, "Matrix is non invertible\n");
 	exit(1);
-	r2 = ray_transform_ray(*r, c->default_transformation);
+	r2 = ray_transform_ray(*r, c->transform);
     }
+    */
+    r2 = ray_transform_ray(*r, c->inv_transform);
     /* -- END COMMON TO ALL SHAPES -- */
 
     struct intersection_list inter_list = intersection_new_intersection_list();
@@ -76,16 +81,19 @@ cube_intersect_ray(struct cube* c, struct ray* r) {
 struct tuple
 cube_normal_at(struct cube* c, struct tuple p) {
     /* -- COMMON TO ALL SHAPES -- */
-    struct matrix4 s_inv_transf;
+    //struct matrix4 s_inv_transf;
     struct tuple o_point;
-    int inverted = matrix_inverse_matrix4(c->default_transformation, &s_inv_transf);
+    //int inverted = matrix_inverse_matrix4(c->transform, &s_inv_transf);
+    /*
     if (inverted)
 	o_point = matrix_mult_matrix4_tuple(s_inv_transf, p);
     else {
 	fprintf(stderr, "Matrix is non invertible\n");
 	exit(1);
-	o_point = matrix_mult_matrix4_tuple(c->default_transformation, p);
+	o_point = matrix_mult_matrix4_tuple(c->transform, p);
     }
+    */
+    o_point = matrix_mult_matrix4_tuple(c->inv_transform, p);
     /* -- END COMMON TO ALL SHAPES -- */
     struct tuple o_normal;
     double maxc = cube_max(ctm_abs(o_point.x), ctm_abs(o_point.y), ctm_abs(o_point.z));
@@ -98,22 +106,31 @@ cube_normal_at(struct cube* c, struct tuple p) {
 	o_normal = tuple_new_vector(0, 0, o_point.z);
 
     /* -- COMMON TO ALL SHAPES -- */
-    struct tuple w_normal = matrix_mult_matrix4_tuple(matrix_transpose4(s_inv_transf), o_normal);
+    struct tuple w_normal = matrix_mult_matrix4_tuple(c->transp_inv_transform, o_normal);
     w_normal.w = 0;
     /* -- END COMMON TO ALL SHAPES -- */
 
     return tuple_normalize(w_normal);
-
 }
 
 void
 cube_add_transform(struct cube* c, struct matrix4 m) {
-    c->default_transformation = matrix_mult_matrix4(m, c->default_transformation);
+    c->transform = matrix_mult_matrix4(m, c->transform);
 }
 
 void
 cube_add_transform_to_pattern(struct cube* c, struct matrix4 m) {
-    c->material.pattern.default_transformation = matrix_mult_matrix4(m, c->material.pattern.default_transformation);
+    c->material.pattern.transform = matrix_mult_matrix4(m, c->material.pattern.transform);
+}
+
+void
+cube_make_inv_transform(struct cube* c) {
+    matrix_inverse_matrix4(c->transform, &(c->inv_transform));
+}
+
+void
+cube_make_transp_inv_transform(struct cube* c) {
+    c->transp_inv_transform = matrix_transpose4(c->inv_transform);
 }
 
 static void

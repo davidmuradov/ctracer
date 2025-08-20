@@ -255,7 +255,7 @@ int main(int argc, char *argv[]) {
 
     r = ray_new_ray(tuple_new_point(0, 0, -5), tuple_new_vector(0, 0, 1));
     s1 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s1.default_transformation = matrix_new_translation4(0, 0, 1);
+    s1.transform = matrix_new_translation4(0, 0, 1);
     inter = intersection_new_intersection(5, &s1);
     comps = intersection_prepare_computations(&inter, &r);
     assert(comps.over_point.z < -EPSILON/2);

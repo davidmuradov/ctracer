@@ -10,7 +10,9 @@
 struct sphere {
     t_object type;
     int id;
-    struct matrix4 default_transformation;
+    struct matrix4 transform;
+    struct matrix4 inv_transform;
+    struct matrix4 transp_inv_transform;
     struct material material;
     struct tuple o;
     double radius;
@@ -44,5 +46,11 @@ sphere_add_transform(struct sphere* s, struct matrix4 m);
 
 void
 sphere_add_transform_to_pattern(struct sphere* s, struct matrix4 m);
+
+void
+sphere_make_inv_transform(struct sphere* s);
+
+void
+sphere_make_transp_inv_transform(struct sphere* s);
 
 #endif

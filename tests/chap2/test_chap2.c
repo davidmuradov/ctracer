@@ -34,19 +34,19 @@ int main(int argc, char *argv[]) {
     v4 = tuple_new_color(0.9, 0.2, 0.04);
     assert(tuple_equals(v3, v4));
 
-    struct canvas canvas = canvas_new();
+    struct canvas canvas = canvas_new(CANVAS_WIDTH, CANVAS_HEIGHT);
     for (int i = 0; i < CANVAS_HEIGHT; i++) {
 	for (int j = 0; j < CANVAS_WIDTH; j++) {
-	    assert(ctm_floats_equal(0, canvas.grid[INDEX(i, j)].x));
-	    assert(ctm_floats_equal(0, canvas.grid[INDEX(i, j)].y));
-	    assert(ctm_floats_equal(0, canvas.grid[INDEX(i, j)].z));
-	    assert(ctm_floats_equal(2, canvas.grid[INDEX(i, j)].w));
+	    assert(ctm_floats_equal(0, canvas.grid[INDEX(i, j, CANVAS_WIDTH)].x));
+	    assert(ctm_floats_equal(0, canvas.grid[INDEX(i, j, CANVAS_WIDTH)].y));
+	    assert(ctm_floats_equal(0, canvas.grid[INDEX(i, j, CANVAS_WIDTH)].z));
+	    assert(ctm_floats_equal(2, canvas.grid[INDEX(i, j, CANVAS_WIDTH)].w));
 	}
     }
 
     v1 = tuple_new_color(1, 0, 0);
     canvas_write_pixel(&canvas, 2, 3, v1);
-    assert(tuple_equals(canvas.grid[INDEX(2, 3)], v1));
+    assert(tuple_equals(canvas.grid[INDEX(2, 3, CANVAS_WIDTH)], v1));
 
     canvas_to_ppm(&canvas);
 

@@ -59,11 +59,11 @@ int main(int argc, char *argv[]) {
     sphere_set_transform(&s, matrix_new_scaling4(2, 2, 2));
     assert(tuple_equals(white, pattern_stripe_at_object(pat, &s, tuple_new_point(1.5, 0, 0))));
 
-    pat.default_transformation = matrix_new_scaling4(2, 2, 2);
+    pat.transform = matrix_new_scaling4(2, 2, 2);
     sphere_set_transform(&s, matrix_make_identity4());
     assert(tuple_equals(white, pattern_stripe_at_object(pat, &s, tuple_new_point(1.5, 0, 0))));
 
-    pat.default_transformation = matrix_new_translation4(0.5, 0, 0);
+    pat.transform = matrix_new_translation4(0.5, 0, 0);
     sphere_set_transform(&s, matrix_new_scaling4(2, 2, 2));
     assert(tuple_equals(white, pattern_stripe_at_object(pat, &s, tuple_new_point(2.5, 0, 0))));
 
@@ -121,82 +121,82 @@ static void chap10_render(void) {
     floor.material.diffuse = 0.1;
     floor.material.shininess = 50;
     floor.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD3);
-    floor.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
+    floor.material.pattern.transform = matrix_new_scaling4(2, 2, 2);
 
     struct sphere s1 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s1.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 1, 1), s1.default_transformation);
+    s1.transform = matrix_mult_matrix4(matrix_new_translation4(1, 1, 1), s1.transform);
     s1.material.diffuse = 0.7;
     s1.material.ambient = 0.75;
     s1.material.specular = 0.6;
     s1.material.shininess = 100;
     s1.material.pattern = pattern_gradient(NORD15, NORD11);
-    s1.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
-    s1.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s1.material.pattern.default_transformation);
-    s1.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s1.material.pattern.default_transformation);
+    s1.material.pattern.transform = matrix_new_scaling4(2, 2, 2);
+    s1.material.pattern.transform = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s1.material.pattern.transform);
+    s1.material.pattern.transform = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s1.material.pattern.transform);
 
     struct sphere s2 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s2.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-1, 1, -3), s2.default_transformation);
+    s2.transform = matrix_mult_matrix4(matrix_new_translation4(-1, 1, -3), s2.transform);
     s2.material.diffuse = 0.7;
     s2.material.ambient = 0.75;
     s2.material.specular = 0.6;
     s2.material.shininess = 100;
     s2.material.pattern = pattern_gradient(NORD10, NORD7);
-    s2.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
-    s2.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s2.material.pattern.default_transformation);
-    s2.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s2.material.pattern.default_transformation);
+    s2.material.pattern.transform = matrix_new_scaling4(2, 2, 2);
+    s2.material.pattern.transform = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s2.material.pattern.transform);
+    s2.material.pattern.transform = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s2.material.pattern.transform);
 
     struct sphere s3 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s3.default_transformation = matrix_mult_matrix4(matrix_new_translation4(3, 1, -1), s3.default_transformation);
+    s3.transform = matrix_mult_matrix4(matrix_new_translation4(3, 1, -1), s3.transform);
     s3.material.diffuse = 0.7;
     s3.material.ambient = 0.75;
     s3.material.specular = 0.6;
     s3.material.shininess = 100;
     s3.material.pattern = pattern_gradient(NORD13, NORD12);
-    s3.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
-    s3.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s3.material.pattern.default_transformation);
-    s3.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s3.material.pattern.default_transformation);
+    s3.material.pattern.transform = matrix_new_scaling4(2, 2, 2);
+    s3.material.pattern.transform = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s3.material.pattern.transform);
+    s3.material.pattern.transform = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s3.material.pattern.transform);
 
     struct sphere s4 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s4.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-5, 1, 3), s4.default_transformation);
+    s4.transform = matrix_mult_matrix4(matrix_new_translation4(-5, 1, 3), s4.transform);
     s4.material.diffuse = 0.7;
     s4.material.ambient = 0.75;
     s4.material.specular = 0.6;
     s4.material.shininess = 100;
     s4.material.pattern = pattern_gradient(NORD9, NORD12);
-    s4.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
-    s4.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s4.material.pattern.default_transformation);
+    s4.material.pattern.transform = matrix_new_scaling4(2, 2, 2);
+    s4.material.pattern.transform = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s4.material.pattern.transform);
 
     struct sphere s5 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s5.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-1, 1, 5), s5.default_transformation);
+    s5.transform = matrix_mult_matrix4(matrix_new_translation4(-1, 1, 5), s5.transform);
     s5.material.diffuse = 0.7;
     s5.material.ambient = 0.75;
     s5.material.specular = 0.6;
     s5.material.shininess = 100;
     s5.material.pattern = pattern_gradient(NORD15, NORD14);
-    s5.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
-    s5.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s5.material.pattern.default_transformation);
+    s5.material.pattern.transform = matrix_new_scaling4(2, 2, 2);
+    s5.material.pattern.transform = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s5.material.pattern.transform);
 
     struct sphere s6 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s6.default_transformation = matrix_mult_matrix4(matrix_new_translation4(3, 1, 5), s6.default_transformation);
+    s6.transform = matrix_mult_matrix4(matrix_new_translation4(3, 1, 5), s6.transform);
     s6.material.diffuse = 0.7;
     s6.material.ambient = 0.75;
     s6.material.specular = 0.6;
     s6.material.shininess = 100;
     s6.material.pattern = pattern_gradient(NORD8, NORD11);
-    s6.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
-    s6.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s6.material.pattern.default_transformation);
-    s6.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/5), s6.material.pattern.default_transformation);
+    s6.material.pattern.transform = matrix_new_scaling4(2, 2, 2);
+    s6.material.pattern.transform = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s6.material.pattern.transform);
+    s6.material.pattern.transform = matrix_mult_matrix4(matrix_new_rotate_y(PI/5), s6.material.pattern.transform);
 
     struct sphere s7 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s7.default_transformation = matrix_mult_matrix4(matrix_new_translation4(-3, 1, 1), s7.default_transformation);
+    s7.transform = matrix_mult_matrix4(matrix_new_translation4(-3, 1, 1), s7.transform);
     s7.material.diffuse = 0.7;
     s7.material.ambient = 0.75;
     s7.material.specular = 0.6;
     s7.material.shininess = 100;
     s7.material.pattern = pattern_gradient(NORD0, NORD2);
-    s7.material.pattern.default_transformation = matrix_new_scaling4(2, 2, 2);
-    s7.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s7.material.pattern.default_transformation);
-    s7.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(-PI/3), s7.material.pattern.default_transformation);
+    s7.material.pattern.transform = matrix_new_scaling4(2, 2, 2);
+    s7.material.pattern.transform = matrix_mult_matrix4(matrix_new_translation4(1, 0, 0), s7.material.pattern.transform);
+    s7.material.pattern.transform = matrix_mult_matrix4(matrix_new_rotate_y(-PI/3), s7.material.pattern.transform);
 
     // World
     struct world* world = world_new_world();
