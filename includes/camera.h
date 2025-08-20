@@ -13,6 +13,7 @@ struct camera {
     double half_height;
     double pixel_size;
     struct matrix4 transform;
+    struct matrix4 inv_transform;
 };
 
 struct camera
@@ -23,5 +24,7 @@ camera_ray_for_pixel(struct camera* camera, int x, int y);
 
 struct canvas
 camera_render(struct camera* camera, struct world* world);
+
+void camera_make_inv_view_transform(struct camera* camera);
 
 #endif

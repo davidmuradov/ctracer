@@ -15,6 +15,7 @@ camera_new_camera(int hsize, int vsize, double fov) {
     cam.vsize = vsize;
     cam.fov = fov;
     cam.transform = matrix_make_identity4();
+    cam.inv_transform = matrix_make_identity4();
 
     double half_view = tan(cam.fov/2.);
     double aspect = ((double) cam.hsize) / cam.vsize;
@@ -40,6 +41,7 @@ camera_ray_for_pixel(struct camera* camera, int i, int j) {
     double world_x = camera->half_width - joffset;
     double world_y = camera->half_height - ioffset;
 
+    /*
     struct matrix4 inv_transform;
     int su = matrix_inverse_matrix4(camera->transform, &inv_transform);
     if (su) {
@@ -54,9 +56,10 @@ camera_ray_for_pixel(struct camera* camera, int i, int j) {
 	fprintf(stderr, "Matrix is non invertible\n");
 	exit(1);
     }
-    struct tuple pixel = matrix_mult_matrix4_tuple(camera->transform,
+    */
+    struct tuple pixel = matrix_mult_matrix4_tuple(camera->inv_transform,
 	    tuple_new_point(world_x, world_y, -1));
-    struct tuple origin = matrix_mult_matrix4_tuple(camera->transform, tuple_new_point(0, 0, 0));
+    struct tuple origin = matrix_mult_matrix4_tuple(camera->inv_transform, tuple_new_point(0, 0, 0));
     struct tuple direction = tuple_normalize(tuple_sub(pixel, origin));
 
     return ray_new_ray(origin, direction);
@@ -77,4 +80,11 @@ camera_render(struct camera* camera, struct world* world) {
     }
 
     return canvas;
+}
+
+void camera_make_inv_view_transform(struct camera* camera) {
+    if (!matrix_inverse_matrix4(camera->transform, &(camera->inv_transform))) {
+	fprintf(stderr, "Failed to calculate inverse transform of camera (cannot invert matrix)\n");
+	exit(1);
+    }
 }

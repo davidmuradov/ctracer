@@ -392,6 +392,7 @@ static void chap12_render(void) {
     struct tuple to = tuple_new_point(0, 8, 10);
     struct tuple up = tuple_new_vector(0, 1, 0);
     camera.transform = matrix_view_transform(from, to, up);
+    camera_make_inv_view_transform(&camera);
 
     struct canvas canvas = camera_render(&camera, world);
     canvas_to_ppm(&canvas);
