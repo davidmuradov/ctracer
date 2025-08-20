@@ -10,7 +10,8 @@ struct pattern {
     t_pattern type;
     struct tuple color_a;
     struct tuple color_b;
-    struct matrix4 default_transformation;
+    struct matrix4 transform;
+    struct matrix4 inv_transform;
 };
 
 struct pattern
@@ -60,5 +61,8 @@ pattern_checker_at_for_plane(struct pattern pattern, struct tuple point);
 
 struct tuple
 pattern_checker_at_object(struct pattern pattern, void* object, struct tuple world_point);
+
+void
+pattern_make_inv_transform(struct pattern* pattern);
 
 #endif

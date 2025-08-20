@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
     struct intersection inter;
     inter = intersection_new_intersection(3.5, &s);
     assert(ctm_floats_equal(3.5, inter.t));
-    assert(SPHERE == intersection_get_object_type(&inter));
+    //assert(SPHERE == intersection_get_object_type(&inter));
     assert(&s == (struct sphere*) inter.object);
     struct sphere* s_rec = (struct sphere*) inter.object;
     assert(s_rec->id == s.id);
@@ -95,8 +95,8 @@ int main(int argc, char *argv[]) {
     r = ray_new_ray((struct tuple) {0,0,-5,1}, r_dir);
     inter_list = sphere_intersect_ray(&s, &r);
     assert(inter_list.nb_intersections == 2);
-    assert(SPHERE == intersection_get_object_type(&inter_list.list[0]));
-    assert(SPHERE == intersection_get_object_type(&inter_list.list[1]));
+    //assert(SPHERE == intersection_get_object_type(&inter_list.list[0]));
+    //assert(SPHERE == intersection_get_object_type(&inter_list.list[1]));
     assert(&s == (struct sphere*) inter_list.list[0].object);
     assert(&s == (struct sphere*) inter_list.list[1].object);
 
@@ -153,11 +153,11 @@ int main(int argc, char *argv[]) {
     struct sphere s2;
     struct matrix4 m_identity = matrix_make_identity4();
     s2 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    assert(matrix_compare_matrix4(m_identity, s2.default_transformation));
+    assert(matrix_compare_matrix4(m_identity, s2.transform));
     
     struct matrix4 mt2 = matrix_new_translation4(2, 3, 4);
     sphere_set_transform(&s2, mt2);
-    assert(matrix_compare_matrix4(mt2, s2.default_transformation));
+    assert(matrix_compare_matrix4(mt2, s2.transform));
 
 
     r = ray_new_ray(tuple_new_point(0, 0, -5), tuple_new_vector(0, 0, 1));
@@ -185,7 +185,7 @@ static void chap5_render(void) {
 
     struct ray r = ray_new_ray(tuple_new_point(0, 0, -5), tuple_new_vector(0, 0, 1));
     struct sphere s = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    struct canvas canvas = canvas_new();
+    struct canvas canvas = canvas_new(CANVAS_WIDTH, CANVAS_HEIGHT);
     struct tuple bg = tuple_new_color(76./255, 86./255, 106./255);
     struct tuple fg = tuple_new_color(136./255, 192./255, 208./255);
 

@@ -6,7 +6,7 @@
 
 typedef enum {UNKNOWN_OBJECT, SPHERE, PLANE, CUBE, CYLINDER, GROUP, TRIANGLE, CSG} t_object;
 
-#define INIT_MAX_INTERSECTIONS	2
+#define INIT_MAX_INTERSECTIONS	16
 
 struct intersection {
     double t;

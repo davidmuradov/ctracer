@@ -13,7 +13,9 @@ static int UNIQUE_ID_SPHERE = 0;
 struct sphere
 sphere_new_sphere(struct tuple o, double r) {
     struct sphere s;
-    s.default_transformation = matrix_make_identity4();
+    s.transform = matrix_make_identity4();
+    s.inv_transform = matrix_make_identity4();
+    s.transp_inv_transform = matrix_make_identity4();
     s.type = SPHERE;
     s.id = UNIQUE_ID_SPHERE;
     s.o = o;
@@ -29,7 +31,7 @@ sphere_new_sphere(struct tuple o, double r) {
 struct sphere
 sphere_new_glass_sphere(void) {
     struct sphere s;
-    s.default_transformation = matrix_make_identity4();
+    s.transform = matrix_make_identity4();
     s.type = SPHERE;
     s.id = UNIQUE_ID_SPHERE;
     s.o = tuple_new_point(0, 0, 0);
@@ -48,16 +50,19 @@ struct intersection_list
 sphere_intersect_ray(struct sphere* s, struct ray* r) {
 
     /* -- COMMON TO ALL SHAPES -- */
-    struct matrix4 inv_transform;
-    int inverted = matrix_inverse_matrix4(s->default_transformation, &inv_transform);
+    //struct matrix4 inv_transform;
     struct ray r2;
+    /*
+    int inverted = matrix_inverse_matrix4(c->transform, &inv_transform);
     if (inverted)
 	r2 = ray_transform_ray(*r, inv_transform);
     else {
 	fprintf(stderr, "Matrix is non invertible\n");
 	exit(1);
-	r2 = ray_transform_ray(*r, s->default_transformation);
+	r2 = ray_transform_ray(*r, c->transform);
     }
+    */
+    r2 = ray_transform_ray(*r, s->inv_transform);
     /* -- END COMMON TO ALL SHAPES -- */
     struct intersection_list inter_list = intersection_new_intersection_list();
     struct tuple sphere_to_ray = tuple_sub(r2.o, s->o);
@@ -101,28 +106,31 @@ sphere_intersect_ray(struct sphere* s, struct ray* r) {
 
 void
 sphere_set_transform(struct sphere* s, struct matrix4 m) {
-    s->default_transformation = m;
+    s->transform = m;
 }
 
 struct tuple
 sphere_normal_at(struct sphere* s, struct tuple p) {
 
     /* -- COMMON TO ALL SHAPES -- */
-    struct matrix4 s_inv_transf;
+    //struct matrix4 s_inv_transf;
     struct tuple o_point;
-    int inverted = matrix_inverse_matrix4(s->default_transformation, &s_inv_transf);
+    //int inverted = matrix_inverse_matrix4(c->transform, &s_inv_transf);
+    /*
     if (inverted)
 	o_point = matrix_mult_matrix4_tuple(s_inv_transf, p);
     else {
 	fprintf(stderr, "Matrix is non invertible\n");
 	exit(1);
-	o_point = matrix_mult_matrix4_tuple(s->default_transformation, p);
+	o_point = matrix_mult_matrix4_tuple(c->transform, p);
     }
+    */
+    o_point = matrix_mult_matrix4_tuple(s->inv_transform, p);
     /* -- END COMMON TO ALL SHAPES -- */
     struct tuple o_normal = tuple_sub(o_point, s->o); // or (0,0,0), to be determined
 
     /* -- COMMON TO ALL SHAPES -- */
-    struct tuple w_normal = matrix_mult_matrix4_tuple(matrix_transpose4(s_inv_transf), o_normal);
+    struct tuple w_normal = matrix_mult_matrix4_tuple(s->transp_inv_transform, o_normal);
     w_normal.w = 0;
     /* -- END COMMON TO ALL SHAPES -- */
 
@@ -143,10 +151,20 @@ sphere_set_material(struct sphere* s, struct material m) {
 
 void
 sphere_add_transform(struct sphere* s, struct matrix4 m) {
-    s->default_transformation = matrix_mult_matrix4(m, s->default_transformation);
+    s->transform = matrix_mult_matrix4(m, s->transform);
 }
 
 void
 sphere_add_transform_to_pattern(struct sphere* s, struct matrix4 m) {
-    s->material.pattern.default_transformation = matrix_mult_matrix4(m, s->material.pattern.default_transformation);
+    s->material.pattern.transform = matrix_mult_matrix4(m, s->material.pattern.transform);
+}
+
+void
+sphere_make_inv_transform(struct sphere* s) {
+    matrix_inverse_matrix4(s->transform, &(s->inv_transform));
+}
+
+void
+sphere_make_transp_inv_transform(struct sphere* s) {
+    s->transp_inv_transform = matrix_transpose4(s->inv_transform);
 }

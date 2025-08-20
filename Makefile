@@ -12,6 +12,8 @@ $(shell mkdir -p Debug)
 #
 #$(INCLUDES_PATH)/*.h:
 
+all: test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11 test12
+
 test1: tests/chap1/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -o Debug/test_chap1 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap1/test_chap1.c
 
@@ -62,6 +64,9 @@ test12: tests/chap12/*.c $(INCLUDES_PATH)/*.h
 
 test12_perf: tests/chap12/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -O3 -o Debug/test_chap12 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap12/test_chap12.c
+
+test12_prof: tests/chap12/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -O3 -pg -o Debug/test_chap12 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap12/test_chap12.c
 
 .PHONY: clean
 clean:

@@ -1,10 +1,12 @@
 #include "../includes/world.h"
 #include "ct_math.h"
+#include "cube.h"
 #include "cylinder.h"
 #include "intersection.h"
 #include "lights.h"
 #include "materials.h"
 #include "../includes/object_utils.h"
+#include "pattern.h"
 #include "ray.h"
 #include "sphere.h"
 #include "tuple.h"
@@ -84,6 +86,9 @@ world_free_world(struct world* w) {
 
 void
 world_add_sphere(struct world* world, struct sphere* sphere) {
+    sphere_make_inv_transform(sphere);
+    sphere_make_transp_inv_transform(sphere);
+    pattern_make_inv_transform(&(sphere->material.pattern));
     if (world->nb_objects < world->max_nb_objects) {
 	world->object_list[world->nb_objects] = (void*) sphere;
 	world->nb_objects++;
@@ -102,6 +107,9 @@ world_add_sphere(struct world* world, struct sphere* sphere) {
 
 void
 world_add_plane(struct world* world, struct plane* plane) {
+    plane_make_inv_transform(plane);
+    plane_make_transp_inv_transform(plane);
+    pattern_make_inv_transform(&(plane->material.pattern));
     if (world->nb_objects < world->max_nb_objects) {
 	world->object_list[world->nb_objects] = (void*) plane;
 	world->nb_objects++;
@@ -120,6 +128,9 @@ world_add_plane(struct world* world, struct plane* plane) {
 
 void
 world_add_cube(struct world* world, struct cube* cube) {
+    cube_make_inv_transform(cube);
+    cube_make_transp_inv_transform(cube);
+    pattern_make_inv_transform(&(cube->material.pattern));
     if (world->nb_objects < world->max_nb_objects) {
 	world->object_list[world->nb_objects] = (void*) cube;
 	world->nb_objects++;
@@ -138,6 +149,9 @@ world_add_cube(struct world* world, struct cube* cube) {
 
 void
 world_add_cylinder(struct world* world, struct cylinder* cylinder) {
+    cylinder_make_inv_transform(cylinder);
+    cylinder_make_transp_inv_transform(cylinder);
+    pattern_make_inv_transform(&(cylinder->material.pattern));
     if (world->nb_objects < world->max_nb_objects) {
 	world->object_list[world->nb_objects] = (void*) cylinder;
 	world->nb_objects++;

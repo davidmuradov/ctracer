@@ -375,7 +375,7 @@ static void chap12_render(void) {
     world_add_cube(world, &cubie2);
     world_add_cube(world, &cubie3);
 
-    struct point_light light1 = lights_new_point_light(tuple_new_point(-100, 50.1, -6), tuple_new_color(0.2, 0.2, 0.2));
+    struct point_light light1 = lights_new_point_light(tuple_new_point(-100, 50.1, -6), tuple_new_color(1, 1, 1));
     struct point_light light2 = lights_new_point_light(tuple_new_point(-100, 50, -6), tuple_new_color(0.2, 0.2, 0.2));
     struct point_light light3 = lights_new_point_light(tuple_new_point(-100, 49.9, -6), tuple_new_color(0.2, 0.2, 0.2));
     struct point_light light4 = lights_new_point_light(tuple_new_point(-100, 50, -6.2), tuple_new_color(0.2, 0.2, 0.2));
@@ -392,6 +392,7 @@ static void chap12_render(void) {
     struct tuple to = tuple_new_point(0, 8, 10);
     struct tuple up = tuple_new_vector(0, 1, 0);
     camera.transform = matrix_view_transform(from, to, up);
+    camera_make_inv_view_transform(&camera);
 
     struct canvas canvas = camera_render(&camera, world);
     canvas_to_ppm(&canvas);

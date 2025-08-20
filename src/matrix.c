@@ -1,7 +1,10 @@
 #include "../includes/matrix.h"
+#include "camera.h"
 #include "ct_math.h"
 #include "tuple.h"
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 struct row4 matrix_new_row4(double a, double b, double c, double d) {
     return (struct row4) {a, b, c, d};
@@ -123,6 +126,7 @@ struct matrix4 matrix_mult_matrix4(struct matrix4 a, struct matrix4 b) {
 }
 
 struct tuple matrix_mult_matrix4_tuple(struct matrix4 a, struct tuple b) {
+    /*
     double t[4] = {0};
     double tt = 0;
     for (int i = 0; i < 4; i++) {
@@ -139,6 +143,14 @@ struct tuple matrix_mult_matrix4_tuple(struct matrix4 a, struct tuple b) {
 	t[i] = tt;
 	tt = 0;
     }
+    */
+
+    double t[4];
+
+    t[0] = a.grid[0][0] * b.x + a.grid[0][1] * b.y + a.grid[0][2] * b.z + a.grid[0][3] * b.w;
+    t[1] = a.grid[1][0] * b.x + a.grid[1][1] * b.y + a.grid[1][2] * b.z + a.grid[1][3] * b.w;
+    t[2] = a.grid[2][0] * b.x + a.grid[2][1] * b.y + a.grid[2][2] * b.z + a.grid[2][3] * b.w;
+    t[3] = a.grid[3][0] * b.x + a.grid[3][1] * b.y + a.grid[3][2] * b.z + a.grid[3][3] * b.w;
 
     return (struct tuple) {t[0], t[1], t[2], t[3]};
 }

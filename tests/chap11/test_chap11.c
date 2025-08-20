@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 
     // Test 4
     plane.material.reflective = 0.5;
-    plane.default_transformation = matrix_new_translation4(0, -1, 0);
+    plane.transform = matrix_new_translation4(0, -1, 0);
     world_add_plane(w, &plane);
     ray = ray_new_ray(tuple_new_point(0, 0, -3), tuple_new_vector(0, -sqrt(2)/2, sqrt(2)/2));
     inter = intersection_new_intersection(sqrt(2), &plane);
@@ -80,11 +80,11 @@ int main(int argc, char *argv[]) {
     world_add_point_light(w, &light);
     struct plane lower = plane_new_plane();
     lower.material.reflective = 1;
-    lower.default_transformation = matrix_new_translation4(0, -1, 0);
+    lower.transform = matrix_new_translation4(0, -1, 0);
     world_add_plane(w, &lower);
     struct plane upper = plane_new_plane();
     upper.material.reflective = 1;
-    upper.default_transformation = matrix_new_translation4(0, 1, 0);
+    upper.transform = matrix_new_translation4(0, 1, 0);
     world_add_plane(w, &upper);
     ray = ray_new_ray(tuple_new_point(0, 0, 0), tuple_new_vector(0, 1, 0));
     color = world_color_at(w, &ray, MAX_RECUR_CALLS);
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
     world_add_sphere(w, &s2);
 
     plane.material.reflective = 0.5;
-    plane.default_transformation = matrix_new_translation4(0, -1, 0);
+    plane.transform = matrix_new_translation4(0, -1, 0);
     world_add_plane(w, &plane);
     ray = ray_new_ray(tuple_new_point(0, 0, -3), tuple_new_vector(0, -sqrt(2)/2, sqrt(2)/2));
     inter = intersection_new_intersection(sqrt(2), &plane);
@@ -122,13 +122,13 @@ int main(int argc, char *argv[]) {
     world_free_world(w);
     struct sphere a = sphere_new_glass_sphere();
     a.material.refractive_index = 1.5;
-    a.default_transformation = matrix_new_scaling4(2, 2, 2);
+    a.transform = matrix_new_scaling4(2, 2, 2);
     struct sphere b = sphere_new_glass_sphere();
     b.material.refractive_index = 2;
-    b.default_transformation = matrix_new_translation4(0, 0, -0.25);
+    b.transform = matrix_new_translation4(0, 0, -0.25);
     struct sphere c = sphere_new_glass_sphere();
     c.material.refractive_index = 2.5;
-    c.default_transformation = matrix_new_translation4(0, 0, 0.25);
+    c.transform = matrix_new_translation4(0, 0, 0.25);
     ray = ray_new_ray(tuple_new_point(0, 0, -4), tuple_new_vector(0, 0, 1));
     w = world_new_world();
     world_add_sphere(w, &a);
@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
     w = world_new_world();
     ray = ray_new_ray(tuple_new_point(0, 0, -5), tuple_new_vector(0, 0, 1));
     a = sphere_new_glass_sphere();
-    a.default_transformation = matrix_new_translation4(0, 0, 1);
+    a.transform = matrix_new_translation4(0, 0, 1);
     inter = intersection_new_intersection(5, &a);
     inter_list = intersection_new_intersection_list();
     intersection_add_intersection_to_list(&inter_list, inter);
@@ -325,14 +325,14 @@ int main(int argc, char *argv[]) {
     sphere_set_transform(&s2, mscale);
     world_add_sphere(w, &s2);
     struct plane floor = plane_new_plane();
-    floor.default_transformation = matrix_new_translation4(0, -1, 0);
+    floor.transform = matrix_new_translation4(0, -1, 0);
     floor.material.transparency = 0.5;
     floor.material.refractive_index = 1.5;
     world_add_plane(w, &floor);
     struct sphere ball = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
     ball.material.color = tuple_new_color(1, 0, 0);
     ball.material.ambient = 0.5;
-    ball.default_transformation = matrix_new_translation4(0, -3.5, -0.5);
+    ball.transform = matrix_new_translation4(0, -3.5, -0.5);
     world_add_sphere(w, &ball);
 
     inter_list = intersection_new_intersection_list();
@@ -398,7 +398,7 @@ int main(int argc, char *argv[]) {
     sphere_set_transform(&s2, mscale);
     world_add_sphere(w, &s2);
     floor = plane_new_plane();
-    floor.default_transformation = matrix_new_translation4(0, -1, 0);
+    floor.transform = matrix_new_translation4(0, -1, 0);
     floor.material.transparency = 0.5;
     floor.material.reflective = 0.5;
     floor.material.refractive_index = 1.5;
@@ -406,7 +406,7 @@ int main(int argc, char *argv[]) {
     ball = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
     ball.material.color = tuple_new_color(1, 0, 0);
     ball.material.ambient = 0.5;
-    ball.default_transformation = matrix_new_translation4(0, -3.5, -0.5);
+    ball.transform = matrix_new_translation4(0, -3.5, -0.5);
     world_add_sphere(w, &ball);
 
     inter_list = intersection_new_intersection_list();
@@ -536,7 +536,6 @@ static void chap11_render(void) {
     sphere_add_transform_to_pattern(&s2, matrix_new_scaling4(2, 2, 2));
     sphere_add_transform_to_pattern(&s2, matrix_new_translation4(1, 0, 0));
     sphere_add_transform_to_pattern(&s2, matrix_new_rotate_y(PI));
-    //s2.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s2.material.pattern.default_transformation);
 
     struct sphere s3 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
     s3.material.diffuse = 0.01;

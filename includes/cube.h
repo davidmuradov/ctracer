@@ -7,7 +7,9 @@
 struct cube {
     t_object type;
     int id;
-    struct matrix4 default_transformation;
+    struct matrix4 transform;
+    struct matrix4 inv_transform;
+    struct matrix4 transp_inv_transform;
     struct material material;
 };
 
@@ -25,5 +27,11 @@ cube_add_transform(struct cube* c, struct matrix4 m);
 
 void
 cube_add_transform_to_pattern(struct cube* c, struct matrix4 m);
+
+void
+cube_make_inv_transform(struct cube* c);
+
+void
+cube_make_transp_inv_transform(struct cube* c);
 
 #endif

@@ -42,16 +42,76 @@ object_utils_get_transform(const void* object) {
 
     switch (obj_type) {
 	case SPHERE:
-	    transform = maybe_sphere->default_transformation;
+	    transform = maybe_sphere->transform;
 	    break;
 	case PLANE:
-	    transform = maybe_plane->default_transformation;
+	    transform = maybe_plane->transform;
 	    break;
 	case CUBE:
-	    transform = maybe_cube->default_transformation;
+	    transform = maybe_cube->transform;
 	    break;
 	case CYLINDER:
-	    transform = maybe_cylinder->default_transformation;
+	    transform = maybe_cylinder->transform;
+	    break;
+	default:
+	    transform = matrix_make_identity4();
+	    break;
+    }
+
+    return transform;
+}
+
+struct matrix4
+object_utils_get_inv_transform(const void* object) {
+    t_object obj_type = world_get_object_type(object);
+    struct matrix4 transform;
+    struct sphere* maybe_sphere = (struct sphere*) object;
+    struct plane* maybe_plane = (struct plane*) object;
+    struct cube* maybe_cube = (struct cube*) object;
+    struct cylinder* maybe_cylinder = (struct cylinder*) object;
+
+    switch (obj_type) {
+	case SPHERE:
+	    transform = maybe_sphere->inv_transform;
+	    break;
+	case PLANE:
+	    transform = maybe_plane->inv_transform;
+	    break;
+	case CUBE:
+	    transform = maybe_cube->inv_transform;
+	    break;
+	case CYLINDER:
+	    transform = maybe_cylinder->inv_transform;
+	    break;
+	default:
+	    transform = matrix_make_identity4();
+	    break;
+    }
+
+    return transform;
+}
+
+struct matrix4
+object_utils_get_transp_inv_transform(const void* object) {
+    t_object obj_type = world_get_object_type(object);
+    struct matrix4 transform;
+    struct sphere* maybe_sphere = (struct sphere*) object;
+    struct plane* maybe_plane = (struct plane*) object;
+    struct cube* maybe_cube = (struct cube*) object;
+    struct cylinder* maybe_cylinder = (struct cylinder*) object;
+
+    switch (obj_type) {
+	case SPHERE:
+	    transform = maybe_sphere->transp_inv_transform;
+	    break;
+	case PLANE:
+	    transform = maybe_plane->transp_inv_transform;
+	    break;
+	case CUBE:
+	    transform = maybe_cube->transp_inv_transform;
+	    break;
+	case CYLINDER:
+	    transform = maybe_cylinder->transp_inv_transform;
 	    break;
 	default:
 	    transform = matrix_make_identity4();

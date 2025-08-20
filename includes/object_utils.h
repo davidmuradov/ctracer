@@ -20,6 +20,18 @@ struct matrix4
 object_utils_get_transform(const void* object);
 
 /**
+ * Returns the inverse transform property of an object.
+ */
+struct matrix4
+object_utils_get_inv_transform(const void* object);
+
+/**
+ * Returns the transpose of the inverse transform property of an object.
+ */
+struct matrix4
+object_utils_get_transp_inv_transform(const void* object);
+
+/**
  * Returns 1 if an object is included in a containers of size sz. Returns 0 otherwise.
  */
 int
