@@ -122,6 +122,8 @@ int main(int argc, char *argv[]) {
     point = tuple_new_point(-1, -1, -1);
     assert(tuple_equals(cube_normal_at(&c, point), tuple_new_vector(-1, 0, 0)));
 
+    chap12_render();
+
     return 0;
 }
 
@@ -145,75 +147,138 @@ static void chap12_render(void) {
     const struct tuple NORD15 = tuple_new_color(180./255, 142./255, 173./255); // Purple
 
     // Floor
-    struct plane floor = plane_new_plane();
+    struct cube floor = cube_new_cube();
     floor.material.ambient = 0.2;
     floor.material.specular = 0.2;
     floor.material.diffuse = 1;
     floor.material.shininess = 50;
     floor.material.reflective = 0;
-    floor.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD3);
-    plane_add_transform_to_pattern(&floor, matrix_new_scaling4(2, 2, 2));
+    floor.material.pattern = pattern_ring(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&floor, matrix_new_scaling4(10, 0.1, 35));
+    cube_add_transform(&floor, matrix_new_translation4(0, 0, 20));
+    cube_add_transform_to_pattern(&floor, matrix_new_scaling4(2./10, 1, 2./35));
 
     // Ceil
-    struct plane ceil = plane_new_plane();
+    struct cube ceil = cube_new_cube();
     ceil.material.ambient = 0.2;
     ceil.material.specular = 0.2;
     ceil.material.diffuse = 1;
     ceil.material.shininess = 50;
     ceil.material.reflective = 0;
-    ceil.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD3);
-    plane_add_transform(&ceil, matrix_new_translation4(0, 16, 0));
-    plane_add_transform_to_pattern(&ceil, matrix_new_scaling4(2, 2, 2));
+    ceil.material.pattern = pattern_ring(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&ceil, matrix_new_scaling4(10, 0.1, 35));
+    cube_add_transform(&ceil, matrix_new_translation4(0, 20, 20));
+    cube_add_transform_to_pattern(&ceil, matrix_new_scaling4(2./10, 1, 2./35));
+    //cube_add_transform_to_pattern(&floor, matrix_new_rotate_z(-PI/2));
 
-    // Front
-    struct plane front = plane_new_plane();
-    front.material.ambient = 0.2;
-    front.material.specular = 0.2;
-    front.material.diffuse = 0.6;
-    front.material.shininess = 50;
-    front.material.reflective = 0;
-    front.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD3);
-    plane_add_transform(&front, matrix_new_rotate_x(-PI/2));
-    plane_add_transform(&front, matrix_new_translation4(0, 0, 16));
-    plane_add_transform_to_pattern(&front, matrix_new_scaling4(2, 2, 2));
+    // c1
+    struct cube c1 = cube_new_cube();
+    c1.material.ambient = 0.2;
+    c1.material.specular = 0.2;
+    c1.material.diffuse = 1;
+    c1.material.shininess = 50;
+    c1.material.reflective = 0;
+    c1.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&c1, matrix_new_scaling4(0.25, 3, 35));
+    cube_add_transform(&c1, matrix_new_translation4(-10.25, 2, 20));
+    cube_add_transform_to_pattern(&c1, matrix_new_scaling4(1, 1, 1));
+    cube_add_transform_to_pattern(&c1, matrix_new_rotate_z(PI/2));
+    cube_add_transform_to_pattern(&c1, matrix_new_translation4(0, 1.15, 0));
+
+    // c2
+    struct cube c2 = cube_new_cube();
+    c2.material.ambient = 0.2;
+    c2.material.specular = 0.2;
+    c2.material.diffuse = 1;
+    c2.material.shininess = 50;
+    c2.material.reflective = 0;
+    c2.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&c2, matrix_new_scaling4(0.25, 3, 35));
+    cube_add_transform(&c2, matrix_new_translation4(-10.25, 18, 20));
+    cube_add_transform_to_pattern(&c2, matrix_new_scaling4(1, 1, 1));
+    cube_add_transform_to_pattern(&c2, matrix_new_rotate_z(PI/2));
+    cube_add_transform_to_pattern(&c2, matrix_new_translation4(0, 0.85, 0));
+
+    // c3
+    struct cube c3 = cube_new_cube();
+    c3.material.ambient = 0.2;
+    c3.material.specular = 0.2;
+    c3.material.diffuse = 1;
+    c3.material.shininess = 50;
+    c3.material.reflective = 0;
+    c3.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&c3, matrix_new_scaling4(0.25, 5, 3));
+    cube_add_transform(&c3, matrix_new_translation4(-10.25, 10, 52));
+    cube_add_transform_to_pattern(&c3, matrix_new_scaling4(0.51, 0.5, 0.5));
+    cube_add_transform_to_pattern(&c3, matrix_new_rotate_z(PI/2));
+    cube_add_transform_to_pattern(&c3, matrix_new_translation4(0, 1, 0));
+
+    // c4
+    struct cube c4 = cube_new_cube();
+    c4.material.ambient = 0.2;
+    c4.material.specular = 0.2;
+    c4.material.diffuse = 1;
+    c4.material.shininess = 50;
+    c4.material.reflective = 0;
+    c4.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&c4, matrix_new_scaling4(0.25, 5, 3));
+    cube_add_transform(&c4, matrix_new_translation4(-10.25, 10, 32));
+    cube_add_transform_to_pattern(&c4, matrix_new_scaling4(0.51, 0.5, 0.5));
+    cube_add_transform_to_pattern(&c4, matrix_new_rotate_z(PI/2));
+    cube_add_transform_to_pattern(&c4, matrix_new_translation4(0, 1, 0));
+
+    // c5
+    struct cube c5 = cube_new_cube();
+    c5.material.ambient = 0.2;
+    c5.material.specular = 0.2;
+    c5.material.diffuse = 1;
+    c5.material.shininess = 50;
+    c5.material.reflective = 0;
+    c5.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&c5, matrix_new_scaling4(0.25, 5, 3));
+    cube_add_transform(&c5, matrix_new_translation4(-10.25, 10, 12));
+    cube_add_transform_to_pattern(&c5, matrix_new_scaling4(0.51, 0.5, 0.5));
+    cube_add_transform_to_pattern(&c5, matrix_new_rotate_z(PI/2));
+    cube_add_transform_to_pattern(&c5, matrix_new_translation4(0, 1, 0));
+
+    // glass
+    struct cube glass = cube_new_cube();
+    glass.material.ambient = 0.01;
+    glass.material.specular = 0.8;
+    glass.material.diffuse = 0.01;
+    glass.material.shininess = 10;
+    glass.material.reflective = 0.8;
+    glass.material.transparency = 0.95;
+    glass.material.refractive_index = 1.52;
+    glass.material.color = tuple_new_color(1, 1, 1);
+    cube_add_transform(&glass, matrix_new_scaling4(0.05, 10, 35));
+    cube_add_transform(&glass, matrix_new_translation4(-10.1, 10, 20));
 
     // Back
-    struct plane back = plane_new_plane();
+    struct cube back = cube_new_cube();
     back.material.ambient = 0.2;
     back.material.specular = 0.2;
-    back.material.diffuse = 0.6;
+    back.material.diffuse = 1;
     back.material.shininess = 50;
     back.material.reflective = 0;
-    back.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD3);
-    plane_add_transform(&back, matrix_new_rotate_x(PI/2));
-    plane_add_transform(&back, matrix_new_translation4(0, 0, -16));
-    plane_add_transform_to_pattern(&back, matrix_new_scaling4(2, 2, 2));
-
-    // Left
-    struct plane left = plane_new_plane();
-    left.material.ambient = 0.2;
-    left.material.specular = 0.2;
-    left.material.diffuse = 0.6;
-    left.material.shininess = 50;
-    left.material.reflective = 0;
-    left.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD3);
-    plane_add_transform(&left, matrix_new_rotate_z(-PI/2));
-    plane_add_transform(&left, matrix_new_translation4(-16, 0, 0));
-    plane_add_transform_to_pattern(&left, matrix_new_scaling4(2, 2, 2));
-    plane_add_transform_to_pattern(&left, matrix_new_translation4(2, 0, 0));
+    back.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&back, matrix_new_scaling4(10, 10, 0.1));
+    cube_add_transform(&back, matrix_new_translation4(0, 10, 55));
+    cube_add_transform_to_pattern(&back, matrix_new_scaling4(0.25, 0.25, 0.25));
+    cube_add_transform_to_pattern(&back, matrix_new_rotate_z(PI/2));
 
     // Right
-    struct plane right = plane_new_plane();
+    struct cube right = cube_new_cube();
     right.material.ambient = 0.2;
     right.material.specular = 0.2;
     right.material.diffuse = 0.6;
     right.material.shininess = 50;
     right.material.reflective = 0;
-    right.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD3);
-    plane_add_transform(&right, matrix_new_rotate_z(PI/2));
-    plane_add_transform(&right, matrix_new_translation4(16, 0, 0));
-    plane_add_transform_to_pattern(&right, matrix_new_scaling4(2, 2, 2));
-    plane_add_transform_to_pattern(&right, matrix_new_translation4(2, 0, 0));
+    right.material.pattern = pattern_stripe(tuple_new_color(1, 1, 1), NORD15);
+    cube_add_transform(&right, matrix_new_scaling4(0.1, 10, 35));
+    cube_add_transform(&right, matrix_new_translation4(10, 10, 20));
+    cube_add_transform_to_pattern(&right, matrix_new_scaling4(0.25, 0.25, 0.25));
+    cube_add_transform_to_pattern(&right, matrix_new_rotate_z(PI/2));
 
     struct sphere s1 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
     sphere_add_transform(&s1, matrix_new_scaling4(3, 3, 3));
@@ -227,81 +292,39 @@ static void chap12_render(void) {
     sphere_add_transform_to_pattern(&s1, matrix_new_scaling4(3, 3, 3));
     sphere_add_transform_to_pattern(&s1, matrix_new_translation4(1, 0, 0));
 
-    struct sphere s2 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    sphere_add_transform(&s2, matrix_new_scaling4(2, 2, 2));
-    sphere_add_transform(&s2, matrix_new_translation4(9, 2, 3));
-    s2.material.ambient = 0.4;
-    s2.material.diffuse = 1.5;
-    s2.material.specular = 0.6;
-    s2.material.shininess = 100;
-    s2.material.reflective = 0.03;
-    s2.material.pattern = pattern_gradient(NORD10, NORD7);
-    sphere_add_transform_to_pattern(&s2, matrix_new_scaling4(2, 2, 2));
-    sphere_add_transform_to_pattern(&s2, matrix_new_translation4(1, 0, 0));
-    sphere_add_transform_to_pattern(&s2, matrix_new_rotate_y(PI));
-    //s2.material.pattern.default_transformation = matrix_mult_matrix4(matrix_new_rotate_y(PI/3), s2.material.pattern.default_transformation);
-
-    struct sphere s3 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s3.material.diffuse = 0.01;
-    s3.material.ambient = 0.01;
-    s3.material.specular = 1;
-    s3.material.shininess = 5;
-    s3.material.reflective = 0.9;
-    s3.material.transparency = 0.95;
-    s3.material.refractive_index = 1.52;
-    s3.material.color = tuple_new_color(1, 1, 1);
-    sphere_add_transform(&s3, matrix_new_scaling4(1, 1, 1));
-    sphere_add_transform(&s3, matrix_new_translation4(5, 1, 9));
-
-    struct sphere s4 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    sphere_add_transform(&s4, matrix_new_scaling4(1.5, 1.5, 1.5));
-    sphere_add_transform(&s4, matrix_new_translation4(3, 1.5, 7));
-    s4.material.ambient = 0.4;
-    s4.material.diffuse = 1.5;
-    s4.material.specular = 0.6;
-    s4.material.shininess = 100;
-    s4.material.reflective = 0.03;
-    s4.material.pattern = pattern_gradient(NORD9, NORD12);
-    sphere_add_transform_to_pattern(&s4, matrix_new_scaling4(2, 2, 2));
-    sphere_add_transform_to_pattern(&s4, matrix_new_translation4(1, 0, 0));
-    sphere_add_transform_to_pattern(&s4, matrix_new_rotate_y(PI/2));
-    sphere_add_transform_to_pattern(&s4, matrix_new_rotate_x(PI/3));
-
-    struct sphere s5 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s5.material.diffuse = 0.1;
-    s5.material.ambient = 0.1;
-    s5.material.specular = 1;
-    s5.material.shininess = 5;
-    s5.material.reflective = 0.7;
-    s5.material.transparency = 0.8;
-    s5.material.refractive_index = 1.52;
-    s5.material.color = NORD13;
-    sphere_add_transform(&s5, matrix_new_scaling4(1, 1, 1));
-    sphere_add_transform(&s5, matrix_new_translation4(7, 1, 5));
-
     // World
     struct world* world = world_new_world();
-    world_add_plane(world, &floor);
-    world_add_plane(world, &ceil);
-    world_add_plane(world, &front);
-    world_add_plane(world, &back);
-    world_add_plane(world, &left);
-    world_add_plane(world, &right);
-    world_add_sphere(world, &s1);
-    world_add_sphere(world, &s2);
-    world_add_sphere(world, &s3);
-    world_add_sphere(world, &s4);
-    world_add_sphere(world, &s5);
+    world_add_cube(world, &floor);
+    world_add_cube(world, &ceil);
+    world_add_cube(world, &right);
+    world_add_cube(world, &back);
+    world_add_cube(world, &glass);
+    world_add_cube(world, &c1);
+    world_add_cube(world, &c2);
+    world_add_cube(world, &c3);
+    world_add_cube(world, &c4);
+    world_add_cube(world, &c5);
+    //world_add_sphere(world, &s1);
+    //world_add_sphere(world, &s2);
+    //world_add_sphere(world, &s3);
+    //world_add_sphere(world, &s4);
+    //world_add_sphere(world, &s5);
 
-    struct point_light light1 = lights_new_point_light(tuple_new_point(0, 8, 0), tuple_new_color(1, 1, 1));
-    struct point_light light2 = lights_new_point_light(tuple_new_point(15, 15, 15), tuple_new_color(0.2, 0.2, 0.2));
+    struct point_light light1 = lights_new_point_light(tuple_new_point(-100, 50.3, 5), tuple_new_color(1, 1, 1));
+    struct point_light light2 = lights_new_point_light(tuple_new_point(-100, 50, 5), tuple_new_color(0.2, 0.2, 0.2));
+    struct point_light light3 = lights_new_point_light(tuple_new_point(-100, 49.7, 5), tuple_new_color(0.2, 0.2, 0.2));
+    struct point_light light4 = lights_new_point_light(tuple_new_point(-100, 50, 5.2), tuple_new_color(0.2, 0.2, 0.2));
+    struct point_light light5 = lights_new_point_light(tuple_new_point(-100, 50, 4.8), tuple_new_color(0.2, 0.2, 0.2));
     world_add_point_light(world, &light1);
-    world_add_point_light(world, &light2);
+    //world_add_point_light(world, &light2);
+    //world_add_point_light(world, &light3);
+    //world_add_point_light(world, &light4);
+    //world_add_point_light(world, &light5);
 
     // Camera and render
-    struct camera camera = camera_new_camera(CANVAS_WIDTH, CANVAS_HEIGHT, PI/3);
-    struct tuple from = tuple_new_point(12, 2, 3);
-    struct tuple to = tuple_new_point(12, 3.3, 16);
+    struct camera camera = camera_new_camera(CANVAS_WIDTH, CANVAS_HEIGHT, PI/1.8);
+    struct tuple from = tuple_new_point(0, 9, 0);
+    struct tuple to = tuple_new_point(0, 8, 10);
     struct tuple up = tuple_new_vector(0, 1, 0);
     camera.transform = matrix_view_transform(from, to, up);
 

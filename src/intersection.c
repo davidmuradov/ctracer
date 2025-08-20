@@ -18,17 +18,6 @@ intersection_new_intersection(double t, void* object) {
     return inter;
 }
 
-t_object
-intersection_get_object_type(struct intersection* inter) {
-    struct sphere* type1 = (struct sphere*) inter->object;
-    if (type1->type == SPHERE)
-	return SPHERE;
-
-    /* every other type will be checked later when we get there */
-
-    return UNKNOWN_OBJECT;
-}
-
 struct intersection_list
 intersection_new_intersection_list(void) {
     struct intersection_list inter_list;
@@ -120,7 +109,7 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray, s
 	    comps.normalv = plane_normal_at((struct plane*) comps.object, comps.point);
 	    break;
 	case CUBE:
-	    // Cube normalv calculation
+	    comps.normalv = cube_normal_at((struct cube*) comps.object, comps.point);
 	    break;
 	case CYLINDER:
 	    // Cylinder normalv calculation

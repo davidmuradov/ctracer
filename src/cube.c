@@ -55,9 +55,9 @@ cube_intersect_ray(struct cube* c, struct ray* r) {
     double yt[2] = {0};
     double zt[2] = {0};
 
-    cube_check_axis(r->o.x, r->dir.x, xt);
-    cube_check_axis(r->o.y, r->dir.y, yt);
-    cube_check_axis(r->o.z, r->dir.z, zt);
+    cube_check_axis(r2.o.x, r2.dir.x, xt);
+    cube_check_axis(r2.o.y, r2.dir.y, yt);
+    cube_check_axis(r2.o.z, r2.dir.z, zt);
 
     double tmin = cube_t_max(xt[0], yt[0], zt[0]);
     double tmax = cube_t_min(xt[1], yt[1], zt[1]);
@@ -104,6 +104,16 @@ cube_normal_at(struct cube* c, struct tuple p) {
 
     return tuple_normalize(w_normal);
 
+}
+
+void
+cube_add_transform(struct cube* c, struct matrix4 m) {
+    c->default_transformation = matrix_mult_matrix4(m, c->default_transformation);
+}
+
+void
+cube_add_transform_to_pattern(struct cube* c, struct matrix4 m) {
+    c->material.pattern.default_transformation = matrix_mult_matrix4(m, c->material.pattern.default_transformation);
 }
 
 static void

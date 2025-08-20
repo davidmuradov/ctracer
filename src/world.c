@@ -215,7 +215,10 @@ world_intersect_world(struct world* world, struct ray* ray) {
 		}
 		break;
 	    case CUBE:
-		// Cube intersection logic
+		current_list = cube_intersect_ray((struct cube*) current_object, ray);
+		for (int j = 0; j < current_list.nb_intersections; j++) {
+		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
+		}
 		break;
 	    case CYLINDER:
 		// Cylinder intersection logic
@@ -258,44 +261,16 @@ world_get_object_type(const void* object) {
 
 struct tuple
 world_shade_hit(struct world* world, struct precompute* comps, int remaining_calls) {
-    t_object obj_type = world_get_object_type(comps->object);
-    struct material mat;
-    struct sphere* maybe_sphere = (struct sphere*) comps->object;
-    struct plane* maybe_plane = (struct plane*) comps->object;
-    struct cube* maybe_cube = (struct cube*) comps->object;
-    struct cylinder* maybe_cylinder = (struct cylinder*) comps->object;
+    struct material mat = object_utils_get_material(comps->object);
 
     struct tuple color = tuple_new_color(0, 0, 0);
     int shadowed = 0;
 
-    switch (obj_type) {
-	case SPHERE:
-	    mat = maybe_sphere->material;
-	    for (int i = 0; i < world->nb_lights; i++) {
-		shadowed = world_is_shadowed(world, i, comps->over_point);
-		color = tuple_add(color, lights_lighting_sphere(mat, comps->object,
-			    *(struct point_light*) world->light_list[i], comps->point, comps->eyev,
-			    comps->normalv, shadowed));
-	    }
-	    break;
-	case PLANE:
-	    mat = maybe_plane->material;
-	    for (int i = 0; i < world->nb_lights; i++) {
-		shadowed = world_is_shadowed(world, i, comps->over_point);
-		color = tuple_add(color, lights_lighting_sphere(mat, comps->object,
-			    *(struct point_light*) world->light_list[i], comps->point, comps->eyev,
-			    comps->normalv, shadowed));
-	    }
-	    break;
-	case CUBE:
-	    mat = maybe_cube->material;
-	    break;
-	case CYLINDER:
-	    mat = maybe_cylinder->material;
-	    break;
-	default:
-	    mat = materials_new_material();
-	    break;
+    for (int i = 0; i < world->nb_lights; i++) {
+	shadowed = world_is_shadowed(world, i, comps->over_point);
+	color = tuple_add(color, lights_lighting_sphere(mat, comps->object,
+		    *(struct point_light*) world->light_list[i], comps->point, comps->eyev,
+		    comps->normalv, shadowed));
     }
 
     struct tuple reflected = world_reflected_color(world, comps, remaining_calls);
@@ -349,30 +324,7 @@ world_is_shadowed(struct world* world, int i, struct tuple point) {
 
 struct tuple
 world_reflected_color(struct world* world, struct precompute* comps, int remaining_calls) {
-    t_object obj_type = world_get_object_type(comps->object);
-    struct material mat;
-    struct sphere* maybe_sphere = (struct sphere*) comps->object;
-    struct plane* maybe_plane = (struct plane*) comps->object;
-    struct cube* maybe_cube = (struct cube*) comps->object;
-    struct cylinder* maybe_cylinder = (struct cylinder*) comps->object;
-
-    switch (obj_type) {
-	case SPHERE:
-	    mat = maybe_sphere->material;
-	    break;
-	case PLANE:
-	    mat = maybe_plane->material;
-	    break;
-	case CUBE:
-	    mat = maybe_cube->material;
-	    break;
-	case CYLINDER:
-	    mat = maybe_cylinder->material;
-	    break;
-	default:
-	    mat = materials_new_material();
-	    break;
-    }
+    struct material mat = object_utils_get_material(comps->object);
 
     if (ctm_floats_equal(mat.reflective, 0))
 	return tuple_new_color(0, 0, 0);

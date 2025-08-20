@@ -20,4 +20,10 @@ cube_intersect_ray(struct cube* c, struct ray* r);
 struct tuple
 cube_normal_at(struct cube* c, struct tuple p);
 
+void
+cube_add_transform(struct cube* c, struct matrix4 m);
+
+void
+cube_add_transform_to_pattern(struct cube* c, struct matrix4 m);
+
 #endif
