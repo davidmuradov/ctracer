@@ -2,13 +2,14 @@
 #include "matrix.h"
 
 struct material
-object_utils_get_material(const void* object) {
+object_utils_get_material(void* object) {
     t_object obj_type = world_get_object_type(object);
     struct material mat;
     struct sphere* maybe_sphere = (struct sphere*) object;
     struct plane* maybe_plane = (struct plane*) object;
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
+    struct cone* maybe_cone = (struct cone*) object;
 
     switch (obj_type) {
 	case SPHERE:
@@ -23,6 +24,9 @@ object_utils_get_material(const void* object) {
 	case CYLINDER:
 	    mat = maybe_cylinder->material;
 	    break;
+	case CONE:
+	    mat = maybe_cone->material;
+	    break;
 	default:
 	    mat = materials_new_material();
 	    break;
@@ -32,13 +36,14 @@ object_utils_get_material(const void* object) {
 }
 
 struct matrix4
-object_utils_get_transform(const void* object) {
+object_utils_get_transform(void* object) {
     t_object obj_type = world_get_object_type(object);
     struct matrix4 transform;
     struct sphere* maybe_sphere = (struct sphere*) object;
     struct plane* maybe_plane = (struct plane*) object;
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
+    struct cone* maybe_cone = (struct cone*) object;
 
     switch (obj_type) {
 	case SPHERE:
@@ -53,6 +58,9 @@ object_utils_get_transform(const void* object) {
 	case CYLINDER:
 	    transform = maybe_cylinder->transform;
 	    break;
+	case CONE:
+	    transform = maybe_cone->transform;
+	    break;
 	default:
 	    transform = matrix_make_identity4();
 	    break;
@@ -62,13 +70,14 @@ object_utils_get_transform(const void* object) {
 }
 
 struct matrix4
-object_utils_get_inv_transform(const void* object) {
+object_utils_get_inv_transform(void* object) {
     t_object obj_type = world_get_object_type(object);
     struct matrix4 transform;
     struct sphere* maybe_sphere = (struct sphere*) object;
     struct plane* maybe_plane = (struct plane*) object;
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
+    struct cone* maybe_cone = (struct cone*) object;
 
     switch (obj_type) {
 	case SPHERE:
@@ -83,6 +92,9 @@ object_utils_get_inv_transform(const void* object) {
 	case CYLINDER:
 	    transform = maybe_cylinder->inv_transform;
 	    break;
+	case CONE:
+	    transform = maybe_cone->inv_transform;
+	    break;
 	default:
 	    transform = matrix_make_identity4();
 	    break;
@@ -92,13 +104,14 @@ object_utils_get_inv_transform(const void* object) {
 }
 
 struct matrix4
-object_utils_get_transp_inv_transform(const void* object) {
+object_utils_get_transp_inv_transform(void* object) {
     t_object obj_type = world_get_object_type(object);
     struct matrix4 transform;
     struct sphere* maybe_sphere = (struct sphere*) object;
     struct plane* maybe_plane = (struct plane*) object;
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
+    struct cone* maybe_cone = (struct cone*) object;
 
     switch (obj_type) {
 	case SPHERE:
@@ -113,6 +126,9 @@ object_utils_get_transp_inv_transform(const void* object) {
 	case CYLINDER:
 	    transform = maybe_cylinder->transp_inv_transform;
 	    break;
+	case CONE:
+	    transform = maybe_cone->transp_inv_transform;
+	    break;
 	default:
 	    transform = matrix_make_identity4();
 	    break;
@@ -122,7 +138,7 @@ object_utils_get_transp_inv_transform(const void* object) {
 }
 
 int
-object_utils_is_object_in_containers(const void* object, void* containers[], const int sz) {
+object_utils_is_object_in_containers(void* object, void* containers[], const int sz) {
     for (int i = 0; i < sz; i++)
 	if (object == containers[i])
 	    return 1;
@@ -130,7 +146,7 @@ object_utils_is_object_in_containers(const void* object, void* containers[], con
 }
 
 void
-object_utils_remove_object_from_containers(const void* object, void* containers[], const int sz) {
+object_utils_remove_object_from_containers(void* object, void* containers[], const int sz) {
     for (int i = 0; i < sz; i++) {
 	if(object == containers[i]) {
 	    containers[i] = NULL;

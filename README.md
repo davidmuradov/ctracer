@@ -39,3 +39,9 @@ Scene with reflection and refraction :
 ## Chapter 12
 A scene with cubes.
 ![Final render Chapter 12](./out/chap12.png "Final render Chapter 12")
+
+
+## Chapter 13
+Cylinders and cones. Some of the patterns don't seem to work very well in 3D 
+(for example, the ring and checker patterns are very noisy in 3D).
+![Final render Chapter 13](./out/chap13.png "Final render Chapter 13")
