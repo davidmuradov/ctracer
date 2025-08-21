@@ -41,22 +41,6 @@ camera_ray_for_pixel(struct camera* camera, int i, int j) {
     double world_x = camera->half_width - joffset;
     double world_y = camera->half_height - ioffset;
 
-    /*
-    struct matrix4 inv_transform;
-    int su = matrix_inverse_matrix4(camera->transform, &inv_transform);
-    if (su) {
-	struct tuple pixel = matrix_mult_matrix4_tuple(inv_transform,
-		tuple_new_point(world_x, world_y, -1));
-	struct tuple origin = matrix_mult_matrix4_tuple(inv_transform, tuple_new_point(0, 0, 0));
-	struct tuple direction = tuple_normalize(tuple_sub(pixel, origin));
-
-	return ray_new_ray(origin, direction);
-    }
-    else {
-	fprintf(stderr, "Matrix is non invertible\n");
-	exit(1);
-    }
-    */
     struct tuple pixel = matrix_mult_matrix4_tuple(camera->inv_transform,
 	    tuple_new_point(world_x, world_y, -1));
     struct tuple origin = matrix_mult_matrix4_tuple(camera->inv_transform, tuple_new_point(0, 0, 0));

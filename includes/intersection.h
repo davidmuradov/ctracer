@@ -4,7 +4,7 @@
 #include "tuple.h"
 #include "ray.h"
 
-typedef enum {UNKNOWN_OBJECT, SPHERE, PLANE, CUBE, CYLINDER, GROUP, TRIANGLE, CSG} t_object;
+typedef enum {UNKNOWN_OBJECT, SPHERE, PLANE, CUBE, CYLINDER, CONE, GROUP, TRIANGLE, CSG} t_object;
 
 #define INIT_MAX_INTERSECTIONS	16
 

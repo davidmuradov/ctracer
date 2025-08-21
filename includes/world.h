@@ -1,7 +1,7 @@
 #ifndef INCLUDES_WORLD_H
 #define INCLUDES_WORLD_H
 
-#define MAX_RECUR_CALLS	5
+#define MAX_RECUR_CALLS	10
 
 #include "intersection.h"
 #include "lights.h"
@@ -9,6 +9,7 @@
 #include "plane.h"
 #include "cube.h"
 #include "cylinder.h"
+#include "cone.h"
 
 struct world;
 
@@ -34,7 +35,7 @@ void*
 world_get_object_at(struct world* world, int i);
 
 t_object
-world_get_object_type(const void* object);
+world_get_object_type(void* object);
 
 void*
 world_get_light_at(struct world* world, int i);
@@ -50,6 +51,9 @@ world_add_cube(struct world* world, struct cube* cube);
 
 void
 world_add_cylinder(struct world* world, struct cylinder* cylinder);
+
+void
+world_add_cone(struct world* world, struct cone* cone);
 
 void
 world_add_point_light(struct world* world, struct point_light* light);

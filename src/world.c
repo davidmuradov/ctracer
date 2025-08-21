@@ -169,6 +169,27 @@ world_add_cylinder(struct world* world, struct cylinder* cylinder) {
 }
 
 void
+world_add_cone(struct world* world, struct cone* cone) {
+    cone_make_inv_transform(cone);
+    cone_make_transp_inv_transform(cone);
+    pattern_make_inv_transform(&(cone->material.pattern));
+    if (world->nb_objects < world->max_nb_objects) {
+	world->object_list[world->nb_objects] = (void*) cone;
+	world->nb_objects++;
+    }
+    else {
+	world->object_list = realloc(world->object_list, world->max_nb_objects * 2 * sizeof(void*));
+	if (!world->object_list) {
+	    fprintf(stderr, "Failed to allocate new memory for list of objects in world\n");
+	    exit(1);
+	}
+	world->max_nb_objects *= 2;
+	world->object_list[world->nb_objects] = (void*) cone;
+	world->nb_objects++;
+    }
+}
+
+void
 world_add_point_light(struct world* world, struct point_light* light) {
     if (world->nb_lights < world->max_nb_lights) {
 	world->light_list[world->nb_lights] = (void*) light;
@@ -235,7 +256,16 @@ world_intersect_world(struct world* world, struct ray* ray) {
 		}
 		break;
 	    case CYLINDER:
-		// Cylinder intersection logic
+		current_list = cylinder_intersect_ray((struct cylinder*) current_object, ray);
+		for (int j = 0; j < current_list.nb_intersections; j++) {
+		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
+		}
+		break;
+	    case CONE:
+		current_list = cone_intersect_ray((struct cone*) current_object, ray);
+		for (int j = 0; j < current_list.nb_intersections; j++) {
+		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
+		}
 		break;
 	    default:
 		// The rest will come later
@@ -268,7 +298,7 @@ world_compare_intersections(const void* a, const void* b) {
 }
 
 t_object
-world_get_object_type(const void* object) {
+world_get_object_type(void* object) {
     struct sphere* obj = (struct sphere*) object;
     return obj->type;
 }

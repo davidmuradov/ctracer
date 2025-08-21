@@ -112,7 +112,10 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray, s
 	    comps.normalv = cube_normal_at((struct cube*) comps.object, comps.point);
 	    break;
 	case CYLINDER:
-	    // Cylinder normalv calculation
+	    comps.normalv = cylinder_normal_at((struct cylinder*) comps.object, comps.point);
+	    break;
+	case CONE:
+	    comps.normalv = cone_normal_at((struct cone*) comps.object, comps.point);
 	    break;
 	default:
 	    break;
