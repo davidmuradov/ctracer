@@ -1,5 +1,7 @@
 #include "../includes/object_utils.h"
+#include "materials.h"
 #include "matrix.h"
+#include "group.h"
 
 struct material
 object_utils_get_material(void* object) {
@@ -10,6 +12,7 @@ object_utils_get_material(void* object) {
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
     struct cone* maybe_cone = (struct cone*) object;
+    struct group* maybe_group = (struct group*) object;
 
     switch (obj_type) {
 	case SPHERE:
@@ -26,6 +29,9 @@ object_utils_get_material(void* object) {
 	    break;
 	case CONE:
 	    mat = maybe_cone->material;
+	    break;
+	case GROUP:
+	    mat = materials_new_material(); // maybe_group->material; // Group does not have a material for now
 	    break;
 	default:
 	    mat = materials_new_material();
@@ -44,6 +50,7 @@ object_utils_get_transform(void* object) {
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
     struct cone* maybe_cone = (struct cone*) object;
+    struct group* maybe_group = (struct group*) object;
 
     switch (obj_type) {
 	case SPHERE:
@@ -60,6 +67,9 @@ object_utils_get_transform(void* object) {
 	    break;
 	case CONE:
 	    transform = maybe_cone->transform;
+	    break;
+	case GROUP:
+	    transform = maybe_group->_transform;
 	    break;
 	default:
 	    transform = matrix_make_identity4();
@@ -78,6 +88,7 @@ object_utils_get_inv_transform(void* object) {
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
     struct cone* maybe_cone = (struct cone*) object;
+    struct group* maybe_group = (struct group*) object;
 
     switch (obj_type) {
 	case SPHERE:
@@ -94,6 +105,9 @@ object_utils_get_inv_transform(void* object) {
 	    break;
 	case CONE:
 	    transform = maybe_cone->inv_transform;
+	    break;
+	case GROUP:
+	    transform = maybe_group->_inv_transform;
 	    break;
 	default:
 	    transform = matrix_make_identity4();
@@ -112,6 +126,7 @@ object_utils_get_transp_inv_transform(void* object) {
     struct cube* maybe_cube = (struct cube*) object;
     struct cylinder* maybe_cylinder = (struct cylinder*) object;
     struct cone* maybe_cone = (struct cone*) object;
+    struct group* maybe_group = (struct group*) object;
 
     switch (obj_type) {
 	case SPHERE:
@@ -128,6 +143,9 @@ object_utils_get_transp_inv_transform(void* object) {
 	    break;
 	case CONE:
 	    transform = maybe_cone->transp_inv_transform;
+	    break;
+	case GROUP:
+	    transform = maybe_group->_transp_inv_transform;
 	    break;
 	default:
 	    transform = matrix_make_identity4();

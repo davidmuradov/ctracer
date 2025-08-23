@@ -2,6 +2,7 @@
 #include "ct_math.h"
 #include "cube.h"
 #include "cylinder.h"
+#include "group.h"
 #include "intersection.h"
 #include "lights.h"
 #include "materials.h"
@@ -263,6 +264,12 @@ world_intersect_world(struct world* world, struct ray* ray) {
 		break;
 	    case CONE:
 		current_list = cone_intersect_ray((struct cone*) current_object, ray);
+		for (int j = 0; j < current_list.nb_intersections; j++) {
+		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
+		}
+		break;
+	    case GROUP:
+		current_list = group_intersect_ray((struct group*) current_object, ray);
 		for (int j = 0; j < current_list.nb_intersections; j++) {
 		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
 		}
