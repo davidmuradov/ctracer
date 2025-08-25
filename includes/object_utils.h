@@ -49,4 +49,10 @@ object_utils_remove_object_from_containers(void* object, void* containers[], con
 void
 object_utils_add_object_to_containers(void* object, void* containers[], const int sz);
 
+/**
+ * Return the object type of a shape primitive.
+ */
+t_object
+object_utils_get_object_type(void* object);
+
 #endif

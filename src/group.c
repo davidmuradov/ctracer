@@ -1,6 +1,5 @@
 #include "../includes/group.h"
-#include "cylinder.h"
-#include "sphere.h"
+#include "object_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -63,7 +62,7 @@ group_intersect_ray(struct group* g, struct ray* ray) {
 
     for (int i = 0; i < g->nb_children; i++) {
 	current_object = g->list_children[i];
-	object_type = world_get_object_type(current_object);
+	object_type = object_utils_get_object_type(current_object);
 	switch (object_type) {
 	    case SPHERE:
 		current_list = sphere_intersect_ray((struct sphere*) current_object, ray);
@@ -113,32 +112,32 @@ group_intersect_ray(struct group* g, struct ray* ray) {
 
 void
 group_add_transform(struct group* g, struct matrix4 m) {
-    g->_transform = matrix_mult_matrix4(m, g->_transform);
+    //g->_transform = matrix_mult_matrix4(m, g->_transform);
 
     t_object object_type = UNKNOWN_OBJECT;
     void* current_object;
 
     for (int i = 0; i < g->nb_children; i++) {
 	current_object = g->list_children[i];
-	object_type = world_get_object_type(current_object);
+	object_type = object_utils_get_object_type(current_object);
 	switch (object_type) {
 	    case SPHERE:
-		sphere_add_transform((struct sphere*) current_object, g->_transform);
+		sphere_add_transform((struct sphere*) current_object, m);
 		break;
 	    case PLANE:
-		plane_add_transform((struct plane*) current_object, g->_transform);
+		plane_add_transform((struct plane*) current_object, m);
 		break;
 	    case CUBE:
-		cube_add_transform((struct cube*) current_object, g->_transform);
+		cube_add_transform((struct cube*) current_object, m);
 		break;
 	    case CYLINDER:
-		cylinder_add_transform((struct cylinder*) current_object, g->_transform);
+		cylinder_add_transform((struct cylinder*) current_object, m);
 		break;
 	    case CONE:
-		cone_add_transform((struct cone*) current_object, g->_transform);
+		cone_add_transform((struct cone*) current_object, m);
 		break;
 	    case GROUP:
-		group_add_transform((struct group*) current_object, g->_transform);
+		group_add_transform((struct group*) current_object, m);
 		break;
 	    default:
 		// The rest will come later
@@ -149,14 +148,14 @@ group_add_transform(struct group* g, struct matrix4 m) {
 
 void
 group_make_inv_transform(struct group* g) {
-    matrix_inverse_matrix4(g->_transform, &(g->_inv_transform));
+    //matrix_inverse_matrix4(g->_transform, &(g->_inv_transform));
 
     t_object object_type = UNKNOWN_OBJECT;
     void* current_object;
 
     for (int i = 0; i < g->nb_children; i++) {
 	current_object = g->list_children[i];
-	object_type = world_get_object_type(current_object);
+	object_type = object_utils_get_object_type(current_object);
 	switch (object_type) {
 	    case SPHERE:
 		sphere_make_inv_transform((struct sphere*) current_object);
@@ -185,14 +184,14 @@ group_make_inv_transform(struct group* g) {
 
 void
 group_make_transp_inv_transform(struct group* g) {
-    g->_transp_inv_transform = matrix_transpose4(g->_inv_transform);
+    //g->_transp_inv_transform = matrix_transpose4(g->_inv_transform);
 
     t_object object_type = UNKNOWN_OBJECT;
     void* current_object;
 
     for (int i = 0; i < g->nb_children; i++) {
 	current_object = g->list_children[i];
-	object_type = world_get_object_type(current_object);
+	object_type = object_utils_get_object_type(current_object);
 	switch (object_type) {
 	    case SPHERE:
 		sphere_make_transp_inv_transform((struct sphere*) current_object);

@@ -2,7 +2,13 @@
 #define INCLUDES_GROUP_H
 
 #include "matrix.h"
-#include "object_utils.h"
+//#include "object_utils.h"
+#include "intersection.h"
+#include "sphere.h"
+#include "plane.h"
+#include "cube.h"
+#include "cylinder.h"
+#include "cone.h"
 
 struct group {
     t_object type;

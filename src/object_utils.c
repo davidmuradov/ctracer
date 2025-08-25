@@ -184,3 +184,9 @@ object_utils_add_object_to_containers(void* object, void* containers[], const in
 	    return;
 	}
 }
+
+t_object
+object_utils_get_object_type(void* object) {
+    struct sphere* obj = (struct sphere*) object;
+    return obj->type;
+}
