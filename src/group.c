@@ -155,22 +155,32 @@ group_make_inv_transform(struct group* g) {
 
     for (int i = 0; i < g->nb_children; i++) {
 	current_object = g->list_children[i];
+	struct sphere* maybe_sphere = (struct sphere*) current_object;
+	struct plane* maybe_plane = (struct plane*) current_object;
+	struct cube* maybe_cube = (struct cube*) current_object;
+	struct cylinder* maybe_cylinder = (struct cylinder*) current_object;
+	struct cone* maybe_cone = (struct cone*) current_object;
 	object_type = object_utils_get_object_type(current_object);
 	switch (object_type) {
 	    case SPHERE:
-		sphere_make_inv_transform((struct sphere*) current_object);
+		sphere_make_inv_transform(maybe_sphere);
+		pattern_make_inv_transform(&maybe_sphere->material.pattern);
 		break;
 	    case PLANE:
-		plane_make_inv_transform((struct plane*) current_object);
+		plane_make_inv_transform(maybe_plane);
+		pattern_make_inv_transform(&maybe_plane->material.pattern);
 		break;
 	    case CUBE:
-		cube_make_inv_transform((struct cube*) current_object);
+		cube_make_inv_transform(maybe_cube);
+		pattern_make_inv_transform(&maybe_cube->material.pattern);
 		break;
 	    case CYLINDER:
-		cylinder_make_inv_transform((struct cylinder*) current_object);
+		cylinder_make_inv_transform(maybe_cylinder);
+		pattern_make_inv_transform(&maybe_cylinder->material.pattern);
 		break;
 	    case CONE:
-		cone_make_inv_transform((struct cone*) current_object);
+		cone_make_inv_transform(maybe_cone);
+		pattern_make_inv_transform(&maybe_cone->material.pattern);
 		break;
 	    case GROUP:
 		group_make_inv_transform((struct group*) current_object);

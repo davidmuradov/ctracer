@@ -45,3 +45,8 @@ A scene with cubes.
 Cylinders and cones. Some of the patterns don't seem to work very well in 3D 
 (for example, the ring and checker patterns are very noisy in 3D).
 ![Final render Chapter 13](./out/chap13.png "Final render Chapter 13")
+
+
+## Chapter 14
+Groups.
+![Final render Chapter 14](./out/chap14.png "Final render Chapter 14")

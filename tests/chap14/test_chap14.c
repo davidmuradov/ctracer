@@ -130,28 +130,90 @@ static void chap14_render(void) {
     const struct tuple NORD14 = tuple_new_color(163./255, 190./255, 140./255); // Green
     const struct tuple NORD15 = tuple_new_color(180./255, 142./255, 173./255); // Purple
 
-    struct group group = group_new_group();
-    struct group group2 = group_new_group();
+    // Corner
     struct sphere s1 = sphere_new_sphere(tuple_new_point(0, 0, 0), 1);
-    s1.material.pattern = pattern_stripe(NORD15, NORD14);
-    sphere_add_transform_to_pattern(&s1, matrix_new_scaling4(0.5, 0.5, 0.5));
-    sphere_add_transform_to_pattern(&s1, matrix_new_rotate_y(PI/2));
-    sphere_add_transform(&s1, matrix_new_translation4(5, 0, 0));
-    group_add_object(&group2, &s1);
-    group_add_transform(&group2, matrix_new_scaling4(2, 2, 2));
-    group_add_object(&group, &group2);
-    group_add_transform(&group, matrix_new_rotate_y(PI/2));
+    sphere_add_transform(&s1, matrix_new_scaling4(0.25, 0.25, 0.25));
+    sphere_add_transform(&s1, matrix_new_translation4(0, 0, -1));
+    s1.material.pattern = pattern_stripe(NORD10, NORD12);
+    sphere_add_transform_to_pattern(&s1, matrix_new_scaling4(0.1, 0.1, 0.1));
+    sphere_add_transform_to_pattern(&s1, matrix_new_rotate_z(PI/2));
+
+    // Edge
+    struct cylinder c1 = cylinder_new_cylinder();
+    c1.min = 0;
+    c1.max = 1;
+    c1.material.pattern = pattern_stripe(NORD10, NORD12);
+    cylinder_add_transform_to_pattern(&c1, matrix_new_scaling4(0.1, 0.1, 0.1));
+    //cylinder_add_transform_to_pattern(&c1, matrix_new_rotate_z(PI/2));
+    cylinder_add_transform(&c1, matrix_new_scaling4(0.25, 1, 0.25));
+    cylinder_add_transform(&c1, matrix_new_rotate_z(-PI/2));
+    cylinder_add_transform(&c1, matrix_new_rotate_y(-PI/6));
+    cylinder_add_transform(&c1, matrix_new_translation4(0, 0, -1));
+
+    struct group side1 = group_new_group();
+    group_add_object(&side1, &s1);
+    group_add_object(&side1, &c1);
+
+    struct group side2 = group_new_group();
+    struct sphere s2 = s1;
+    struct cylinder c2 = c1;
+    group_add_object(&side2, &s2);
+    group_add_object(&side2, &c2);
+    group_add_transform(&side2, matrix_new_rotate_y(1 * PI/3));
+
+    struct group side3 = group_new_group();
+    struct sphere s3 = s1;
+    struct cylinder c3 = c1;
+    group_add_object(&side3, &s3);
+    group_add_object(&side3, &c3);
+    group_add_transform(&side3, matrix_new_rotate_y(2 * PI/3));
+
+    struct group side4 = group_new_group();
+    struct sphere s4 = s1;
+    struct cylinder c4 = c1;
+    group_add_object(&side4, &s4);
+    group_add_object(&side4, &c4);
+    group_add_transform(&side4, matrix_new_rotate_y(3 * PI/3));
+
+    struct group side5 = group_new_group();
+    struct sphere s5 = s1;
+    struct cylinder c5 = c1;
+    group_add_object(&side5, &s5);
+    group_add_object(&side5, &c5);
+    group_add_transform(&side5, matrix_new_rotate_y(4 * PI/3));
+
+    struct group side6 = group_new_group();
+    struct sphere s6 = s1;
+    struct cylinder c6 = c1;
+    group_add_object(&side6, &s6);
+    group_add_object(&side6, &c6);
+    group_add_transform(&side6, matrix_new_rotate_y(5 * PI/3));
+
+    struct group hex = group_new_group();
+    group_add_object(&hex, &side1);
+    group_add_object(&hex, &side2);
+    group_add_object(&hex, &side3);
+    group_add_object(&hex, &side4);
+    group_add_object(&hex, &side5);
+    group_add_object(&hex, &side6);
+    group_add_transform(&hex, matrix_new_rotate_x(-PI/8));
+
+    struct plane floor = plane_new_plane();
+    floor.material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD0);
+    plane_add_transform(&floor, matrix_new_translation4(0, -1, 0));
+    plane_add_transform_to_pattern(&floor, matrix_new_scaling4(2, 2, 2));
 
     struct world* world = world_new_world();
-    world_add_sphere(world, &s1);
-    //world_add_group(world, &group2);
+    world_add_group(world, &hex);
+    world_add_plane(world, &floor);
 
-    struct point_light light1 = lights_new_point_light(tuple_new_point(0, 10, -10), tuple_new_color(1, 1, 1));
-    struct point_light light2 = lights_new_point_light(tuple_new_point(-100, 50, -6), tuple_new_color(0.2, 0.2, 0.2));
+    struct point_light light1 = lights_new_point_light(tuple_new_point(0, 10, -3), tuple_new_color(0.5, 0.5, 0.5));
+    struct point_light light2 = lights_new_point_light(tuple_new_point(0, 10, 3), tuple_new_color(0.5, 0.5, 0.5));
     struct point_light light3 = lights_new_point_light(tuple_new_point(-100, 49.9, -6), tuple_new_color(0.2, 0.2, 0.2));
     struct point_light light4 = lights_new_point_light(tuple_new_point(-100, 50, -6.2), tuple_new_color(0.2, 0.2, 0.2));
     struct point_light light5 = lights_new_point_light(tuple_new_point(-100, 50, -5.8), tuple_new_color(0.2, 0.2, 0.2));
     world_add_point_light(world, &light1);
+    world_add_point_light(world, &light2);
     //world_add_point_light(world, &light2);
     //world_add_point_light(world, &light3);
     //world_add_point_light(world, &light4);
@@ -159,8 +221,8 @@ static void chap14_render(void) {
 
     // Camera and render
     struct camera camera = camera_new_camera(CANVAS_WIDTH, CANVAS_HEIGHT, PI/3);
-    struct tuple from = tuple_new_point(0, 0, 0);
-    struct tuple to = tuple_new_point(0, 0, -1);
+    struct tuple from = tuple_new_point(0, 1, -4);
+    struct tuple to = tuple_new_point(0, 0, 1);
     struct tuple up = tuple_new_vector(0, 1, 0);
     camera.transform = matrix_view_transform(from, to, up);
     camera_make_inv_view_transform(&camera);
