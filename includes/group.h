@@ -22,11 +22,11 @@ struct group {
     int max_nb_children;
 };
 
-struct group
+struct group*
 group_new_group(void);
 
 void
-group_free_group(struct group* g);
+group_delete_group(struct group* g);
 
 void
 group_add_object(struct group* group, void* object);

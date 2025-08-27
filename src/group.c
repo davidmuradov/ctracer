@@ -7,32 +7,38 @@
 
 static int UNIQUE_ID_GROUP = 0;
 
-struct group
+struct group*
 group_new_group(void) {
-    struct group g;
+    struct group* g = malloc(sizeof(struct group));
+    if (!g) {
+	fprintf(stderr, "Error allocating memory for sphere\n");
+	exit(1);
+    }
 
-    g._transform = matrix_make_identity4();
-    g._inv_transform = matrix_make_identity4();
-    g._transp_inv_transform = matrix_make_identity4();
-    g.type = GROUP;
-    g.id = UNIQUE_ID_GROUP;
+    g->_transform = matrix_make_identity4();
+    g->_inv_transform = matrix_make_identity4();
+    g->_transp_inv_transform = matrix_make_identity4();
+    g->type = GROUP;
+    g->id = UNIQUE_ID_GROUP;
     UNIQUE_ID_GROUP++;
 
-    g.list_children = calloc(INIT_MAX_NB_CHILDREN_GROUP, sizeof(void*));
-    if (!g.list_children) {
+    g->list_children = calloc(INIT_MAX_NB_CHILDREN_GROUP, sizeof(void*));
+    if (!g->list_children) {
 	fprintf(stderr, "Failed to allocate memory for world's list of objects\n");
 	exit(1);
     }
-    g.max_nb_children = INIT_MAX_NB_CHILDREN_GROUP;
-    g.nb_children = 0;
+    g->max_nb_children = INIT_MAX_NB_CHILDREN_GROUP;
+    g->nb_children = 0;
 
     return g;
 }
 
 void
-group_free_group(struct group* g) {
+group_delete_group(struct group* g) {
     free(g->list_children);
     g->list_children = NULL;
+    free(g);
+    g = NULL;
 }
 
 void

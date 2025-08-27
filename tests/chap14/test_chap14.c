@@ -25,20 +25,20 @@ static void chap14_render(void);
 int main(int argc, char *argv[]) {
 
     // Test 2
-    struct group group = group_new_group();
-    assert(group.nb_children == 0);
+    struct group* group = group_new_group();
+    assert(group->nb_children == 0);
 
     // Test 3
     struct cube* cube = cube_new_cube();
-    group_add_object(&group, cube);
-    assert(group.nb_children == 1);
-    assert(group.list_children[0] == cube);
-    group_free_group(&group);
+    group_add_object(group, cube);
+    assert(group->nb_children == 1);
+    assert(group->list_children[0] == cube);
+    group_delete_group(group);
 
     // Test 4 and 5
     group = group_new_group();
     struct ray ray = ray_new_ray(tuple_new_point(0, 0, 0), tuple_new_vector(0, 0, 1));
-    struct intersection_list inter_list = group_intersect_ray(&group, &ray);
+    struct intersection_list inter_list = group_intersect_ray(group, &ray);
     assert(inter_list.nb_intersections == 0);
     intersection_clear_intersection_list(&inter_list);
 
@@ -51,57 +51,57 @@ int main(int argc, char *argv[]) {
     sphere_add_transform(s3, matrix_new_translation4(5, 0, 0));
     sphere_make_inv_transform(s3);
     sphere_make_transp_inv_transform(s3);
-    group_add_object(&group, s1);
-    group_add_object(&group, s2);
-    group_add_object(&group, s3);
+    group_add_object(group, s1);
+    group_add_object(group, s2);
+    group_add_object(group, s3);
     ray = ray_new_ray(tuple_new_point(0, 0, -5), tuple_new_vector(0, 0, 1));
-    inter_list = group_intersect_ray(&group, &ray);
+    inter_list = group_intersect_ray(group, &ray);
     // assert (should be sorted, but I don't do it as an optimization because the world does it)
     // result inspected through debugger (it passes)
     intersection_clear_intersection_list(&inter_list);
-    group_free_group(&group);
+    group_delete_group(group);
 
     // Test 6
     group = group_new_group();
     s1 = sphere_new_sphere();
     sphere_add_transform(s1, matrix_new_translation4(5, 0, 0));
-    group_add_object(&group, s1);
-    group_add_transform(&group, matrix_new_scaling4(2, 2, 2));
-    group_make_inv_transform(&group);
-    group_make_transp_inv_transform(&group);
+    group_add_object(group, s1);
+    group_add_transform(group, matrix_new_scaling4(2, 2, 2));
+    group_make_inv_transform(group);
+    group_make_transp_inv_transform(group);
     ray = ray_new_ray(tuple_new_point(10, 0, -10), tuple_new_vector(0, 0, 1));
-    inter_list = group_intersect_ray(&group, &ray);
+    inter_list = group_intersect_ray(group, &ray);
     assert(inter_list.nb_intersections == 2);
 
     // Normals for groups
-    group_free_group(&group);
+    group_delete_group(group);
     group = group_new_group();
-    struct group group2 = group_new_group();
+    struct group* group2 = group_new_group();
     s1 = sphere_new_sphere();
     sphere_add_transform(s1, matrix_new_translation4(5, 0, 0));
-    group_add_object(&group2, s1);
-    group_add_transform(&group2, matrix_new_scaling4(2, 2, 2));
-    group_add_object(&group, &group2);
-    group_add_transform(&group, matrix_new_rotate_y(PI/2));
-    group_make_inv_transform(&group);
-    group_make_transp_inv_transform(&group);
+    group_add_object(group2, s1);
+    group_add_transform(group2, matrix_new_scaling4(2, 2, 2));
+    group_add_object(group, group2);
+    group_add_transform(group, matrix_new_rotate_y(PI/2));
+    group_make_inv_transform(group);
+    group_make_transp_inv_transform(group);
 
     struct tuple n = sphere_normal_at(s1, tuple_new_point(-2, 0, -10));
     // Test passes for world to object
     // assert ..
 
-    group_free_group(&group);
-    group_free_group(&group2);
+    group_delete_group(group);
+    group_delete_group(group2);
     group = group_new_group();
     group2 = group_new_group();
     s1 = sphere_new_sphere();
     sphere_add_transform(s1, matrix_new_translation4(5, 0, 0));
-    group_add_object(&group2, s1);
-    group_add_transform(&group2, matrix_new_scaling4(1, 2, 3));
-    group_add_object(&group, &group2);
-    group_add_transform(&group, matrix_new_rotate_y(PI/2));
-    group_make_inv_transform(&group);
-    group_make_transp_inv_transform(&group);
+    group_add_object(group2, s1);
+    group_add_transform(group2, matrix_new_scaling4(1, 2, 3));
+    group_add_object(group, group2);
+    group_add_transform(group, matrix_new_rotate_y(PI/2));
+    group_make_inv_transform(group);
+    group_make_transp_inv_transform(group);
 
     n = sphere_normal_at(s1, tuple_new_point(1.7321, 1.1547, -5.5774));
     // Passes, small floating point difference
@@ -149,11 +149,11 @@ static void chap14_render(void) {
     cylinder_add_transform(c1, matrix_new_rotate_y(-PI/6));
     cylinder_add_transform(c1, matrix_new_translation4(0, 0, -1));
 
-    struct group side1 = group_new_group();
-    group_add_object(&side1, s1);
-    group_add_object(&side1, c1);
+    struct group* side1 = group_new_group();
+    group_add_object(side1, s1);
+    group_add_object(side1, c1);
 
-    struct group side2 = group_new_group();
+    struct group* side2 = group_new_group();
     s1 = sphere_new_sphere();
     sphere_add_transform(s1, matrix_new_scaling4(0.25, 0.25, 0.25));
     sphere_add_transform(s1, matrix_new_translation4(0, 0, -1));
@@ -169,11 +169,11 @@ static void chap14_render(void) {
     cylinder_add_transform(c1, matrix_new_rotate_z(-PI/2));
     cylinder_add_transform(c1, matrix_new_rotate_y(-PI/6));
     cylinder_add_transform(c1, matrix_new_translation4(0, 0, -1));
-    group_add_object(&side2, s1);
-    group_add_object(&side2, c1);
-    group_add_transform(&side2, matrix_new_rotate_y(1 * PI/3));
+    group_add_object(side2, s1);
+    group_add_object(side2, c1);
+    group_add_transform(side2, matrix_new_rotate_y(1 * PI/3));
 
-    struct group side3 = group_new_group();
+    struct group* side3 = group_new_group();
     s1 = sphere_new_sphere();
     sphere_add_transform(s1, matrix_new_scaling4(0.25, 0.25, 0.25));
     sphere_add_transform(s1, matrix_new_translation4(0, 0, -1));
@@ -189,11 +189,11 @@ static void chap14_render(void) {
     cylinder_add_transform(c1, matrix_new_rotate_z(-PI/2));
     cylinder_add_transform(c1, matrix_new_rotate_y(-PI/6));
     cylinder_add_transform(c1, matrix_new_translation4(0, 0, -1));
-    group_add_object(&side3, s1);
-    group_add_object(&side3, c1);
-    group_add_transform(&side3, matrix_new_rotate_y(2 * PI/3));
+    group_add_object(side3, s1);
+    group_add_object(side3, c1);
+    group_add_transform(side3, matrix_new_rotate_y(2 * PI/3));
 
-    struct group side4 = group_new_group();
+    struct group* side4 = group_new_group();
     s1 = sphere_new_sphere();
     sphere_add_transform(s1, matrix_new_scaling4(0.25, 0.25, 0.25));
     sphere_add_transform(s1, matrix_new_translation4(0, 0, -1));
@@ -209,11 +209,11 @@ static void chap14_render(void) {
     cylinder_add_transform(c1, matrix_new_rotate_z(-PI/2));
     cylinder_add_transform(c1, matrix_new_rotate_y(-PI/6));
     cylinder_add_transform(c1, matrix_new_translation4(0, 0, -1));
-    group_add_object(&side4, s1);
-    group_add_object(&side4, c1);
-    group_add_transform(&side4, matrix_new_rotate_y(3 * PI/3));
+    group_add_object(side4, s1);
+    group_add_object(side4, c1);
+    group_add_transform(side4, matrix_new_rotate_y(3 * PI/3));
 
-    struct group side5 = group_new_group();
+    struct group* side5 = group_new_group();
     s1 = sphere_new_sphere();
     sphere_add_transform(s1, matrix_new_scaling4(0.25, 0.25, 0.25));
     sphere_add_transform(s1, matrix_new_translation4(0, 0, -1));
@@ -229,11 +229,11 @@ static void chap14_render(void) {
     cylinder_add_transform(c1, matrix_new_rotate_z(-PI/2));
     cylinder_add_transform(c1, matrix_new_rotate_y(-PI/6));
     cylinder_add_transform(c1, matrix_new_translation4(0, 0, -1));
-    group_add_object(&side5, s1);
-    group_add_object(&side5, c1);
-    group_add_transform(&side5, matrix_new_rotate_y(4 * PI/3));
+    group_add_object(side5, s1);
+    group_add_object(side5, c1);
+    group_add_transform(side5, matrix_new_rotate_y(4 * PI/3));
 
-    struct group side6 = group_new_group();
+    struct group* side6 = group_new_group();
     s1 = sphere_new_sphere();
     sphere_add_transform(s1, matrix_new_scaling4(0.25, 0.25, 0.25));
     sphere_add_transform(s1, matrix_new_translation4(0, 0, -1));
@@ -249,18 +249,18 @@ static void chap14_render(void) {
     cylinder_add_transform(c1, matrix_new_rotate_z(-PI/2));
     cylinder_add_transform(c1, matrix_new_rotate_y(-PI/6));
     cylinder_add_transform(c1, matrix_new_translation4(0, 0, -1));
-    group_add_object(&side6, s1);
-    group_add_object(&side6, c1);
-    group_add_transform(&side6, matrix_new_rotate_y(5 * PI/3));
+    group_add_object(side6, s1);
+    group_add_object(side6, c1);
+    group_add_transform(side6, matrix_new_rotate_y(5 * PI/3));
 
-    struct group hex = group_new_group();
-    group_add_object(&hex, &side1);
-    group_add_object(&hex, &side2);
-    group_add_object(&hex, &side3);
-    group_add_object(&hex, &side4);
-    group_add_object(&hex, &side5);
-    group_add_object(&hex, &side6);
-    group_add_transform(&hex, matrix_new_rotate_x(-PI/8));
+    struct group* hex = group_new_group();
+    group_add_object(hex, side1);
+    group_add_object(hex, side2);
+    group_add_object(hex, side3);
+    group_add_object(hex, side4);
+    group_add_object(hex, side5);
+    group_add_object(hex, side6);
+    group_add_transform(hex, matrix_new_rotate_x(-PI/8));
 
     struct plane* floor = plane_new_plane();
     floor->material.pattern = pattern_checker(tuple_new_color(1, 1, 1), NORD0);
@@ -287,7 +287,7 @@ static void chap14_render(void) {
     //world_add_group(world, &side4);
     //world_add_group(world, &side5);
     //world_add_group(world, &side6);
-    world_add_group(world, &hex);
+    world_add_group(world, hex);
     world_add_plane(world, floor);
 
     // Camera and render
