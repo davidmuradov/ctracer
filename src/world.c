@@ -77,12 +77,14 @@ world_get_max_nb_lights(struct world* w) {return w->max_nb_lights;}
 
 void
 world_free_world(struct world* w) {
+#if(WORLD_MEM_CLEANUP)
     free(w->object_list);
     w->object_list = NULL;
     free(w->light_list);
     w->light_list = NULL;
     free(w);
     w = NULL;
+#endif
 }
 
 void

@@ -15,7 +15,7 @@ struct plane {
     double xs[1];
 };
 
-struct plane
+struct plane*
 plane_new_plane(void);
 
 struct tuple
@@ -35,5 +35,8 @@ plane_make_inv_transform(struct plane* p);
 
 void
 plane_make_transp_inv_transform(struct plane* p);
+
+void
+plane_delete_plane(struct plane* plane);
 
 #endif

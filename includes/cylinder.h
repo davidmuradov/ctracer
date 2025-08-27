@@ -16,7 +16,7 @@ struct cylinder {
     int closed;
 };
 
-struct cylinder
+struct cylinder*
 cylinder_new_cylinder(void);
 
 struct intersection_list
@@ -36,5 +36,8 @@ cylinder_add_transform(struct cylinder* cyl, struct matrix4 m);
 
 void
 cylinder_add_transform_to_pattern(struct cylinder* cyl, struct matrix4 m);
+
+void
+cylinder_delete_cylinder(struct cylinder* cyl);
 
 #endif

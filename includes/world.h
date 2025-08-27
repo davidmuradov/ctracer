@@ -1,7 +1,8 @@
 #ifndef INCLUDES_WORLD_H
 #define INCLUDES_WORLD_H
 
-#define MAX_RECUR_CALLS	10
+#define MAX_RECUR_CALLS		10
+#define WORLD_MEM_CLEANUP	1
 
 #include "intersection.h"
 #include "lights.h"

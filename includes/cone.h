@@ -16,7 +16,7 @@ struct cone {
     int closed;
 };
 
-struct cone
+struct cone*
 cone_new_cone(void);
 
 struct intersection_list
@@ -36,5 +36,8 @@ cone_add_transform(struct cone* co, struct matrix4 m);
 
 void
 cone_add_transform_to_pattern(struct cone* co, struct matrix4 m);
+
+void
+cone_delete_cone(struct cone* co);
 
 #endif

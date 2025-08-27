@@ -10,20 +10,24 @@
 
 static int UNIQUE_ID_SPHERE = 0;
 
-struct sphere
-sphere_new_sphere(struct tuple o, double r) {
-    struct sphere s;
-    s.transform = matrix_make_identity4();
-    s.inv_transform = matrix_make_identity4();
-    s.transp_inv_transform = matrix_make_identity4();
-    s.type = SPHERE;
-    s.id = UNIQUE_ID_SPHERE;
-    s.o = o;
-    s.radius = r;
-    s.material = materials_new_material();
-    s.xs_count = 0;
-    s.xs[0] = UNDEF_TIME;
-    s.xs[1] = UNDEF_TIME;
+struct sphere*
+sphere_new_sphere(void) {
+    struct sphere* s = malloc(sizeof(struct sphere));
+    if (!s) {
+	fprintf(stderr, "Error allocating memory for sphere\n");
+	exit(1);
+    }
+    s->transform = matrix_make_identity4();
+    s->inv_transform = matrix_make_identity4();
+    s->transp_inv_transform = matrix_make_identity4();
+    s->type = SPHERE;
+    s->id = UNIQUE_ID_SPHERE;
+    s->o = tuple_new_point(0, 0, 0);
+    s->radius = 1;
+    s->material = materials_new_material();
+    s->xs_count = 0;
+    s->xs[0] = UNDEF_TIME;
+    s->xs[1] = UNDEF_TIME;
     UNIQUE_ID_SPHERE++;
     return s;
 }
@@ -167,4 +171,10 @@ sphere_make_inv_transform(struct sphere* s) {
 void
 sphere_make_transp_inv_transform(struct sphere* s) {
     s->transp_inv_transform = matrix_transpose4(s->inv_transform);
+}
+
+void
+sphere_delete_sphere(struct sphere* s) {
+    free(s);
+    s = NULL;
 }

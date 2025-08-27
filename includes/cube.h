@@ -13,7 +13,7 @@ struct cube {
     struct material material;
 };
 
-struct cube
+struct cube*
 cube_new_cube(void);
 
 struct intersection_list
@@ -33,5 +33,8 @@ cube_make_inv_transform(struct cube* c);
 
 void
 cube_make_transp_inv_transform(struct cube* c);
+
+void
+cube_delete_cube(struct cube* c);
 
 #endif
