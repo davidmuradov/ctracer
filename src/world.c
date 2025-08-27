@@ -2,6 +2,7 @@
 #include "ct_math.h"
 #include "cube.h"
 #include "cylinder.h"
+#include "group.h"
 #include "intersection.h"
 #include "lights.h"
 #include "materials.h"
@@ -190,6 +191,27 @@ world_add_cone(struct world* world, struct cone* cone) {
 }
 
 void
+world_add_group(struct world* world, struct group* group) {
+    group_make_inv_transform(group);
+    group_make_transp_inv_transform(group);
+    //pattern_make_inv_transform(&(group->material.pattern));
+    if (world->nb_objects < world->max_nb_objects) {
+	world->object_list[world->nb_objects] = (void*) group;
+	world->nb_objects++;
+    }
+    else {
+	world->object_list = realloc(world->object_list, world->max_nb_objects * 2 * sizeof(void*));
+	if (!world->object_list) {
+	    fprintf(stderr, "Failed to allocate new memory for list of objects in world\n");
+	    exit(1);
+	}
+	world->max_nb_objects *= 2;
+	world->object_list[world->nb_objects] = (void*) group;
+	world->nb_objects++;
+    }
+}
+
+void
 world_add_point_light(struct world* world, struct point_light* light) {
     if (world->nb_lights < world->max_nb_lights) {
 	world->light_list[world->nb_lights] = (void*) light;
@@ -263,6 +285,12 @@ world_intersect_world(struct world* world, struct ray* ray) {
 		break;
 	    case CONE:
 		current_list = cone_intersect_ray((struct cone*) current_object, ray);
+		for (int j = 0; j < current_list.nb_intersections; j++) {
+		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
+		}
+		break;
+	    case GROUP:
+		current_list = group_intersect_ray((struct group*) current_object, ray);
 		for (int j = 0; j < current_list.nb_intersections; j++) {
 		    intersection_add_intersection_to_list(&full_list, current_list.list[j]);
 		}

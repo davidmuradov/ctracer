@@ -117,6 +117,10 @@ intersection_prepare_computations(struct intersection* inter, struct ray* ray, s
 	case CONE:
 	    comps.normalv = cone_normal_at((struct cone*) comps.object, comps.point);
 	    break;
+	case GROUP:
+	    // This should never happen technically
+	    //comps.normalv = group_normal_at((struct cone*) comps.object, comps.point);
+	    break;
 	default:
 	    break;
     }
