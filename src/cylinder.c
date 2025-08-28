@@ -17,18 +17,22 @@ cylinder_check_cap(struct ray ray, double t);
 static void
 cylinder_intersect_caps(struct cylinder* cyl, struct ray ray, struct intersection_list* inter_list);
 
-struct cylinder
+struct cylinder*
 cylinder_new_cylinder(void) {
-    struct cylinder c;
-    c.transform = matrix_make_identity4();
-    c.inv_transform = matrix_make_identity4();
-    c.transp_inv_transform = matrix_make_identity4();
-    c.type = CYLINDER;
-    c.id = UNIQUE_ID_CYLINDER;
-    c.material = materials_new_material();
-    c.min = -INFINITY;
-    c.max = INFINITY;
-    c.closed = 0;
+    struct cylinder* c = malloc(sizeof(struct cylinder));
+    if (!c) {
+	fprintf(stderr, "Error allocating memory for sphere\n");
+	exit(1);
+    }
+    c->transform = matrix_make_identity4();
+    c->inv_transform = matrix_make_identity4();
+    c->transp_inv_transform = matrix_make_identity4();
+    c->type = CYLINDER;
+    c->id = UNIQUE_ID_CYLINDER;
+    c->material = materials_new_material();
+    c->min = -INFINITY;
+    c->max = INFINITY;
+    c->closed = 0;
     UNIQUE_ID_CYLINDER++;
     return c;
 }
@@ -119,6 +123,12 @@ cylinder_add_transform(struct cylinder* cyl, struct matrix4 m) {
 void
 cylinder_add_transform_to_pattern(struct cylinder* cyl, struct matrix4 m) {
     cyl->material.pattern.transform = matrix_mult_matrix4(m, cyl->material.pattern.transform);
+}
+
+void
+cylinder_delete_cylinder(struct cylinder* cyl) {
+    free(cyl);
+    cyl = NULL;
 }
 
 static int

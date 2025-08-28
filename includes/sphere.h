@@ -20,8 +20,8 @@ struct sphere {
     double xs[2];
 };
 
-struct sphere
-sphere_new_sphere(struct tuple o, double r);
+struct sphere*
+sphere_new_sphere(void);
 
 struct sphere
 sphere_new_glass_sphere(void);
@@ -52,5 +52,8 @@ sphere_make_inv_transform(struct sphere* s);
 
 void
 sphere_make_transp_inv_transform(struct sphere* s);
+
+void
+sphere_delete_sphere(struct sphere* s);
 
 #endif

@@ -23,15 +23,19 @@ cube_t_min(const double xtmax, const double ytmax, const double ztmax);
 static double
 cube_max(const double x, const double y, const double z);
 
-struct cube
+struct cube*
 cube_new_cube(void) {
-    struct cube c;
-    c.transform = matrix_make_identity4();
-    c.inv_transform = matrix_make_identity4();
-    c.transp_inv_transform = matrix_make_identity4();
-    c.type = CUBE;
-    c.id = UNIQUE_ID_CUBE;
-    c.material = materials_new_material();
+    struct cube* c = malloc(sizeof(struct cube));
+    if (!c) {
+	fprintf(stderr, "Error allocating memory for sphere\n");
+	exit(1);
+    }
+    c->transform = matrix_make_identity4();
+    c->inv_transform = matrix_make_identity4();
+    c->transp_inv_transform = matrix_make_identity4();
+    c->type = CUBE;
+    c->id = UNIQUE_ID_CUBE;
+    c->material = materials_new_material();
     UNIQUE_ID_CUBE++;
     return c;
 }
@@ -131,6 +135,12 @@ cube_make_inv_transform(struct cube* c) {
 void
 cube_make_transp_inv_transform(struct cube* c) {
     c->transp_inv_transform = matrix_transpose4(c->inv_transform);
+}
+
+void
+cube_delete_cube(struct cube* c) {
+    free(c);
+    c = NULL;
 }
 
 static void

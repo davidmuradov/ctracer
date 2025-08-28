@@ -10,17 +10,21 @@
 
 static int UNIQUE_ID_PLANE = 0;
 
-struct plane
+struct plane*
 plane_new_plane(void) {
-    struct plane p;
-    p.transform = matrix_make_identity4();
-    p.inv_transform = matrix_make_identity4();
-    p.transp_inv_transform = matrix_make_identity4();
-    p.type = PLANE;
-    p.id = UNIQUE_ID_PLANE;
-    p.material = materials_new_material();
-    p.xs_count = 0;
-    p.xs[0] = UNDEF_TIME;
+    struct plane* p = malloc(sizeof(struct plane));
+    if (!p) {
+	fprintf(stderr, "Error allocating memory for sphere\n");
+	exit(1);
+    }
+    p->transform = matrix_make_identity4();
+    p->inv_transform = matrix_make_identity4();
+    p->transp_inv_transform = matrix_make_identity4();
+    p->type = PLANE;
+    p->id = UNIQUE_ID_PLANE;
+    p->material = materials_new_material();
+    p->xs_count = 0;
+    p->xs[0] = UNDEF_TIME;
     UNIQUE_ID_PLANE++;
     return p;
 }
@@ -112,4 +116,10 @@ plane_make_inv_transform(struct plane* p) {
 void
 plane_make_transp_inv_transform(struct plane* p) {
     p->transp_inv_transform = matrix_transpose4(p->inv_transform);
+}
+
+void
+plane_delete_plane(struct plane* plane) {
+    free(plane);
+    plane = NULL;
 }

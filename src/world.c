@@ -77,12 +77,47 @@ world_get_max_nb_lights(struct world* w) {return w->max_nb_lights;}
 
 void
 world_free_world(struct world* w) {
+#if(WORLD_MEM_CLEANUP)
+    t_object obj_type = UNKNOWN_OBJECT;
+    for (int i = 0; i < w->nb_objects; i++) {
+	obj_type = object_utils_get_object_type(w->object_list[i]);
+	switch (obj_type) {
+	    case SPHERE:
+		sphere_delete_sphere((struct sphere*) w->object_list[i]);
+		break;
+	    case PLANE:
+		plane_delete_plane((struct plane*) w->object_list[i]);
+		break;
+	    case CUBE:
+		cube_delete_cube((struct cube*) w->object_list[i]);
+		break;
+	    case CYLINDER:
+		cylinder_delete_cylinder((struct cylinder*) w->object_list[i]);
+		break;
+	    case CONE:
+		cone_delete_cone((struct cone*) w->object_list[i]);
+		break;
+	    case GROUP:
+		group_delete_group((struct group*) w->object_list[i]);
+		break;
+	    case TRIANGLE:
+		//triangle_delete_triangle((struct triangle*) w->object_list[i]);
+		break;
+	    case CSG:
+		//csg_delete_csg((struct csg*) w->object_list[i]);
+		break;
+	    default:
+		break;
+	}
+    }
+
     free(w->object_list);
     w->object_list = NULL;
     free(w->light_list);
     w->light_list = NULL;
     free(w);
     w = NULL;
+#endif
 }
 
 void

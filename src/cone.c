@@ -19,18 +19,22 @@ cone_check_cap(struct ray ray, double t, double py);
 static void
 cone_intersect_caps(struct cone* co, struct ray ray, struct intersection_list* inter_list);
 
-struct cone
+struct cone*
 cone_new_cone(void) {
-    struct cone co;
-    co.transform = matrix_make_identity4();
-    co.inv_transform = matrix_make_identity4();
-    co.transp_inv_transform = matrix_make_identity4();
-    co.type = CONE;
-    co.id = UNIQUE_ID_CONE;
-    co.material = materials_new_material();
-    co.min = -INFINITY;
-    co.max = INFINITY;
-    co.closed = 0;
+    struct cone* co = malloc(sizeof(struct cone));
+    if (!co) {
+	fprintf(stderr, "Error allocating memory for sphere\n");
+	exit(1);
+    }
+    co->transform = matrix_make_identity4();
+    co->inv_transform = matrix_make_identity4();
+    co->transp_inv_transform = matrix_make_identity4();
+    co->type = CONE;
+    co->id = UNIQUE_ID_CONE;
+    co->material = materials_new_material();
+    co->min = -INFINITY;
+    co->max = INFINITY;
+    co->closed = 0;
     UNIQUE_ID_CONE++;
     return co;
 }
@@ -136,6 +140,12 @@ cone_add_transform(struct cone* co, struct matrix4 m) {
 void
 cone_add_transform_to_pattern(struct cone* co, struct matrix4 m) {
     co->material.pattern.transform = matrix_mult_matrix4(m, co->material.pattern.transform);
+}
+
+void
+cone_delete_cone(struct cone* co) {
+    free(co);
+    co = NULL;
 }
 
 static int
