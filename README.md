@@ -50,3 +50,10 @@ Cylinders and cones. Some of the patterns don't seem to work very well in 3D
 ## Chapter 14
 Groups.
 ![Final render Chapter 14](./out/chap14.png "Final render Chapter 14")
+
+
+## Bounding boxes
+1000 reflective spheres rendered with bounding boxes around groups. 100
+groups were used (I think) to render this image in 233.74 seconds, resolution of
+3840x2160 pixels (single threaded).
+![Final render bounding boxes](./out/bbox.png "Final render bounding boxes")

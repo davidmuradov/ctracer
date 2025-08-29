@@ -1,5 +1,9 @@
 #include "../includes/group.h"
+#include "bounding_box.h"
+#include "cone.h"
+#include "intersection.h"
 #include "object_utils.h"
+#include "sphere.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -21,6 +25,7 @@ group_new_group(void) {
     g->type = GROUP;
     g->id = UNIQUE_ID_GROUP;
     UNIQUE_ID_GROUP++;
+    g->box = NULL;
 
     g->list_children = calloc(INIT_MAX_NB_CHILDREN_GROUP, sizeof(void*));
     if (!g->list_children) {
@@ -35,6 +40,44 @@ group_new_group(void) {
 
 void
 group_delete_group(struct group* g) {
+    if (g->box)
+	bbox_delete_box(g->box);
+
+    t_object type = UNKNOWN_OBJECT;
+
+    for (int i = 0; i < g->nb_children; i++) {
+	type = object_utils_get_object_type(g->list_children[i]);
+	switch (type) {
+	    case SPHERE:
+		sphere_delete_sphere((struct sphere*) g->list_children[i]);
+		break;
+	    case PLANE:
+		plane_delete_plane((struct plane*) g->list_children[i]);
+		break;
+	    case CUBE:
+		cube_delete_cube((struct cube*) g->list_children[i]);
+		break;
+	    case CYLINDER:
+		cylinder_delete_cylinder((struct cylinder*) g->list_children[i]);
+		break;
+	    case CONE:
+		cone_delete_cone((struct cone*) g->list_children[i]);
+		break;
+	    case TRIANGLE:
+		//triangle_delete_triangle((struct triangle*) g->list_children[i]);
+		break;
+	    case GROUP:
+		group_delete_group((struct group*) g->list_children[i]);
+		break;
+	    case CSG:
+		//csg_delete_csg((struct triangle*) g->list_children[i]);
+		break;
+	    default:
+		// something
+		break;
+	}
+    }
+
     free(g->list_children);
     g->list_children = NULL;
     free(g);
@@ -62,6 +105,11 @@ group_add_object(struct group* group, void* object) {
 struct intersection_list
 group_intersect_ray(struct group* g, struct ray* ray) {
     struct intersection_list full_list = intersection_new_intersection_list();
+
+    // Ray does not hit groups bounding box, return empty list
+    if (!bbox_intersect_ray(g->box, ray))
+	return full_list;
+
     struct intersection_list current_list;
     t_object object_type = UNKNOWN_OBJECT;
     void* current_object;
@@ -231,5 +279,17 @@ group_make_transp_inv_transform(struct group* g) {
 		// The rest will come later
 		break;
 	}
+    }
+}
+
+void
+group_make_bounding_box(struct group* g) {
+    g->box = bbox_bounds_of_shape(g);
+    struct group* child_group;
+
+    for (int i = 0; i < g->nb_children; i++) {
+	child_group = g->list_children[i];
+	if (child_group->type == GROUP)
+	    group_make_bounding_box(child_group);
     }
 }

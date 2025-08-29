@@ -4,6 +4,7 @@
 #include "matrix.h"
 //#include "object_utils.h"
 #include "intersection.h"
+#include "bounding_box.h"
 #include "sphere.h"
 #include "plane.h"
 #include "cube.h"
@@ -17,6 +18,7 @@ struct group {
     struct matrix4 _transform;
     struct matrix4 _inv_transform;
     struct matrix4 _transp_inv_transform;
+    struct bbox* box;
     void** list_children;
     int nb_children;
     int max_nb_children;
@@ -42,5 +44,8 @@ group_make_inv_transform(struct group* g);
 
 void
 group_make_transp_inv_transform(struct group* g);
+
+void
+group_make_bounding_box(struct group* g);
 
 #endif
