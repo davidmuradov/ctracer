@@ -230,6 +230,7 @@ world_add_group(struct world* world, struct group* group) {
     group_make_inv_transform(group);
     group_make_transp_inv_transform(group);
     group_make_bounding_box(group);
+    group_divide_group(group, GROUP_SUBDIV_THRESH);
     if (world->nb_objects < world->max_nb_objects) {
 	world->object_list[world->nb_objects] = (void*) group;
 	world->nb_objects++;

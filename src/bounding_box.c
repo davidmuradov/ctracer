@@ -186,6 +186,31 @@ bbox_intersect_ray(struct bbox* box, struct ray* ray) {
 }
 
 void
+bbox_split_bounds(struct bbox* box, struct bbox* split[2]) {
+    double dx = box->max.x - box->min.x;
+    double dy = box->max.y - box->min.y;
+    double dz = box->max.z - box->min.z;
+
+    double greatest = ctm_max(ctm_max(dx, dy), dz);
+
+    struct tuple p0 = tuple_new_point(box->min.x, box->min.y, box->min.z);
+    struct tuple p1 = tuple_new_point(box->max.x, box->max.y, box->max.z);
+
+    if (ctm_floats_equal(greatest, dx))
+	p0.x = p1.x = p0.x + (dx / 2);
+    else if (ctm_floats_equal(greatest, dy))
+	p0.y = p1.y = p0.y + (dy / 2);
+    else
+	p0.z = p1.z = p0.z + (dz / 2);
+
+    struct tuple mid_min = tuple_new_point(p0.x, p0.y, p0.z);
+    struct tuple mid_max = tuple_new_point(p1.x, p1.y, p1.z);
+
+    split[0] = bbox_new_bbox(box->min, mid_max);
+    split[1] = bbox_new_bbox(mid_min, box->max);
+}
+
+void
 bbox_delete_box(struct bbox* b) {
     free(b);
     b = NULL;

@@ -41,6 +41,9 @@ int
 bbox_intersect_ray(struct bbox* box, struct ray* ray);
 
 void
+bbox_split_bounds(struct bbox* box, struct bbox* split[2]);
+
+void
 bbox_delete_box(struct bbox* b);
 
 #endif

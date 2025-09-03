@@ -57,3 +57,13 @@ Groups.
 groups were used (I think) to render this image in 233.74 seconds, resolution of
 3840x2160 pixels (single threaded).
 ![Final render bounding boxes](./out/bbox.png "Final render bounding boxes")
+
+
+## Bounding Volume Hierarchy
+Same scene as the previous one, this time with BVH. Image rendered in 255.77
+seconds. It is a bit slower compared to the previous iteration. My guess is
+that I manually managed to create a better hierarchy than the automatic BVH
+implementation that I built. Also, there's overhead with creating a BVH, which
+might of contributed to the slowdown. However, it was much easier to build this
+scene programmatically, which is good I guess.
+![Final render BVH](./out/bvh.png "Final render BVH")

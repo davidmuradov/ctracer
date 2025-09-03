@@ -23,6 +23,7 @@
 #include "../../includes/bounding_box.h"
 
 static void bbox_render_1(void);
+static void bbox_render_2(void);
 
 int main(int argc, char *argv[]) {
 
@@ -317,7 +318,141 @@ int main(int argc, char *argv[]) {
     assert(!bbox_intersect_ray(box, &ray));
     bbox_delete_box(box);
 
-    bbox_render_1();
+    // Bounding boxes split bounds test
+    struct bbox* arr[2] = {0};
+    box = bbox_new_bbox(tuple_new_point(-1, -4, -5), tuple_new_point(9, 6, 5));
+    bbox_split_bounds(box, arr);
+    assert(tuple_equals(tuple_new_point(-1, -4, -5), arr[0]->min));
+    assert(tuple_equals(tuple_new_point(4, 6, 5), arr[0]->max));
+    assert(tuple_equals(tuple_new_point(4, -4, -5), arr[1]->min));
+    assert(tuple_equals(tuple_new_point(9, 6, 5), arr[1]->max));
+    bbox_delete_box(box);
+    bbox_delete_box(arr[0]);
+    bbox_delete_box(arr[1]);
+
+    // x wide
+    box = bbox_new_bbox(tuple_new_point(-1, -2, -3), tuple_new_point(9, 5.5, 3));
+    bbox_split_bounds(box, arr);
+    assert(tuple_equals(tuple_new_point(-1, -2, -3), arr[0]->min));
+    assert(tuple_equals(tuple_new_point(4, 5.5, 3), arr[0]->max));
+    assert(tuple_equals(tuple_new_point(4, -2, -3), arr[1]->min));
+    assert(tuple_equals(tuple_new_point(9, 5.5, 3), arr[1]->max));
+    bbox_delete_box(box);
+    bbox_delete_box(arr[0]);
+    bbox_delete_box(arr[1]);
+
+    // y wide
+    box = bbox_new_bbox(tuple_new_point(-1, -2, -3), tuple_new_point(5, 8, 3));
+    bbox_split_bounds(box, arr);
+    assert(tuple_equals(tuple_new_point(-1, -2, -3), arr[0]->min));
+    assert(tuple_equals(tuple_new_point(5, 3, 3), arr[0]->max));
+    assert(tuple_equals(tuple_new_point(-1, 3, -3), arr[1]->min));
+    assert(tuple_equals(tuple_new_point(5, 8, 3), arr[1]->max));
+    bbox_delete_box(box);
+    bbox_delete_box(arr[0]);
+    bbox_delete_box(arr[1]);
+
+    // z wide
+    box = bbox_new_bbox(tuple_new_point(-1, -2, -3), tuple_new_point(5, 3, 7));
+    bbox_split_bounds(box, arr);
+    assert(tuple_equals(tuple_new_point(-1, -2, -3), arr[0]->min));
+    assert(tuple_equals(tuple_new_point(5, 3, 2), arr[0]->max));
+    assert(tuple_equals(tuple_new_point(-1, -2, 2), arr[1]->min));
+    assert(tuple_equals(tuple_new_point(5, 3, 7), arr[1]->max));
+    bbox_delete_box(box);
+    bbox_delete_box(arr[0]);
+    bbox_delete_box(arr[1]);
+
+    group = group_new_group();
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_translation4(-2, 0, 0));
+    group_add_object(group, s);
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_translation4(2, 0, 0));
+    group_add_object(group, s);
+    s = sphere_new_sphere();
+    group_add_object(group, s);
+
+    /* Passes
+    assert(group->nb_children == 3);
+    group_remove_object_at(group, 2);
+    assert(group->nb_children == 2);
+    group_remove_object_at(group, 0);
+    assert(group->nb_children == 1);
+    group_remove_object_at(group, 0);
+    assert(group->nb_children == 0);
+    */
+
+    struct group* partition[2] = {0};
+    group_make_bounding_box(group);
+    group_partition_children(group, partition);
+
+    assert(group->nb_children == 1);
+    assert(partition[0]->nb_children == 1);
+    assert(partition[1]->nb_children == 1);
+
+    group_delete_group(partition[0]);
+    group_delete_group(partition[1]);
+    group_delete_group(group);
+
+    struct group* sub_part = group_new_group();
+    s = sphere_new_sphere();
+    group_add_object(sub_part, s);
+    s = sphere_new_sphere();
+    group_add_object(sub_part, s);
+    group = group_new_group();
+
+    group_make_sub_group(group, sub_part);
+
+    assert(group->nb_children == 1);
+    assert(((struct group*) group->list_children[0])->type == GROUP);
+    group_delete_group(group);
+
+    //bbox_render_1();
+
+    s = sphere_new_sphere();
+    group = group_new_group();
+    group_add_object(group, s);
+    group_make_bounding_box(group);
+    group_divide_group(group, GROUP_SUBDIV_THRESH);
+    group_delete_group(group);
+
+    group = group_new_group();
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_translation4(-2, -2, 0));
+    group_add_object(group, s);
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_translation4(-2, 2, 0));
+    group_add_object(group, s);
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_scaling4(4, 4, 4));
+    group_add_object(group, s);
+    group_make_bounding_box(group);
+
+    group_divide_group(group, GROUP_SUBDIV_THRESH);
+    group_delete_group(group);
+
+    struct group* sub = group_new_group();
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_translation4(-2, 0, 0));
+    group_add_object(sub, s);
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_translation4(2, 1, 0));
+    group_add_object(sub, s);
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_translation4(2, -1, 0));
+    group_add_object(sub, s);
+
+    group = group_new_group();
+    s = sphere_new_sphere();
+    group_add_object(group, sub);
+    group_add_object(group, s);
+    group_make_bounding_box(group);
+
+    group_divide_group(group, 3);
+    group_delete_group(group);
+
+    bbox_render_2();
 
     return 0;
 }
@@ -369,6 +504,62 @@ static void bbox_render_1(void) {
     struct world* world = world_new_world();
     world_add_point_light(world, &light1);
     //world_add_group(world, g);
+    world_add_group(world, final);
+
+    // Camera and render
+    struct camera camera = camera_new_camera(CANVAS_WIDTH, CANVAS_HEIGHT, PI/3);
+    struct tuple from = tuple_new_point(-25, 10, -35);
+    struct tuple to = tuple_new_point(5, 0, -5);
+    struct tuple up = tuple_new_vector(0, 1, 0);
+    camera.transform = matrix_view_transform(from, to, up);
+    camera_make_inv_view_transform(&camera);
+
+    struct canvas canvas = camera_render(&camera, world);
+    canvas_to_ppm(&canvas);
+
+    world_free_world(world);
+    canvas_free_canvas(&canvas);
+}
+
+static void bbox_render_2(void) {
+
+    // Nord colorscheme colors
+    const struct tuple NORD0 = tuple_new_color(46./255, 52./255, 64./255); // Dark gray
+    const struct tuple NORD1 = tuple_new_color(59./255, 66./255, 82./255);
+    const struct tuple NORD2 = tuple_new_color(67./255, 76./255, 94./255);
+    const struct tuple NORD3 = tuple_new_color(76./255, 86./255, 106./255); // Light gray
+
+    const struct tuple NORD7 = tuple_new_color(143./255, 188./255, 187./255); // Greenish
+    const struct tuple NORD8 = tuple_new_color(136./255, 192./255, 208./255);
+    const struct tuple NORD9 = tuple_new_color(129./255, 161./255, 193./255);
+    const struct tuple NORD10 = tuple_new_color(94./255, 129./255, 172./255); // Dark blue
+
+    const struct tuple NORD11 = tuple_new_color(191./255, 97./255, 106./255); // Red
+    const struct tuple NORD12 = tuple_new_color(208./255, 135./255, 112./255); // Orange
+    const struct tuple NORD13 = tuple_new_color(235./255, 203./255, 139./255); // Yellow
+    const struct tuple NORD14 = tuple_new_color(163./255, 190./255, 140./255); // Green
+    const struct tuple NORD15 = tuple_new_color(180./255, 142./255, 173./255); // Purple
+
+    // Main group
+    struct group* final = group_new_group();
+    struct sphere* s;
+
+    for (int k = 0; k < 10; k++) {
+	for (int j = 0; j < 10; j++) {
+	    for (int i = -5; i < 5; i++) {
+		s = sphere_new_sphere();
+		s->material.reflective = 0.5;
+		s->material.color = NORD11;
+		sphere_add_transform(s, matrix_new_translation4(2 * j, -10 + 2 * k, 2 * i));
+		group_add_object(final, s);
+	    }
+	}
+    }
+
+
+    struct point_light light1 = lights_new_point_light(tuple_new_point(-50, 100, -50), tuple_new_color(1, 1, 1));
+    struct world* world = world_new_world();
+    world_add_point_light(world, &light1);
     world_add_group(world, final);
 
     // Camera and render
