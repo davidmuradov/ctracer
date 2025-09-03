@@ -80,19 +80,25 @@ lights_lighting_sphere(struct material material, void* object, void* light,
 
     double light_dot_normal = tuple_dot(light_v, normalv);
 
-    diffuse = tuple_scalar_mult(effec_color, material.diffuse * light_dot_normal);
-    struct tuple reflect_v = sphere_reflect(tuple_scalar_mult(light_v, -1), normalv); // Bad function name
-    double reflect_dot_eye = tuple_dot(reflect_v, eyev);
-    if (reflect_dot_eye <= 0) {
+    if (light_dot_normal < 0 || ctm_floats_equal(0, intensity)) {
+	diffuse = tuple_new_color(0, 0, 0);
 	specular = tuple_new_color(0, 0, 0);
     }
     else {
-	double factor = pow(reflect_dot_eye, material.shininess);
-	switch (type) {
-	    case POINT_LIGHT:
-		specular = tuple_scalar_mult(((struct point_light*) light)->intensity, material.specular * factor);
-	    case AREA_LIGHT_RECT:
-		specular = tuple_scalar_mult(((struct area_light_rect*) light)->intensity, material.specular * factor);
+	diffuse = tuple_scalar_mult(effec_color, material.diffuse * light_dot_normal);
+	struct tuple reflect_v = sphere_reflect(tuple_scalar_mult(light_v, -1), normalv); // Bad function name
+	double reflect_dot_eye = tuple_dot(reflect_v, eyev);
+	if (reflect_dot_eye <= 0) {
+	    specular = tuple_new_color(0, 0, 0);
+	}
+	else {
+	    double factor = pow(reflect_dot_eye, material.shininess);
+	    switch (type) {
+		case POINT_LIGHT:
+		    specular = tuple_scalar_mult(((struct point_light*) light)->intensity, material.specular * factor);
+		case AREA_LIGHT_RECT:
+		    specular = tuple_scalar_mult(((struct area_light_rect*) light)->intensity, material.specular * factor);
+	    }
 	}
     }
     diffuse = tuple_scalar_mult(diffuse, intensity);
