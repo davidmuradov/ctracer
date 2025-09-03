@@ -66,4 +66,6 @@ that I manually managed to create a better hierarchy than the automatic BVH
 implementation that I built. Also, there's overhead with creating a BVH, which
 might of contributed to the slowdown. However, it was much easier to build this
 scene programmatically, which is good I guess.
+
+Without BVH, this scene rendered about 7.727 times slower.
 ![Final render BVH](./out/bvh.png "Final render BVH")
