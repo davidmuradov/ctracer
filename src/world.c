@@ -283,7 +283,24 @@ world_add_point_light(struct world* world, struct point_light* light) {
 	world->light_list[world->nb_lights] = (void*) light;
 	world->nb_lights++;
     }
+}
 
+void
+world_add_area_light_rect(struct world* world, struct area_light_rect* light) {
+    if (world->nb_lights < world->max_nb_lights) {
+	world->light_list[world->nb_lights] = (void*) light;
+	world->nb_lights++;
+    }
+    else {
+	world->light_list = realloc(world->light_list, world->max_nb_lights * 2 * sizeof(void*));
+	if (!world->light_list) {
+	    fprintf(stderr, "Failed to allocate new memory for list of objects in world\n");
+	    exit(1);
+	}
+	world->max_nb_lights *= 2;
+	world->light_list[world->nb_lights] = (void*) light;
+	world->nb_lights++;
+    }
 }
 
 void*
@@ -507,13 +524,21 @@ world_intensity_at(void* light, struct tuple point, struct world* world) {
     t_light type = object_utils_get_light_type(light);
     double intensity = 0;
     int is_shadowed = 0;
+    struct tuple light_position;
     switch (type) {
 	case POINT_LIGHT:
 	    is_shadowed = world_is_shadowed(world, ((struct point_light*) light)->position, point);
 	    intensity = (is_shadowed) ? (0):(1);
 	    break;
 	case AREA_LIGHT_RECT:
-	    //intensity = world_is_shadowed(world, ((struct point_light*) light)->position, point);
+	    for (int v = 0; v < ((struct area_light_rect*) light)->vsteps; v++) {
+		for (int u = 0; u < ((struct area_light_rect*) light)->usteps; u++) {
+		    light_position = lights_point_on_area_light_rect(light, u, v);
+		    if (!world_is_shadowed(world, light_position, point))
+			intensity += 1;
+		}
+	    }
+	    intensity /= ((struct area_light_rect*) light)->samples;
 	    break;
     }
 

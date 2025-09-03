@@ -9,6 +9,24 @@ lights_new_point_light(struct tuple p, struct tuple i) {
     return (struct point_light) {POINT_LIGHT, p, i};
 }
 
+struct area_light_rect
+lights_new_area_light_rect(struct tuple corner, struct tuple full_uvec, int usteps,
+	struct tuple full_vvec, int vsteps, struct tuple intensity) {
+    struct area_light_rect l;
+
+    l.type = AREA_LIGHT_RECT;
+    l.corner = corner;
+    l.usteps = usteps;
+    l.uvec = tuple_scalar_div(full_uvec, usteps);
+    l.vsteps = vsteps;
+    l.vvec = tuple_scalar_div(full_vvec, vsteps);
+    l.samples = usteps  * vsteps;
+    l.intensity = intensity;
+    l.position = tuple_add(tuple_scalar_div(full_uvec, 2), tuple_scalar_div(full_vvec, 2));
+
+    return l;
+}
+
 struct tuple
 lights_lighting_sphere(struct material material, void* object, struct point_light light,
 	struct tuple point, struct tuple eyev, struct tuple normalv, double intensity) {
@@ -79,4 +97,11 @@ lights_lighting_sphere(struct material material, void* object, struct point_ligh
     */
 
     return tuple_add(ambient, tuple_add(diffuse, specular));
+}
+
+struct tuple
+lights_point_on_area_light_rect(struct area_light_rect* light, const int u, const int v) {
+    struct tuple point = tuple_add(light->corner, tuple_add(tuple_scalar_mult(light->uvec, u + 0.5),
+		tuple_scalar_mult(light->vvec, v + 0.5)));
+    return point;
 }

@@ -66,6 +66,9 @@ world_add_group(struct world* world, struct group* group);
 void
 world_add_point_light(struct world* world, struct point_light* light);
 
+void
+world_add_area_light_rect(struct world* world, struct area_light_rect* light);
+
 struct intersection_list
 world_intersect_world(struct world* world, struct ray* ray);
 

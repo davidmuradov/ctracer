@@ -70,6 +70,53 @@ int main(int argc, char *argv[]) {
     assert(tuple_equals(result, tuple_new_color(0.55, 0.55, 0.55)));
     result = lights_lighting_sphere(s->material, s, l, point, eyev, normalv, 0);
     assert(tuple_equals(result, tuple_new_color(0.1, 0.1, 0.1)));
+    world_free_world(w);
+
+    struct tuple corner = tuple_new_vector(0, 0, 0);
+    struct tuple v1 = tuple_new_vector(2, 0, 0);
+    struct tuple v2 = tuple_new_vector(0, 0, 1);
+    struct area_light_rect rect_light = lights_new_area_light_rect(corner, v1, 4, v2, 2, tuple_new_color(1, 1, 1));
+    assert(tuple_equals(corner, rect_light.corner));
+    assert(tuple_equals(tuple_new_vector(0.5, 0, 0), rect_light.uvec));
+    assert(rect_light.usteps = 4);
+    assert(tuple_equals(tuple_new_vector(0, 0, 0.5), rect_light.vvec));
+    assert(rect_light.vsteps = 2);
+    assert(rect_light.samples = 8);
+    assert(tuple_equals(tuple_new_color(1, 1, 1), rect_light.intensity));
+    assert(tuple_equals(tuple_new_color(1, 0, 0.5), rect_light.position));
+
+    point = lights_point_on_area_light_rect(&rect_light, 0, 0);
+    assert(tuple_equals(point, tuple_new_point(0.25, 0, 0.25)));
+    point = lights_point_on_area_light_rect(&rect_light, 1, 0);
+    assert(tuple_equals(point, tuple_new_point(0.75, 0, 0.25)));
+    point = lights_point_on_area_light_rect(&rect_light, 0, 1);
+    assert(tuple_equals(point, tuple_new_point(0.25, 0, 0.75)));
+    point = lights_point_on_area_light_rect(&rect_light, 2, 0);
+    assert(tuple_equals(point, tuple_new_point(1.25, 0, 0.25)));
+    point = lights_point_on_area_light_rect(&rect_light, 3, 1);
+    assert(tuple_equals(point, tuple_new_point(1.75, 0, 0.75)));
+
+    w = world_new_default_world();
+    corner = tuple_new_point(-0.5, -0.5, -5);
+    v1 = tuple_new_vector(1, 0, 0);
+    v2 = tuple_new_vector(0, 1, 0);
+    rect_light = lights_new_area_light_rect(corner, v1, 2, v2, 2, tuple_new_color(1, 1, 1));
+    point = tuple_new_point(0, 0, 2);
+    world_add_area_light_rect(w, &rect_light);
+    double intensity = world_intensity_at(&rect_light, point, w);
+    assert(ctm_floats_equal(0, intensity));
+    point = tuple_new_point(1, -1, 2);
+    intensity = world_intensity_at(&rect_light, point, w);
+    assert(ctm_floats_equal(0.25, intensity));
+    point = tuple_new_point(1.5, 0, 2);
+    intensity = world_intensity_at(&rect_light, point, w);
+    assert(ctm_floats_equal(0.5, intensity));
+    point = tuple_new_point(1.25, 1.25, 3);
+    intensity = world_intensity_at(&rect_light, point, w);
+    assert(ctm_floats_equal(0.75, intensity));
+    point = tuple_new_point(0, 0, -2);
+    intensity = world_intensity_at(&rect_light, point, w);
+    assert(ctm_floats_equal(1, intensity));
 
     return 0;
 }
