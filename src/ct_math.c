@@ -1,4 +1,5 @@
 #include "../includes/ct_math.h"
+#include <stdlib.h>
 
 double ctm_abs(const double a) {
     return ((a < 0) ? (-a):(a));
@@ -11,4 +12,9 @@ int ctm_floats_equal(const double a, const double b) {
 double
 ctm_max(const double a, const double b) {
     return (a > b) ? (a):(b);
+}
+
+double
+ctm_random_jitter(void) {
+    return ((double) rand()) / RAND_MAX;
 }

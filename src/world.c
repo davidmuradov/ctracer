@@ -416,7 +416,7 @@ world_shade_hit(struct world* world, struct precompute* comps, int remaining_cal
 	//shadowed = world_is_shadowed(world, ((struct point_light*) world->light_list[i])->position, comps->over_point);
 	intensity = world_intensity_at(world->light_list[i], comps->over_point, world);
 	color = tuple_add(color, lights_lighting_sphere(mat, comps->object,
-		    *(struct point_light*) world->light_list[i], comps->point, comps->eyev,
+		    world->light_list[i], comps->point, comps->eyev,
 		    comps->normalv, intensity));
     }
 

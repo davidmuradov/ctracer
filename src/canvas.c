@@ -50,12 +50,18 @@ void canvas_to_ppm(struct canvas* c) {
 	    ri = (int) (scale * c->grid[INDEX(i, j, c->width)].x);
 	    if (ri > 255)
 		ri = 255;
+	    else if (ri < 0)
+		ri = 0;
 	    gi = (int) (scale * c->grid[INDEX(i, j, c->width)].y);
 	    if (gi > 255)
 		gi = 255;
+	    else if (gi < 0)
+		gi = 0;
 	    bi = (int) (scale * c->grid[INDEX(i, j, c->width)].z);
 	    if (bi > 255)
 		bi = 255;
+	    else if (bi < 0)
+		bi = 0;
 	    if (j < c->width - 1)
 		fprintf(f, "%d %d %d ", ri, gi, bi);
 	    else

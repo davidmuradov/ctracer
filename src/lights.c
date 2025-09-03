@@ -1,4 +1,6 @@
 #include "../includes/lights.h"
+#include "ct_math.h"
+#include "object_utils.h"
 #include "pattern.h"
 #include "sphere.h"
 #include "tuple.h"
@@ -23,12 +25,13 @@ lights_new_area_light_rect(struct tuple corner, struct tuple full_uvec, int uste
     l.samples = usteps  * vsteps;
     l.intensity = intensity;
     l.position = tuple_add(tuple_scalar_div(full_uvec, 2), tuple_scalar_div(full_vvec, 2));
+    l.position.w = 1;
 
     return l;
 }
 
 struct tuple
-lights_lighting_sphere(struct material material, void* object, struct point_light light,
+lights_lighting_sphere(struct material material, void* object, void* light,
 	struct tuple point, struct tuple eyev, struct tuple normalv, double intensity) {
     struct tuple material_color;
 
@@ -57,8 +60,20 @@ lights_lighting_sphere(struct material material, void* object, struct point_ligh
 	    material_color = material.color;
     }
 
-    struct tuple effec_color = tuple_color_mult(material_color, light.intensity);
-    struct tuple light_v = tuple_normalize(tuple_sub(light.position, point));
+    struct tuple effec_color;
+    struct tuple light_v;
+    t_light type = object_utils_get_light_type(light);
+    switch (type) {
+	case POINT_LIGHT:
+	    effec_color = tuple_color_mult(material_color, ((struct point_light*) light)->intensity);
+	    light_v = tuple_normalize(tuple_sub(((struct point_light*) light)->position, point));
+	    break;
+	case AREA_LIGHT_RECT:
+	    effec_color = tuple_color_mult(material_color, ((struct area_light_rect*) light)->intensity);
+	    light_v = tuple_normalize(tuple_sub(((struct area_light_rect*) light)->position, point));
+	    break;
+    }
+
     struct tuple ambient = tuple_scalar_mult(effec_color, material.ambient);
     struct tuple diffuse;
     struct tuple specular;
@@ -73,7 +88,12 @@ lights_lighting_sphere(struct material material, void* object, struct point_ligh
     }
     else {
 	double factor = pow(reflect_dot_eye, material.shininess);
-	specular = tuple_scalar_mult(light.intensity, material.specular * factor);
+	switch (type) {
+	    case POINT_LIGHT:
+		specular = tuple_scalar_mult(((struct point_light*) light)->intensity, material.specular * factor);
+	    case AREA_LIGHT_RECT:
+		specular = tuple_scalar_mult(((struct area_light_rect*) light)->intensity, material.specular * factor);
+	}
     }
     diffuse = tuple_scalar_mult(diffuse, intensity);
     specular = tuple_scalar_mult(specular, intensity);
@@ -101,7 +121,7 @@ lights_lighting_sphere(struct material material, void* object, struct point_ligh
 
 struct tuple
 lights_point_on_area_light_rect(struct area_light_rect* light, const int u, const int v) {
-    struct tuple point = tuple_add(light->corner, tuple_add(tuple_scalar_mult(light->uvec, u + 0.5),
-		tuple_scalar_mult(light->vvec, v + 0.5)));
+    struct tuple point = tuple_add(light->corner, tuple_add(tuple_scalar_mult(light->uvec, u + ctm_random_jitter()),
+		tuple_scalar_mult(light->vvec, v + ctm_random_jitter())));
     return point;
 }

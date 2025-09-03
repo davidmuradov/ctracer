@@ -15,5 +15,8 @@ ctm_floats_equal(const double a, const double b);
 double
 ctm_max(const double a, const double b);
 
+double
+ctm_random_jitter(void);
+
 #endif
 

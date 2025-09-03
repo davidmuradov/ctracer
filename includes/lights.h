@@ -32,7 +32,7 @@ lights_new_area_light_rect(struct tuple corner, struct tuple full_uvec, int uste
 	struct tuple full_vvec, int vsteps, struct tuple intensity);
 
 struct tuple
-lights_lighting_sphere(struct material material, void* object, struct point_light light,
+lights_lighting_sphere(struct material material, void* object, void* light,
 	struct tuple point, struct tuple eyev, struct tuple normalv, double intensity);
 
 struct tuple
