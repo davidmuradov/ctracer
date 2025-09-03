@@ -1,4 +1,5 @@
 #include "../includes/object_utils.h"
+#include "lights.h"
 #include "materials.h"
 #include "matrix.h"
 #include "group.h"
@@ -189,4 +190,9 @@ t_object
 object_utils_get_object_type(void* object) {
     struct sphere* obj = (struct sphere*) object;
     return obj->type;
+}
+
+t_light
+object_utils_get_light_type(void* object) {
+    return ((struct point_light*) object)->type;
 }

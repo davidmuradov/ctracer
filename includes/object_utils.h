@@ -55,4 +55,7 @@ object_utils_add_object_to_containers(void* object, void* containers[], const in
 t_object
 object_utils_get_object_type(void* object);
 
+t_light
+object_utils_get_light_type(void* object);
+
 #endif

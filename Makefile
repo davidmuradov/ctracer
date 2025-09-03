@@ -86,6 +86,12 @@ test_bbox: tests/bbox/*.c $(INCLUDES_PATH)/*.h
 test_bbox_perf: tests/bbox/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -O3 -o Debug/test_bbox -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/bbox/test_bbox.c
 
+test_soft_shadows: tests/soft_shadows/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -o Debug/test_soft_shadows -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/soft_shadows/test_soft_shadows.c
+
+test_soft_shadows_perf: tests/soft_shadows/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -O3 -o Debug/test_soft_shadows -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/soft_shadows/test_soft_shadows.c
+
 .PHONY: clean
 clean:
 	rm -rf $(EXECDIR)

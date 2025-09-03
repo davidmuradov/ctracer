@@ -7,6 +7,7 @@
 #include "lights.h"
 #include "materials.h"
 #include "../includes/object_utils.h"
+#include "matrix.h"
 #include "pattern.h"
 #include "ray.h"
 #include "sphere.h"
@@ -59,6 +60,25 @@ world_new_world(void) {
     }
 
     w->nb_objects = w->nb_lights = 0;
+
+    return w;
+}
+
+struct world*
+world_new_default_world(void) {
+    struct world* w = world_new_world();
+
+    struct sphere* s = sphere_new_sphere();
+    s->material.color = tuple_new_color(0.8, 1, 0.6);
+    s->material.diffuse = 0.7;
+    s->material.specular = 0.2;
+    world_add_sphere(w, s);
+    s = sphere_new_sphere();
+    sphere_add_transform(s, matrix_new_scaling4(0.5, 0.5, 0.5));
+    world_add_sphere(w, s);
+
+    //struct point_light l = lights_new_point_light(tuple_new_point(-10, 10, -10), tuple_new_color(1, 1, 1));
+    //world_add_point_light(w, &l);
 
     return w;
 }
@@ -372,13 +392,15 @@ world_shade_hit(struct world* world, struct precompute* comps, int remaining_cal
     struct material mat = object_utils_get_material(comps->object);
 
     struct tuple color = tuple_new_color(0, 0, 0);
-    int shadowed = 0;
+    //int shadowed = 0;
+    double intensity = 0;
 
     for (int i = 0; i < world->nb_lights; i++) {
-	shadowed = world_is_shadowed(world, i, comps->over_point);
+	//shadowed = world_is_shadowed(world, ((struct point_light*) world->light_list[i])->position, comps->over_point);
+	intensity = world_intensity_at(world->light_list[i], comps->over_point, world);
 	color = tuple_add(color, lights_lighting_sphere(mat, comps->object,
 		    *(struct point_light*) world->light_list[i], comps->point, comps->eyev,
-		    comps->normalv, shadowed));
+		    comps->normalv, intensity));
     }
 
     struct tuple reflected = world_reflected_color(world, comps, remaining_calls);
@@ -413,9 +435,8 @@ world_color_at(struct world* world, struct ray* ray, int remaining_calls) {
 }
 
 int
-world_is_shadowed(struct world* world, int i, struct tuple point) {
-    struct point_light* l = (struct point_light*) world->light_list[i];
-    struct tuple v = tuple_sub(l->position, point);
+world_is_shadowed(struct world* world, struct tuple light_pos, struct tuple point) {
+    struct tuple v = tuple_sub(light_pos, point);
     double distance = tuple_mag(v);
     struct tuple direction = tuple_normalize(v);
     int is_shadowed = 0;
@@ -479,4 +500,22 @@ world_refracted_color(struct world* world, struct precompute* comps, int remaini
     struct tuple color = tuple_scalar_mult(world_color_at(world, &refract_ray, remaining_calls - 1), mat.transparency);
 
     return color;
+}
+
+double
+world_intensity_at(void* light, struct tuple point, struct world* world) {
+    t_light type = object_utils_get_light_type(light);
+    double intensity = 0;
+    int is_shadowed = 0;
+    switch (type) {
+	case POINT_LIGHT:
+	    is_shadowed = world_is_shadowed(world, ((struct point_light*) light)->position, point);
+	    intensity = (is_shadowed) ? (0):(1);
+	    break;
+	case AREA_LIGHT_RECT:
+	    //intensity = world_is_shadowed(world, ((struct point_light*) light)->position, point);
+	    break;
+    }
+
+    return intensity;
 }
