@@ -6,9 +6,14 @@
 
 #define UNDEF_TIME	(-9999)
 
-double ctm_abs(double a);
+double
+ctm_abs(const double a);
 
-int ctm_floats_equal(const double a, const double b);
+int
+ctm_floats_equal(const double a, const double b);
+
+double
+ctm_max(const double a, const double b);
 
 #endif
 

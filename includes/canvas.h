@@ -1,17 +1,20 @@
 #ifndef INCLUDES_CANVAS_H
 #define INCLUDES_CANVAS_H
 
-#define HIGH_RES	0
+#define HIGH_RES	3
 
-#if HIGH_RES == 2
+#if HIGH_RES == 3
 #define CANVAS_WIDTH		3840
 #define CANVAS_HEIGHT		2160
-#elif HIGH_RES == 1
+#elif HIGH_RES == 2
 #define CANVAS_WIDTH		1920
 #define CANVAS_HEIGHT		1080
-#elif HIGH_RES == 0
+#elif HIGH_RES == 1
 #define CANVAS_WIDTH		960
 #define CANVAS_HEIGHT		540
+#elif HIGH_RES == 0
+#define CANVAS_WIDTH		320
+#define CANVAS_HEIGHT		180
 #endif
 
 #define INDEX(i, j, w)		((i * w) + j)

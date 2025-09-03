@@ -80,6 +80,12 @@ test14: tests/chap14/*.c $(INCLUDES_PATH)/*.h
 test14_perf: tests/chap14/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -O3 -o Debug/test_chap14 -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/chap14/test_chap14.c
 
+test_bbox: tests/bbox/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -o Debug/test_bbox -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/bbox/test_bbox.c
+
+test_bbox_perf: tests/bbox/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -O3 -o Debug/test_bbox -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/bbox/test_bbox.c
+
 .PHONY: clean
 clean:
 	rm -rf $(EXECDIR)
