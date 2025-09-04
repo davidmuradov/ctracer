@@ -151,28 +151,69 @@ static void soft_render_1(void) {
     // Main group
     struct sphere* s;
 
-    struct tuple corner = tuple_new_point(-5, 5, 0);
-    struct tuple full_u = tuple_new_vector(0, 0, 2);
-    struct tuple full_v = tuple_new_vector(0, 1, 0);
-    struct area_light_rect light1 = lights_new_area_light_rect(corner, full_u, 10, full_v, 10, tuple_new_color(1, 1, 1));
+    struct tuple corner = tuple_new_point(-1, 2, 4);
+    struct tuple full_u = tuple_new_vector(2, 0, 0);
+    struct tuple full_v = tuple_new_vector(0, 2, 0);
+    struct area_light_rect light1 = lights_new_area_light_rect(corner, full_u, 15, full_v, 15, tuple_new_color(1.5, 1.5, 1.5));
     struct point_light light2 = lights_new_point_light(tuple_new_point(-5, 5, 0), tuple_new_color(1, 1, 1));
     struct world* world = world_new_world();
     world_add_area_light_rect(world, &light1);
     //world_add_point_light(world, &light2);
 
     s = sphere_new_sphere();
-    s->material.reflective = 0.2;
+    s->material.ambient = 0.1;
+    s->material.specular = 0;
+    s->material.diffuse = 0.6;
+    s->material.reflective = 0.3;
     s->material.color = NORD11;
-    sphere_add_transform(s, matrix_new_translation4(0, 1, 0));
+    sphere_add_transform(s, matrix_new_scaling4(0.5, 0.5, 0.5));
+    sphere_add_transform(s, matrix_new_translation4(0.5, 0.5, 0));
     world_add_sphere(world, s);
 
+    s = sphere_new_sphere();
+    s->material.ambient = 0.1;
+    s->material.specular = 0;
+    s->material.diffuse = 0.6;
+    s->material.reflective = 0.3;
+    s->material.color = NORD10;
+    sphere_add_transform(s, matrix_new_scaling4(0.33, 0.33, 0.33));
+    sphere_add_transform(s, matrix_new_translation4(-0.25, 0.33, 0));
+    world_add_sphere(world, s);
+
+    s = sphere_new_sphere();
+    s->material.ambient = 0.01;
+    s->material.specular = 0;
+    s->material.shininess = 300;
+    s->material.diffuse = 0.01;
+    s->material.reflective = 0.95;
+    s->material.transparency = 0.95;
+    s->material.refractive_index = 1.52;
+    s->material.color = tuple_new_color(1, 1, 1);
+    sphere_add_transform(s, matrix_new_scaling4(0.25, 0.25, 0.25));
+    sphere_add_transform(s, matrix_new_translation4(-0.8, 0.25, 0.8));
+    //world_add_sphere(world, s);
+
     struct plane* floor = plane_new_plane();
+    floor->material.ambient = 0.025;
+    floor->material.diffuse = 0.67;
+    floor->material.specular = 0;
+    floor->material.pattern =  pattern_checker(tuple_new_color(1, 1, 1), NORD0);
     world_add_plane(world, floor);
 
+    struct cube* cube = cube_new_cube();
+    cube->material.color = tuple_new_color(1.5, 1.5, 1.5);
+    cube->material.ambient = 1;
+    cube->material.diffuse = 0;
+    cube->material.specular = 0;
+    cube->material.casts_shadows = 0;
+    cube_add_transform(cube, matrix_new_scaling4(1, 1, 0.01));
+    cube_add_transform(cube, matrix_new_translation4(0, 3, 4));
+    world_add_cube(world, cube);
+
     // Camera and render
-    struct camera camera = camera_new_camera(CANVAS_WIDTH, CANVAS_HEIGHT, PI/3);
-    struct tuple from = tuple_new_point(0, 2, -5);
-    struct tuple to = tuple_new_point(0, 0, 4);
+    struct camera camera = camera_new_camera(CANVAS_WIDTH, CANVAS_HEIGHT, 0.7854);
+    struct tuple from = tuple_new_point(-3, 1, 2.5);
+    struct tuple to = tuple_new_point(0, 0.5, 0);
     struct tuple up = tuple_new_vector(0, 1, 0);
     camera.transform = matrix_view_transform(from, to, up);
     camera_make_inv_view_transform(&camera);

@@ -69,3 +69,8 @@ scene programmatically, which is good I guess.
 
 Without BVH, this scene rendered about 7.727 times slower.
 ![Final render BVH](./out/bvh.png "Final render BVH")
+
+
+## Soft shadows and area lights
+Scene with an area light and soft shadows.
+![Final render Soft Shadows](./out/soft_shadows.png "Final render Soft Shadows")
