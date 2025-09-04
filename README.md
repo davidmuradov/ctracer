@@ -66,4 +66,11 @@ that I manually managed to create a better hierarchy than the automatic BVH
 implementation that I built. Also, there's overhead with creating a BVH, which
 might of contributed to the slowdown. However, it was much easier to build this
 scene programmatically, which is good I guess.
+
+Without BVH, this scene rendered about 7.727 times slower.
 ![Final render BVH](./out/bvh.png "Final render BVH")
+
+
+## Soft shadows and area lights
+Scene with an area light and soft shadows.
+![Final render Soft Shadows](./out/soft_shadows.png "Final render Soft Shadows")

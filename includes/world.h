@@ -18,6 +18,9 @@ struct world;
 struct world*
 world_new_world(void);
 
+struct world*
+world_new_default_world(void);
+
 void
 world_free_world(struct world* w);
 
@@ -63,6 +66,9 @@ world_add_group(struct world* world, struct group* group);
 void
 world_add_point_light(struct world* world, struct point_light* light);
 
+void
+world_add_area_light_rect(struct world* world, struct area_light_rect* light);
+
 struct intersection_list
 world_intersect_world(struct world* world, struct ray* ray);
 
@@ -73,12 +79,15 @@ struct tuple
 world_color_at(struct world* world, struct ray* ray, int remaining_calls);
 
 int
-world_is_shadowed(struct world* world, int i, struct tuple point);
+world_is_shadowed(struct world* world, struct tuple light_pos, struct tuple point);
 
 struct tuple
 world_reflected_color(struct world* world, struct precompute* comps, int remaining_calls);
 
 struct tuple
 world_refracted_color(struct world* world, struct precompute* comps, int remaining_calls);
+
+double
+world_intensity_at(void* light, struct tuple point, struct world* world);
 
 #endif
