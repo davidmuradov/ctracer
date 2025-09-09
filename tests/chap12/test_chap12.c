@@ -376,11 +376,12 @@ static void chap12_render(void) {
     world_add_cube(world, cubie3);
 
     struct point_light light1 = lights_new_point_light(tuple_new_point(-100, 50.1, -6), tuple_new_color(1, 1, 1));
-    struct point_light light2 = lights_new_point_light(tuple_new_point(-100, 50, -6), tuple_new_color(0.2, 0.2, 0.2));
-    struct point_light light3 = lights_new_point_light(tuple_new_point(-100, 49.9, -6), tuple_new_color(0.2, 0.2, 0.2));
-    struct point_light light4 = lights_new_point_light(tuple_new_point(-100, 50, -6.2), tuple_new_color(0.2, 0.2, 0.2));
-    struct point_light light5 = lights_new_point_light(tuple_new_point(-100, 50, -5.8), tuple_new_color(0.2, 0.2, 0.2));
-    world_add_point_light(world, &light1);
+    struct tuple corner = tuple_new_point(-100, 50, -6);
+    struct tuple full_u = tuple_new_vector(0, 0, 10);
+    struct tuple full_v = tuple_new_vector(0, 10, 0);
+    struct area_light_rect light2 = lights_new_area_light_rect(corner, full_u, 5, full_v, 5, tuple_new_color(0.5, 0.5, 0.5));
+    //world_add_point_light(world, &light1);
+    world_add_area_light_rect(world, &light2);
     //world_add_point_light(world, &light2);
     //world_add_point_light(world, &light3);
     //world_add_point_light(world, &light4);
