@@ -74,3 +74,8 @@ Without BVH, this scene rendered about 7.727 times slower.
 ## Soft shadows and area lights
 Scene with an area light and soft shadows.
 ![Final render Soft Shadows](./out/soft_shadows.png "Final render Soft Shadows")
+
+
+## Gamma Correction
+Gamma corrected scene (sRGB, don't know if that's right ..)
+![Final render SRGB](./out/srgb.png "Final render SRGB")

@@ -154,7 +154,7 @@ static void soft_render_1(void) {
     struct tuple corner = tuple_new_point(-1, 2, 4);
     struct tuple full_u = tuple_new_vector(2, 0, 0);
     struct tuple full_v = tuple_new_vector(0, 2, 0);
-    struct area_light_rect light1 = lights_new_area_light_rect(corner, full_u, 15, full_v, 15, tuple_new_color(1.5, 1.5, 1.5));
+    struct area_light_rect light1 = lights_new_area_light_rect(corner, full_u, 5, full_v, 5, tuple_new_color(0.75, 0.75, 0.75));
     struct point_light light2 = lights_new_point_light(tuple_new_point(-5, 5, 0), tuple_new_color(1, 1, 1));
     struct world* world = world_new_world();
     world_add_area_light_rect(world, &light1);

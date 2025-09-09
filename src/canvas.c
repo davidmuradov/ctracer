@@ -1,5 +1,6 @@
 #include "../includes/canvas.h"
 #include "../includes/tuple.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -47,17 +48,17 @@ void canvas_to_ppm(struct canvas* c) {
     fprintf(f, "P3\n%d %d\n255\n", c->width, c->height);
     for (int i = 0; i < c->height; i++) {
 	for (int j = 0; j < c->width; j++) {
-	    ri = (int) (scale * c->grid[INDEX(i, j, c->width)].x);
+	    ri = (int) (scale * pow(c->grid[INDEX(i, j, c->width)].x, 1/2.2));
 	    if (ri > 255)
 		ri = 255;
 	    else if (ri < 0)
 		ri = 0;
-	    gi = (int) (scale * c->grid[INDEX(i, j, c->width)].y);
+	    gi = (int) (scale * pow(c->grid[INDEX(i, j, c->width)].y, 1/2.2));
 	    if (gi > 255)
 		gi = 255;
 	    else if (gi < 0)
 		gi = 0;
-	    bi = (int) (scale * c->grid[INDEX(i, j, c->width)].z);
+	    bi = (int) (scale * pow(c->grid[INDEX(i, j, c->width)].z, 1/2.2));
 	    if (bi > 255)
 		bi = 255;
 	    else if (bi < 0)
