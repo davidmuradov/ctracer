@@ -92,6 +92,12 @@ test_soft_shadows: tests/soft_shadows/*.c $(INCLUDES_PATH)/*.h
 test_soft_shadows_perf: tests/soft_shadows/*.c $(INCLUDES_PATH)/*.h
 	clang $(CFLAGS) -O3 -o Debug/test_soft_shadows -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/soft_shadows/test_soft_shadows.c
 
+test_dof: tests/dof/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -o Debug/test_dof -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/dof/test_dof.c
+
+test_dof_perf: tests/dof/*.c $(INCLUDES_PATH)/*.h
+	clang $(CFLAGS) -O3 -o Debug/test_dof -I $(INCLUDES_PATH) -lm $(SRC_PATH)/*.c tests/dof/test_dof.c
+
 .PHONY: clean
 clean:
 	rm -rf $(EXECDIR)

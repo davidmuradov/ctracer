@@ -79,3 +79,9 @@ Scene with an area light and soft shadows.
 ## Gamma Correction
 Gamma corrected scene (sRGB, don't know if that's right ..)
 ![Final render SRGB](./out/srgb.png "Final render SRGB")
+
+
+## Depth of Field
+Scene with depth of field. Resolution of 3840x2160 pixels, using 25 light samples
+and 10 depth of field samples per pixel. Rendered in 4209.64 seconds (1:10:42.47).
+![Final render DOF](./out/dof.png "Final render DOF")
