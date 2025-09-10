@@ -1,7 +1,11 @@
 #include "../includes/canvas.h"
 #include "../includes/tuple.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+static double
+canvas_linear_to_srgb(double linear);
 
 struct canvas canvas_new(int width, int height) {
     struct canvas c;
@@ -34,7 +38,7 @@ void canvas_write_pixel(struct canvas* c, int i, int j, struct tuple color) {
 }
 
 void canvas_to_ppm(struct canvas* c) {
-    double scale = 255.99;
+    int scale = 256;
     int ri;
     int gi;
     int bi;
@@ -44,20 +48,30 @@ void canvas_to_ppm(struct canvas* c) {
 	exit(1);
     }
 
+    double r;
+    double g;
+    double b;
+
     fprintf(f, "P3\n%d %d\n255\n", c->width, c->height);
     for (int i = 0; i < c->height; i++) {
 	for (int j = 0; j < c->width; j++) {
-	    ri = (int) (scale * c->grid[INDEX(i, j, c->width)].x);
+	    r = c->grid[INDEX(i, j, c->width)].x;
+	    g = c->grid[INDEX(i, j, c->width)].y;
+	    b = c->grid[INDEX(i, j, c->width)].z;
+	    //ri = (int) (scale * r);
+	    ri = (int) (scale * canvas_linear_to_srgb(r));
 	    if (ri > 255)
 		ri = 255;
 	    else if (ri < 0)
 		ri = 0;
-	    gi = (int) (scale * c->grid[INDEX(i, j, c->width)].y);
+	    //gi = (int) (scale * g);
+	    gi = (int) (scale * canvas_linear_to_srgb(g));
 	    if (gi > 255)
 		gi = 255;
 	    else if (gi < 0)
 		gi = 0;
-	    bi = (int) (scale * c->grid[INDEX(i, j, c->width)].z);
+	    //bi = (int) (scale * b);
+	    bi = (int) (scale * canvas_linear_to_srgb(b));
 	    if (bi > 255)
 		bi = 255;
 	    else if (bi < 0)
@@ -74,4 +88,13 @@ void canvas_to_ppm(struct canvas* c) {
 
 void canvas_free_canvas(struct canvas* c) {
     free(c->grid);
+}
+
+static double
+canvas_linear_to_srgb(double linear) {
+    double a = 0.055;
+    if (linear <= 0.0031308)
+	return 12.92 * linear;
+
+    return (1 + a) * pow(linear, 1/2.2) - a;
 }

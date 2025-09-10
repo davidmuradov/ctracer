@@ -202,7 +202,7 @@ lights_area_light_rect_lighting(struct tuple material_color, struct material mat
 	    light_v = tuple_normalize(tuple_sub(sample_position, point));
 	    light_dot_normal = tuple_dot(light_v, normalv);
 
-	    if (light_dot_normal < 0 || ctm_floats_equal(0, intensity)) {
+	    if (light_dot_normal <= 0) {
 		diffuse = tuple_new_color(0, 0, 0);
 		specular = tuple_new_color(0, 0, 0);
 	    }

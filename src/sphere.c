@@ -89,19 +89,19 @@ sphere_intersect_ray(struct sphere* s, struct ray* r) {
     if (t1 < t2) {
 	struct intersection inter;
 	s->xs[0] = t1;
-	inter = intersection_new_intersection(s->xs[0], s);
+	inter = intersection_new_intersection(t1, s);
 	intersection_add_intersection_to_list(&inter_list, inter);
 	s->xs[1] = t2;
-	inter = intersection_new_intersection(s->xs[1], s);
+	inter = intersection_new_intersection(t2, s);
 	intersection_add_intersection_to_list(&inter_list, inter);
     }
     else {
 	struct intersection inter;
 	s->xs[0] = t2;
-	inter = intersection_new_intersection(s->xs[0], s);
+	inter = intersection_new_intersection(t2, s);
 	intersection_add_intersection_to_list(&inter_list, inter);
 	s->xs[1] = t1;
-	inter = intersection_new_intersection(s->xs[1], s);
+	inter = intersection_new_intersection(t1, s);
 	intersection_add_intersection_to_list(&inter_list, inter);
     }
 
