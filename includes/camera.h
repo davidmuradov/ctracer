@@ -19,8 +19,6 @@ struct camera {
     double pixel_size;
     struct matrix4 transform;
     struct matrix4 inv_transform;
-    struct tuple aperture_u;
-    struct tuple aperture_v;
 };
 
 struct camera

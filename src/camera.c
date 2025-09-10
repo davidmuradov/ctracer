@@ -108,8 +108,6 @@ void camera_make_view_transform(struct camera* cam, struct tuple from, struct tu
     struct matrix4 orientation = matrix_new_matrix4(r1, r2, r3, r4);
 
     cam->transform = matrix_mult_matrix4(orientation, matrix_new_translation4(-from.x, -from.y, -from.z));
-    cam->aperture_u = tuple_normalize(left);
-    cam->aperture_v = tuple_normalize(true_up);
     camera_make_inv_view_transform(cam);
 }
 
