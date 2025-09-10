@@ -58,23 +58,20 @@ void canvas_to_ppm(struct canvas* c) {
 	    r = c->grid[INDEX(i, j, c->width)].x;
 	    g = c->grid[INDEX(i, j, c->width)].y;
 	    b = c->grid[INDEX(i, j, c->width)].z;
-	    //ri = (int) (scale * c->grid[INDEX(i, j, c->width)].x);
-	    //ri = (int) (scale * pow(c->grid[INDEX(i, j, c->width)].x, 1/2.2));
-	    ri = (int) (scale * canvas_linear_to_srgb(c->grid[INDEX(i, j, c->width)].x));
+	    //ri = (int) (scale * r);
+	    ri = (int) (scale * canvas_linear_to_srgb(r));
 	    if (ri > 255)
 		ri = 255;
 	    else if (ri < 0)
 		ri = 0;
-	    //gi = (int) (scale * c->grid[INDEX(i, j, c->width)].y);
-	    //gi = (int) (scale * pow(c->grid[INDEX(i, j, c->width)].y, 1/2.2));
-	    gi = (int) (scale * canvas_linear_to_srgb(c->grid[INDEX(i, j, c->width)].y));
+	    //gi = (int) (scale * g);
+	    gi = (int) (scale * canvas_linear_to_srgb(g));
 	    if (gi > 255)
 		gi = 255;
 	    else if (gi < 0)
 		gi = 0;
-	    //bi = (int) (scale * c->grid[INDEX(i, j, c->width)].z);
-	    //bi = (int) (scale * pow(c->grid[INDEX(i, j, c->width)].z, 1/2.2));
-	    bi = (int) (scale * canvas_linear_to_srgb(c->grid[INDEX(i, j, c->width)].z));
+	    //bi = (int) (scale * b);
+	    bi = (int) (scale * canvas_linear_to_srgb(b));
 	    if (bi > 255)
 		bi = 255;
 	    else if (bi < 0)

@@ -154,17 +154,17 @@ static void soft_render_1(void) {
     struct tuple corner = tuple_new_point(-1, 2, 4);
     struct tuple full_u = tuple_new_vector(2, 0, 0);
     struct tuple full_v = tuple_new_vector(0, 2, 0);
-    struct area_light_rect light1 = lights_new_area_light_rect(corner, full_u, 15, full_v, 15, tuple_new_color(1, 1, 1));
+    struct area_light_rect light1 = lights_new_area_light_rect(corner, full_u, 10, full_v, 10, tuple_new_color(1, 1, 1));
     struct point_light light2 = lights_new_point_light(tuple_new_point(-5, 5, 0), tuple_new_color(1, 1, 1));
     struct world* world = world_new_world();
     world_add_area_light_rect(world, &light1);
     //world_add_point_light(world, &light2);
 
     s = sphere_new_sphere();
-    s->material.ambient = 0.;
+    s->material.ambient = 0.01;
     s->material.specular = 0.95;
-    s->material.diffuse = 0.2;
-    s->material.reflective = 0.15;
+    s->material.diffuse = 0.25;
+    s->material.reflective = 0.017;
     s->material.shininess = 100;
     s->material.color = NORD11;
     sphere_add_transform(s, matrix_new_scaling4(0.5, 0.5, 0.5));
@@ -172,10 +172,10 @@ static void soft_render_1(void) {
     world_add_sphere(world, s);
 
     s = sphere_new_sphere();
-    s->material.ambient = 0.;
+    s->material.ambient = 0.01;
     s->material.specular = 0.95;
-    s->material.diffuse = 0.2;
-    s->material.reflective = 0.15;
+    s->material.diffuse = 0.25;
+    s->material.reflective = 0.017;
     s->material.shininess = 100;
     s->material.color = NORD10;
     sphere_add_transform(s, matrix_new_scaling4(0.33, 0.33, 0.33));
@@ -183,8 +183,8 @@ static void soft_render_1(void) {
     world_add_sphere(world, s);
 
     struct plane* floor = plane_new_plane();
-    floor->material.ambient = 0.005;
-    floor->material.diffuse = 0.1;
+    floor->material.ambient = 0.01;
+    floor->material.diffuse = 0.4;
     floor->material.specular = 0;
     floor->material.shininess = 1;
     floor->material.pattern =  pattern_checker(tuple_new_color(1, 1, 1), NORD0);

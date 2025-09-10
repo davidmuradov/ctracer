@@ -1,7 +1,7 @@
 #ifndef INCLUDES_CANVAS_H
 #define INCLUDES_CANVAS_H
 
-#define HIGH_RES	1
+#define HIGH_RES	3
 
 #if HIGH_RES == 3
 #define CANVAS_WIDTH		3840
